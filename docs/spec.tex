@@ -13,9 +13,9 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \begin{titlepage}
     \centering
     
-    {\Large LATVIJAS UNIVERSITĀTES EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE\\[5cm]}
+    {\Large LATVIJAS UNIVERSITĀTES\\EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTES DATORIKAS NODAĻA\\[5cm]}
     
-    {\LARGE \textbf{PROGRAMMĒŠANAS VALODAS IMMUTANT INTERPREATORS}}\\[0.5cm]
+    {\LARGE \textbf{ INTERPRETATORS PROGRAMMĒŠANAS\\[0.3cm] VALODAI IMMUTANT}}\\[0.5cm]
 
     \normalsize{KVALIFIKĀCIJAS DARBS DATORZINĀTNĒS}\\[5cm]
     
@@ -29,6 +29,29 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
     RĪGA, 2025
 \end{titlepage}
 
+\selectlanguage{latvian} 
+\begin{abstract}
+    Mūsdienās liela daļa no vispārīga pielietojuma programmēšanas valodām, satur sintaksi, kas paredz, ka mainīgo vērtību maiņa ir pavisam ierasta darbība, tomēr šim pastāv būtisks trūkums, kas ir datu neparedzamība. 
+    Lai spriešanu par kāda mainīgā stāvokli padarīt paredzamu, šī darba ietvaros tiek izstrādāta porgrammēšanas valoda, kuras gramatika un sintakse, kas ierosina noteikta veida mainīgo vērtību nemainību un uz šī pamata esošo uzvedību pie citu mainīgo inicializācijas un izmantošanas.
+    Šis darbs satur valodas specifikāciju un interpretatora arhitektūras dokumentāciju lekserim, parsētājam un abstraktā sintakses koka pārstaigāšanas algoritmam.
+    Rezultātā, izmantojot valodu C, tiek izveidota augsta līmeņa, intepretējama, dinamiski tipizēta valoda ar atomāriem datu tipiem.
+
+    \begin{flushleft}
+    \textbf{Atslēgvārdi:} interpretators, AST, funkcionālā programmēšana, C valoda, datu nemainība
+    \end{flushleft}
+\end{abstract} 
+
+\selectlanguage{english} 
+\begin{abstract}
+    Most of the well known general-purpose programming languages of today consist of grammar and syntax that suggests having mutable data is an ordinary matter, which in reality happens to be a weak point in reasoning about state of particular data. 
+    To make such reasoning predictable, this work explores making of a programming language with explicit syntax and underlying behavior of immutable variables. 
+    This work consits specification for such language and documentation of the architecture for the lexer, parser and AST-walker of the underlying interpreter.
+    As a result there is created a high-level, interpreted, dynamically typed programming language with only atomar data types. The primary tool for making such interpreter happens to be the C language.
+
+    \begin{flushleft}
+    \textbf{Keywords:} interpreter, AST, functional programming, C language, data immutability
+    \end{flushleft}
+\end{abstract} 
 
 
 \end{document}
