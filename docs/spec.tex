@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper]{report}
 
 \usepackage{formatting}
+\usepackage{tabularx}
 
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
@@ -53,6 +54,36 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
     \end{flushleft}
 \end{abstract} 
 
+\selectlanguage{latvian} 
+\tableofcontents
+
+\newpage
+\chapter*{Apzīmējumi}
+\addcontentsline{toc}{section}{Apzīmējumi} 
+
+\begin{flushleft}
+
+\renewcommand{\arraystretch}{1.3}  % vertical spacing
+\begin{tabular}{|l|l|}  % two columns with vertical borders
+\hline
+\textbf{Saīsinājums} & \textbf{Nozīme} \\  % header row
+\hline
+AST & Abstraktās sintakses koks\\
+\hline
+\end{tabular}
+
+\end{flushleft}
+
+\newpage
+\chapter*{Ievads}
+\addcontentsline{toc}{section}{Ievads} 
+
+Šeit būs ievads
+
+\newpage
+\chapter*{Ievads}
+\addcontentsline{toc}{section}{Ievads} 
+Seit ir ievads
 
 \end{document}
 

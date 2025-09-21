@@ -1,0 +1,54 @@
+% mythesis.sty
+
+\RequirePackage{newtxtext,newtxmath} % Font
+\RequirePackage[a4paper,top=20mm,bottom=20mm,left=30mm,right=20mm]{geometry}
+\RequirePackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1cm}
+
+\usepackage[latvian, english]{babel} % Language support
+\usepackage[utf8]{inputenc} % UTF-8 encoding
+\usepackage[T1]{fontenc}    % Proper accented characters
+
+\setcounter{tocdepth}{1}  % only chapters and sections appear
+
+% Page numbers
+\RequirePackage{fancyhdr}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+% Headings
+\RequirePackage{titlesec}
+\RequirePackage{needspace}
+
+\titleformat{\chapter}
+  {\normalfont\bfseries\fontsize{14pt}{16pt}\selectfont\MakeUppercase}
+  {\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{2\baselineskip}{2\baselineskip}
+\newcommand{\Chapter}[1]{\cleardoublepage\chapter{#1}}
+
+\titleformat{\section}
+  {\normalfont\bfseries\fontsize{12pt}{14pt}\selectfont}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{2\baselineskip}{2\baselineskip}
+
+\titleformat{\subsection}
+  {\normalfont\bfseries\fontsize{12pt}{14pt}\selectfont}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{2\baselineskip}{2\baselineskip}
+
+% Table & Figure captions
+\RequirePackage{caption}
+\captionsetup[table]{
+  justification=raggedleft,
+  font={bf,small},
+  labelsep=space,
+  name=\itshape Tabula
+}
+\captionsetup[figure]{
+  justification=centering,
+  font={bf,small},
+  labelsep=space,
+  name=\itshape Att.
+}
