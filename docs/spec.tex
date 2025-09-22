@@ -2,6 +2,7 @@
 
 \usepackage{formatting}
 \usepackage{tabularx}
+\usepackage{cite}  % optional, improves formatting
 
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
@@ -58,26 +59,34 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \tableofcontents
 
 \newpage
-\chapter*{Apzīmējumi}
-\addcontentsline{toc}{section}{Apzīmējumi} 
+\chapter*{Apzīmējumu saraksts}
+\addcontentsline{toc}{section}{Apzīmējumu saraksts} 
 
-\begin{flushleft}
 
-\renewcommand{\arraystretch}{1.3}  % vertical spacing
-\begin{tabular}{|l|l|}  % two columns with vertical borders
-\hline
-\textbf{Saīsinājums} & \textbf{Nozīme} \\  % header row
-\hline
-AST & Abstraktās sintakses koks\\
-\hline
+\begin{tabular}{ll} 
+\textbf{AST} & Abstraktās sintakses koks \\
+\textbf{immutability, immutable} & Pilnīga (datu) nemainība, pilnībā nemaināmi dati
 \end{tabular}
 
-\end{flushleft}
 
 \newpage
 \chapter*{Ievads}
-\addcontentsline{toc}{section}{Ievads} 
-Seit ir ievads
+\addcontentsline{toc}{section}{Ievads}
+
+Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrīdama daļa no lielas daļas programmatūras. Pavisam noteikti var apgalvot, ka datorsistēmu arhitektūru atmiņas koncepcija ļauj rakstīt atmiņā ne vienu vien reizi. Atmiņu var relocēt, izdzēst, pieprasīt lielākus atmiņas gabalus u.t.t. No šī izriet datu mainības esence un līdz šai dienai tā pamata sastāvdaļa iekalta lielā daļā, ja ne visu, programmēšanas un skriptēšanas valodās.   
+
+No otras puses, mainīgiem datiem pastāv īpašība būt neparedzamiem. Kamēr mazas sistēmas spēj tikt galā ar nelielu daudzumu mainīgo, tad lielajās sistēma tas var kļūt par acīmredzamu problēmu. Atmiņa datoram ir viena, tomēr atsaukties uz to var no dažādām vietām dažādos laika brīžos, kas padara spriešanu par datu stāvokli daudz sarežģītāk.  
+% TODO: mention thread problems and other concrete problems that data mutability causes (reporter by egineers...?)
+
+Programmētāji izmanto iespēju datu mainību it īpaši jo tas ir tik viegli, izmantojot programmēšanas valodas un to abstrakcijas. Lai padarītu iepriekš minēto programmatūras uzvedību kontrolētāku, valodas no C saimes, Java, JavaScrip un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{final} atslēgvārdu no valodas Java vai līdzīgu funkciju \texttt{Object.freeze} no valodas JavaScript, kas saldē jeb fiksē doto mainīgo un liedz pārrakstīt tā vērtību, bet tas nenotiek visos gadījumos. Ja mainīgā vērtība tips nav primitīvas, bet atsauces, piemēram kāds objekts vai masīvs, tas ir definēts pavisam citā atmiņas apgabalā, tāpēc realitātē tas gan būs maināms. No iepriekš minētiem piemēriem var secināt, ka arī datu nemainības implementācija programmēšanas valodās nav tikai saturiska no sintakses viedokļa, bet tai pastāv arī semantika jeb raksturojoša uzvedība pie dažādām operācijām.
+
+Immutability is widely recognized in programming languages \cite{lang-immutability}
+
+
+% TODO: read the paper and analyze which parts of engineer desires for languages immutability can be implemented in my lang
+
+\bibliographystyle{plain}  % or unsrt, alpha, etc.
+\bibliography{refs}   % your .bib file name
 
 \end{document}
 
