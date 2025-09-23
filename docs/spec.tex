@@ -24,7 +24,7 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
     \begin{flushleft}
         Autors: Rolands Frīdemanis\\
         Studenta apliecības Nr.: rf23009\\
-        Darba vadītājs: ...
+        Darba vadītājs: asociētais profesors Dr. sc. comp. Aleksandrs Belovs
     \end{flushleft}
     
     \vfill
@@ -75,17 +75,20 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \chapter*{Ievads}
 \addcontentsline{toc}{section}{Ievads}
 
-Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrīdama daļa no lielas daļas programmatūras. Pavisam noteikti var apgalvot, ka datorsistēmu arhitektūru atmiņas koncepcija ļauj rakstīt atmiņā ne vienu vien reizi. Atmiņu var relocēt, izdzēst, pieprasīt lielākus atmiņas gabalus u.t.t. No šī izriet datu mainības esence un līdz šai dienai tā pamata sastāvdaļa iekalta lielā daļā, ja ne visu, programmēšanas un skriptēšanas valodās.   
+Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrīdama daļa no lielas daļas programmatūras. Droši var apgalvot, ka datorsistēmu arhitektūru atmiņas koncepcija ļauj izmantot atmiņu vairākkārtēji. Atmiņu var relocēt, izdzēst, pieprasīt lielākus atmiņas gabalus u.t.t. No šī izriet datu mainības būtība, un līdz šai dienai tā ir iekalta lielā daļā, ja ne visu, programmēšanas un skriptēšanas valodu.   
 
 No otras puses, mainīgiem datiem pastāv īpašība būt neparedzamiem. Kamēr mazas sistēmas spēj tikt galā ar nelielu daudzumu mainīgo, tad lielajās sistēma tas var kļūt par acīmredzamu problēmu. Atmiņa datoram ir viena, tomēr atsaukties uz to var no dažādām vietām dažādos laika brīžos, kas padara spriešanu par datu stāvokli daudz sarežģītāk.  
 
+Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to tik vienkāršu. Lai gūtu vairāk kontroles pār ipriekš minēto uzvedību, valodas no C saimes, Java, JavaScript un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas, nemainīsies. Līdz ar to, \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
+Neskatoties uz dažāiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
 
-Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to par tik vienkāršu procesu. Lai gūtu vairāk kontroles pār ipriekš minētas uzvedības, valodas no C saimes, Java, JavaScrip un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas nemainīsies. Līdz ar to, realitātē \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
-Neskatoties uz programmēšanas valodu dažādiem centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
+Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteikumi, tīras un netīras funckijas, kontroles plūsma un cikli.
 
-Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu.
+% TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
 
-\bibliographystyle{plain} 
+Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām porgrammatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz leksera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apokopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Septītajā nodaļā tiks izvirzīts turpmākais valodas attīstības plāns un idejas. Visbeidzot, astotajā nodaļā seko nobeigums un kopsavilkums par paveikto darbu.
+
+\bibliographystyle{plain}
 \bibliography{references}   
 
 \end{document}
