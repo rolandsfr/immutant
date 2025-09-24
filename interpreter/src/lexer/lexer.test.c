@@ -13,5 +13,5 @@ void test_Multiplication_should_MultiplyRealNumbers(void)
 
 void test_Multiplication_should_MultiplyByZero(void)
 {
-  TEST_ASSERT_EQUAL_INT(2, multiply(121, 0));
+  TEST_ASSERT_EQUAL_INT(0, multiply(121, 0));
 }
