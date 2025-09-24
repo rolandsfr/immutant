@@ -1,6 +1,16 @@
+# tex reated files
 *.aux
 *.synctex.gz
 *.log
 *.toc
 *.bbl
 *.blg
+
+# dir for bundling test code and storing test runner related data
+tests_build/
+
+# contains build artifact
+build/
+
+# IDE
+.vscode
