@@ -4,14 +4,13 @@ YAPL (Yet Another Programming language) with useful quirks of immutability.
 ## General structure
 
 ```
-├── 📁 cli #  cli tool for using the interpreter
+├── 📁 interpreter #  cli tool for using the interpreter
+│   └──  main.c # entry point for interpreter, treat this lib as cli
 ├── 📁 docs #  formal and detailed documentation of the 
-├── 📁 interpreter 
-│   ├── 📁 build
+├── 📁 core # exposes core parts of interpreter for use in the resulting interpeting tool
 │   ├── 📁 include 
-│   ├── ⚙️ project.yml # ceedling test runner config
 │   ├── 📁 src 
-│   └── 📁tests_build # artifacts of ceelding
+│   └── ⚙️ project.yml # ceedling test runner config
 └── README.md
 ```
 
@@ -20,6 +19,6 @@ YAPL (Yet Another Programming language) with useful quirks of immutability.
 This project uses [ceedling test runner for c projects]().
 Running tests requires having ceedling being installed via ruby `gem`.
 
-To run all tests use `ceedling test` within the interpreter project.
+To run all tests use `ceedling test` within the core/ lib or otherwise `make test` in the root.
 
 ## Building
