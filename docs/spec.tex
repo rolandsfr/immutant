@@ -4,6 +4,7 @@
 \usepackage{tabularx}
 \usepackage{cite}  % optional, improves formatting
 
+
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 
@@ -88,8 +89,105 @@ Neskatoties uz dažāiem programmēšanas valodu centieniem ierobežot datu main
 
 Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām porgrammatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz leksera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apokopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Visbeidzot, septītajā nodaļā tiek izvirzītas idejas turpmākai valodas attīstībai, un izskatīts kopsavilkums par paveikto darbu.
 
+
+\newpage
+\chapter{Valodas specifikācija}
+
+Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas attiecīgam interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgramāta valodas lietošanā.
+Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstīstīšanas nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
+Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
+Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
+
+\section{Datu tipi}
+
+Immutant valodā tiek definēti tikai primitīvi datu tipi, kurus iedala 3 kategorijās: patiesuma, virknes tipa, un skaitļi. Par katru no šiem zemāk seko savs skaidrojums.
+
+
+\subsection{Virknes}
+\textbf{Definīcija}
+
+Vikrne ir jebrkuš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
+
+Virknes var saturēt jebkādus simbolus, tostarp specsimbolus, kā \texttt{@,\^\space,\&} u.c. Proti, vikrnēs arī nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
+Piemērs dažādām viknēm seko zemāk. Tāpat, arī vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
+
+\begin{verbatim}
+"", "someString", "sentence with spaces", " ", ,"\""
+\end{verbatim}
+
+Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš vikrnes. Lai nezutvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur specsimbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
+
+Piemērs tādai virknei:
+
+\begin{verbatim}
+"They call themselves \"the wolves\""
+\end{verbatim}
+
+Rezultātā atkārtots dubultpēdiņu simbols netiek uztvers kā virknes beigu indenkators, bet gan kā daļa no virknes vērtības, un tiek panākts sekojošs teksts:
+
+\begin{verbatim}
+They call themselves "the wolves"
+\end{verbatim}
+
+Uz ekranizēšanu attiecas arī pats ekranizēšanas simbols \texttt{\textbackslash}. Ja ir nepieciešamība to iekļaut virknē, tas arī ir jāekranizē sekojošā veidā:
+
+\begin{verbatim}
+"There is something mysterious about the \"\\\" character."
+\end{verbatim}
+
+Dotās virknes rezultējošais teksts ir: 
+
+\begin{verbatim}
+There is something mysterious about the "\" character.
+\end{verbatim}
+
+\subsection{Skaitļi}
+\textbf{Definīcija}
+
+Skaitlis ir jebkura vērtība no Reālo skaitļu kopas. Ir svarīgi uzsvērt, ka irracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam irracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
+
+Piemērs skaitliskām vērtībām seko zemāk:
+
+\begin{verbatim}
+102, -9, -0.3, 421.5632, PI
+\end{verbatim}
+
+Dotajā piemērā \texttt{PI} ir viena no valodā eksistējošām konstatēm, kas satur aproksimētu matemātiskās konstantes $\pi$ vērtību (\texttt{\char`~3.1415926535}).
+
+Valodas gramatika atļauj izmantot vadošo punktu priekšā skaitlim, kas apzīmē decimāldaļu skailim nulle. Piemēram, decimālskaitlis \texttt{.34} ir identisks ar \texttt{0.34}.
+
+
+\subsection{Patiesuma vērtības}
+
+\textbf{Definīcija}
+
+Patiesuma vērtības ir tādas vērtības, kuras ir vai nu patiesas vai nu aplamas.
+
+No augstāk redzamās definīcijas iziriet, ka valodai Immutant tiek definēta divvērtīga loģika. Tātad, patiesu vērtību apzīmē ar \texttt{true}, bet aplamu ar \texttt{false.}
+
+
+\subsection{Mainīgie}
+\label{section:vars}
+
+Valoda nodala 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas.
+
+\begin{verbatim}
+mutant a = 3;
+shielded b = 3;
+\end{verbatim}
+
+\section{Kļūdu veidi un apzīmējumi}
+
+% TODO: minēt ka ir regulāra valoda.
+% TODO: pie arhitektūras apraksta minēti lookahead daudzumu šai valodai
+\chapter{Interpretatora arhitektūra}
+\label{chap:arch}
+
+Šeit būs info par lekseri, parsētāju un tree walker.
+
+
 \bibliographystyle{plain}
 \bibliography{references}   
 
-\end{document}
 
+\end{document}
