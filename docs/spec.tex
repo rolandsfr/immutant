@@ -165,16 +165,58 @@ Patiesuma vērtības ir tādas vērtības, kuras ir vai nu patiesas vai nu aplam
 
 No augstāk redzamās definīcijas iziriet, ka valodai Immutant tiek definēta divvērtīga loģika. Tātad, patiesu vērtību apzīmē ar \texttt{true}, bet aplamu ar \texttt{false.}
 
+\section{Konstrukcijas}
+
+\subsection{Izteikumi}
+
+Izteikumi mēdz būt dažādi - tie var gan neproducēt neko, gan arī producēt kādu vērtību. Piemēram, mainīgo inicializācijas izteikums pēc būtības ir izpidāma komanda, toties tā rezultātā pati par sevi nedod nekādu vērtību. No otras puses jebkurš salīdzināšanas operators, piemēram "ir vienāds" jeb \texttt{==} (detalizētāk par to skat. ~\ref{section:operators}), producē patiesuma vērtību, kas izsaka salīdzināšanas rezultātu,
+
+\subsection{Operatori}
+\label{section:operators}
+
+Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem.
+
+Saraksts ar unāriem un bināriem operatoriem seko zemāk.
+
+Unāri operatori:
+
+
+\begin{itemize}
+  \item \texttt{!} negācija, agriež operanda pretējo patiesuma vērtību.
+\end{itemize}
+
+Bināri operatori:
+
+\begin{itemize}
+  \item \texttt{=} piešķiršana, piešķir noteiktam identifikatoram, piemēram, mainīgajam, vērtību
+  \item \text{+} saskaitīšana, atgriež divu skait
+\end{itemize} 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|p{5cm}|c|}
+\hline
+\textbf{Simbols} & \textbf{Vārdisks nosaukums} & \textbf{Efekts} & \textbf{Atgrieztā vērtība} & \textbf{Operanda tips} \\
+\hline
+\texttt{asd} & Negācija & - & Prētējā operanda vērtība. \texttt{true} pārtop par false un otrādi. & Būla tips \\
+\hline
+\end{tabular}
+\caption{Unāru operatoru skaidrojumi}
+\label{tab:symbol-values}
+\end{table}
+
 
 \subsection{Mainīgie}
 \label{section:vars}
 
 Valoda nodala 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas.
 
+
 \begin{verbatim}
 mutant a = 3;
 immutant b = 3;
 \end{verbatim}
+
 
 \section{Kļūdu veidi un apzīmējumi}
 
