@@ -169,47 +169,51 @@ No augstāk redzamās definīcijas iziriet, ka valodai Immutant tiek definēta d
 
 \subsection{Izteikumi}
 
-Izteikumi mēdz būt dažādi - tie var gan neproducēt neko, gan arī producēt kādu vērtību. Piemēram, mainīgo inicializācijas izteikums pēc būtības ir izpidāma komanda, toties tā rezultātā pati par sevi nedod nekādu vērtību. No otras puses jebkurš salīdzināšanas operators, piemēram "ir vienāds" jeb \texttt{==} (detalizētāk par to skat. ~\ref{section:operators}), producē patiesuma vērtību, kas izsaka salīdzināšanas rezultātu,
+Izteikumi mēdz būt dažādi - tie var gan neproducēt neko, gan arī producēt kādu vērtību. Piemēram, mainīgo inicializācijas izteikums pēc būtības ir izpidāma komanda, toties tā rezultātā pati par sevi nedod nekādu vērtību. No otras puses jebkurš salīdzināšanas operators, piemēram "ir vienāds" jeb \texttt{==} (detalizētāk par to skat. ~\ref{section:operators}), producē patiesuma vērtību, kas izsaka salīdzināšanas rezultātu.
 
 \subsection{Operatori}
 \label{section:operators}
 
-Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem.
+Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.\\
 
-Saraksts ar unāriem un bināriem operatoriem seko zemāk.
-
-Unāri operatori:
-
+\textbf{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
 
 \begin{itemize}
-  \item \texttt{!} negācija, agriež operanda pretējo patiesuma vērtību.
+  \item \texttt{+} saskaitīšana, atgriež divu skaitļu summu
+  \item \texttt{-} atņemšana, atgriež pirmā skaitļa vērtību mīnus otrā skaitļa vērtību
+  \item \texttt{*} reizināšana, atgriež divu skaitļu reizinājumu
+  \item \texttt{/} dalīšana, atgriež kreisā operanda dalījumu ar labo operandu. Ja labais operands ir nulle, tad tiek izmests izņēmums \texttt{DivisionByZeroException}
+  \item \texttt{\%} modulis, atgriež kreisā skaitļa operanda moduli ar labā operanda vērtību
 \end{itemize}
 
-Bināri operatori:
-
+\textbf{Skaitliskās salīdzināšanas operatori:} tiek pielietoti skaitļiem, un atgriež patiesuma vērtību. Ja vien izteiksme ar operatoru neatgrieš \texttt{true} patiesuma vērtību, tad tā atgriež \texttt{false}.
 \begin{itemize}
-  \item \texttt{=} piešķiršana, piešķir noteiktam identifikatoram, piemēram, mainīgajam, vērtību
-  \item \text{+} saskaitīšana, atgriež divu skait
-\end{itemize} 
+  \item \texttt{>} lielāks par, atgriež vērtību, ja kreisā operanda vērtība ir lielāka par labā operanda vērtību
+  \item \texttt{<} mazāks par, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir mazāka par labā operanda vērtību
+  \item \texttt{>=} lielāks vai vienāds ar, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir lielāka vai vienāda ar labā operanda vērtību
+  \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
+\end{itemize}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|p{5cm}|c|}
-\hline
-\textbf{Simbols} & \textbf{Vārdisks nosaukums} & \textbf{Efekts} & \textbf{Atgrieztā vērtība} & \textbf{Operanda tips} \\
-\hline
-\texttt{asd} & Negācija & - & Prētējā operanda vērtība. \texttt{true} pārtop par false un otrādi. & Būla tips \\
-\hline
-\end{tabular}
-\caption{Unāru operatoru skaidrojumi}
-\label{tab:symbol-values}
-\end{table}
+\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību.
+\begin{itemize}
+  \item \texttt{==} ir vienāds ar, atgriež patiesuma vērtību, ja abu operandus vērtības ir vienādas. Tai skaitā atgriež \texttt{false}, ja abi operandi ir ar dažādiem datu tipiem.
+  \item \texttt{!=} nav vienāds ar, atgriež patiesuma vērtību, ja abu operandus vērtības nav vienādas. Tai skaitā atgriež \texttt{true}, ja abi operandi ir ar dažādiem datu tipiem.
+\end{itemize}
+
+\textbf{Loģiskie operatori:} Pielietoti patiesuma vērtībām, un atgriež patiesuma vērtību.
+\begin{itemize}
+  \item \texttt{!} nēgācija, apvērš patiesuma vērtību. Ir unārs operators. 
+  \item \texttt{\&\&} konjukcija, atgriež \texttt{true} vērtību, ja abu operandus vērtības ir patiesas
+  \item \texttt{||} disjunkcija, atgriež \texttt{true} vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
+\end{itemize}
+
 
 
 \subsection{Mainīgie}
 \label{section:vars}
 
-Valoda nodala 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas.
+Valoda nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas.
+
 
 
 \begin{verbatim}
