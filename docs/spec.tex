@@ -174,7 +174,9 @@ Izteikumi mēdz būt dažādi - tie var gan neproducēt neko, gan arī producēt
 \subsection{Operatori}
 \label{section:operators}
 
-Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.\\
+Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
+
+Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts abiem operandiem starpā. Turpmāk tekstā kreisas operands tiek definēts kā šāda bināra operatora operands, kas atrodas pa kreisi no operatora, un labais kas attiecīgi ir pa labi no tā. Piemēram, izteiksmē \texttt{23 + 45} skaitlis \texttt{23} ir kreisas operands, \texttt{45} ir labais operands, un \texttt{+} ir binārais summas operators. \\
 
 \textbf{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
 
@@ -186,27 +188,26 @@ Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vi
   \item \texttt{\%} modulis, atgriež kreisā skaitļa operanda moduli ar labā operanda vērtību
 \end{itemize}
 
-\textbf{Skaitliskās salīdzināšanas operatori:} tiek pielietoti skaitļiem, un atgriež patiesuma vērtību. Ja vien izteiksme ar operatoru neatgrieš \texttt{true} patiesuma vērtību, tad tā atgriež \texttt{false}.
+\textbf{Aritmētiskās salīdzināšanas operatori:} tiek pielietoti skaitļiem, un atgriež patiesuma vērtību. 
 \begin{itemize}
-  \item \texttt{>} lielāks par, atgriež vērtību, ja kreisā operanda vērtība ir lielāka par labā operanda vērtību
-  \item \texttt{<} mazāks par, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir mazāka par labā operanda vērtību
-  \item \texttt{>=} lielāks vai vienāds ar, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir lielāka vai vienāda ar labā operanda vērtību
-  \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesuma vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
+  \item \texttt{>} lielāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka par labā operanda vērtību
+  \item \texttt{<} mazāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka par labā operanda vērtību
+  \item \texttt{>=} lielāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka vai vienāda ar labā operanda vērtību
+  \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
 \end{itemize}
 
-\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību.
+\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību. Šeit ir svarīgi atzīmet, ka valodai Immutant nav paredzēta jebkāda datu tipa konversija - tieša un netieša, ar ko tas, piemēram, atšķiras no valodas JavaScript\cite{ecma-262}. 
 \begin{itemize}
-  \item \texttt{==} ir vienāds ar, atgriež patiesuma vērtību, ja abu operandus vērtības ir vienādas. Tai skaitā atgriež \texttt{false}, ja abi operandi ir ar dažādiem datu tipiem.
-  \item \texttt{!=} nav vienāds ar, atgriež patiesuma vērtību, ja abu operandus vērtības nav vienādas. Tai skaitā atgriež \texttt{true}, ja abi operandi ir ar dažādiem datu tipiem.
+  \item \texttt{==} ir vienāds, atgriež patiesu vērtību, ja abu operandu vērtības ir vienādas. Proti, atgriež aplamnu vērtību, ja abi operandi ir ar dažādiem datu tipiem.
+  \item \texttt{!=} nav vienāds ar, atgriež patiesu vērtību, ja abu operandu vērtības nav vienādas, tai skaitā arī ja to datu tipi ir dažādi.
 \end{itemize}
 
 \textbf{Loģiskie operatori:} Pielietoti patiesuma vērtībām, un atgriež patiesuma vērtību.
 \begin{itemize}
   \item \texttt{!} nēgācija, apvērš patiesuma vērtību. Ir unārs operators. 
-  \item \texttt{\&\&} konjukcija, atgriež \texttt{true} vērtību, ja abu operandus vērtības ir patiesas
-  \item \texttt{||} disjunkcija, atgriež \texttt{true} vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
+  \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandus vērtības ir patiesas
+  \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
 \end{itemize}
-
 
 
 \subsection{Mainīgie}
