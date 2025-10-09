@@ -178,7 +178,7 @@ Apgalvojumi jeb deklarācijas ir izteiksmes, kas veic kādu darbību, bet pašas
 Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē funkciju atmiņā, bet pati par sevi nedod nekādu vērtību.
 
 
-\subsection{Operatori}
+\section{Operatori}
 \label{section:operators}
 
 Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
@@ -216,18 +216,36 @@ Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts
   \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
 \end{itemize}
 
-
 \subsection{Mainīgie}
 \label{section:vars}
 
-Valoda nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas.
+Valoda nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas. Mainīgos ir atļauts deklarēt, t.i. reģistrēt mainīgā identifikatoru atmiņā, un tā inicializāciju izpildīt atsevišķi, bet ne otrādā secībā.
 
+Mainīgos deklarē sekojošā formā:
+\begin{verbatim}
+<mutability> <identifier>;
+\end{verbatim}
 
+Mainīgā deklarācija sākas ar vienu no 2 atslēgvārdiem <mutability> - ]\texttt{mutant} un \texttt{immutant} -, kas nosaka mainīgā mutācijas īpašību. Ja mainīgais ir deklarēts ar atslēgvārdu \texttt{mutant}, tad piešķirot doto mainīgo citam, abi šie mainīgie atsaucas uz vienu un to pašu atmiņas apgabalu, un tādējādi ir savstarpēji saistīti. Tātad, mainīgā vērtības maiņa ietekmē arī otru mainīgo. Šāda veida mainīgos sauc par \textbf{mutants} (no angļu valodas tulkojot - "mutanti").
+Turpretim, ja mainīgais ir deklarēts ar atslēgvārdu \texttt{immutant}, tad piešķirot doto mainīgo citam, abi šie mainīgie atsaucas uz diviem dažādiem atmiņas apgabaliem. Citādi sakot, mainīgā vērtības kopija plūst caur programmu, nevis atsauce uz to. Šāda veida mainīgos sauc par \textbf{immutants} (vārdu splēle angļu valodā, kombinējot datu īpašību \texttt{immutability} un lietvārdu \texttt{mutants}).
+
+Mainīgo deklarāciju nobeidz patvaļīgs identifikators <identifier> jeb mainīgā nosaukums. Identifikators var saturēt burtus, ciparus un pasvītrojuma simbolu (\texttt{\_}), bet nedrīkst sākties ar ciparu. Tāpat, identifikators nedrīkst sakrist ar kādu no valodas atslēgvārdiem, piemēram, \texttt{mutant}, \texttt{immutant}, \texttt{if}, \texttt{else} u.c. (pilnu atslēgvārdu sarakstu skatīt sadaļā ~\ref{section:keywords}).
+
+Mainīgā inicializācijai ir jāseko vienai no sekojošām formām:
 
 \begin{verbatim}
-mutant a = 3;
-immutant b = 3;
-\end{verbatim}
+<identifier> = <expression>;
+\end{verbatim}  
+
+\begin{verbatim}
+<mutability> <identifier> = <expression>;
+\end{verbatim}  
+
+Pirmo gadījumu lieto, ja mainīgā deklarācija ir veikta iepriekš, bet otro, ja mainīgā deklarācija un inicializācija notiek vienlaicīgi.
+
+Lai inicializētu mainīgo, t.i. piešķirtu tam vērtību, ir jāizmanto piešķiršanas operatora simbols (\texttt{=}), kam seko izteiksme <expression>, kas rezultātā atgriež vērtību, ko piešķir mainīgajam.
+
+\subsection{Funkcijas}
 
 
 \section{Kļūdu veidi un apzīmējumi}
