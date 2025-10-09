@@ -81,9 +81,9 @@ Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrī
 No otras puses, mainīgiem datiem pastāv īpašība būt neparedzamiem. Kamēr mazas sistēmas spēj tikt galā ar nelielu daudzumu mainīgo, tad lielajās sistēma tas var kļūt par acīmredzamu problēmu. Atmiņa datoram ir viena, tomēr atsaukties uz to var no dažādām vietām dažādos laika brīžos, kas padara spriešanu par datu stāvokli daudz sarežģītāk.  
 
 Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to tik vienkāršu. Lai gūtu vairāk kontroles pār ipriekš minēto uzvedību, valodas no C saimes, Java, JavaScript un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas, nemainīsies. Līdz ar to, \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
-Neskatoties uz dažāiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
+Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
 
-Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteikumi, tīras un netīras funckijas, kontroles plūsma un cikli.
+Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteiksmes, tīras un netīras funkcijas, kontroles plūsma un cikli.
 
 % TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
 
@@ -167,9 +167,16 @@ No augstāk redzamās definīcijas iziriet, ka valodai Immutant tiek definēta d
 
 \section{Konstrukcijas}
 
-\subsection{Izteikumi}
+\subsection{Izteiksmes}
 
-Izteikumi mēdz būt dažādi - tie var gan neproducēt neko, gan arī producēt kādu vērtību. Piemēram, mainīgo inicializācijas izteikums pēc būtības ir izpidāma komanda, toties tā rezultātā pati par sevi nedod nekādu vērtību. No otras puses jebkurš salīdzināšanas operators, piemēram "ir vienāds" jeb \texttt{==} (detalizētāk par to skat. ~\ref{section:operators}), producē patiesuma vērtību, kas izsaka salīdzināšanas rezultātu.
+Izteiksmes ir konstrukcija, kas atgriež kādu vērtību. Piemēram, funckijas izsaukums ir izteiksme, kas rezultātā atgriež izpildītas funkcijas vērtību. Pie tam, arī aritmētiska vai loģiska operācija ir izteiksmes konstrukcijas, jo atgriež skaitlisku vai patiesuma vērtību attiecīgi.
+
+\subsection{Apgalvojumi}
+
+Apgalvojumi jeb deklarācijas ir izteiksmes, kas veic kādu darbību, bet pašas par sevi nedod nekādu vērtību. Piemēram, mainīgo inicializācija ir apgalvojums, jo tā veic darbību - piešķir vērtību mainīgajam, bet pati par sevi nedod nekādu vērtību.
+
+Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē funkciju atmiņā, bet pati par sevi nedod nekādu vērtību.
+
 
 \subsection{Operatori}
 \label{section:operators}
