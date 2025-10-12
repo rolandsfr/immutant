@@ -212,11 +212,11 @@ Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts
 \textbf{Loģiskie operatori:} Pielietoti patiesuma vērtībām, un atgriež patiesuma vērtību.
 \begin{itemize}
   \item \texttt{!} nēgācija, apvērš patiesuma vērtību. Ir unārs operators. 
-  \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandus vērtības ir patiesas
+  \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandu vērtības ir patiesas
   \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
 \end{itemize}
 
-\subsection{Mainīgie}
+\section{Mainīgie}
 \label{section:vars}
 
 Valoda nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas. Mainīgos ir atļauts deklarēt, t.i. reģistrēt mainīgā identifikatoru atmiņā, un tā inicializāciju izpildīt atsevišķi, bet ne otrādā secībā.
@@ -245,8 +245,92 @@ Pirmo gadījumu lieto, ja mainīgā deklarācija ir veikta iepriekš, bet otro, 
 
 Lai inicializētu mainīgo, t.i. piešķirtu tam vērtību, ir jāizmanto piešķiršanas operatora simbols (\texttt{=}), kam seko izteiksme <expression>, kas rezultātā atgriež vērtību, ko piešķir mainīgajam.
 
-\subsection{Funkcijas}
+\section{Funkcijas}
 
+Funkcijas ir pilnībā vai daļēji izoltēts program-kods, kas var tikt izsaukts un izmantots ar dažādiem parametriem, dažādās vietās un dažādos laika brīžos. Funkcijas pašas par sevi ir daļa no programkoda, tomēr, lai tās varētu tikt izpildītas, ir nepieciešams tās izsaukt. 
+
+Funkcijas definē sekojošā formā:
+\begin{verbatim}
+<purity> fn <identifier>(<parameters>) {
+    <statements>
+}
+\end{verbatim}
+
+<purity> apzīmē funckcijas īpašību mainīt datus ārpus tās lokālā konteksta. Matemātikā "impure" jeb tiešā tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funckiju izmantošana programkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funckijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaino ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli. No otras puses, šī atslēgvārda lietošana nav obligāta, jo valodā Immutant pēc noklusējuma visas funkcijas tiek uzskatītas par tīrām.
+
+\begin{verbatim}
+fn <identifier>(<parameters>) {
+    <statements>
+}
+\end{verbatim}
+
+Augstāk redzamajā piemērā funkcija tiek definēta kā tīra, jo nav lietots neviens no tīrības īpašības atslēgvārdiem. Atslēgvārds \texttt{fn} apzīmē, ka pēc tā seko funkcijas definicija. <identifier> satur funckcijas nosaukumu, kas ir unikāls identifikators atmiņā. Uz funckiajs nosaukumu attiecas tie paši noteikumi, kas minēti sadaļā ~\ref{section:vars} par mainīgo identifikatoriem.
+
+Pēc funkcijas nosaukuma seko apaļās iekavas, kas satur parametru sarakstu <parameters>. Parametri ir iekšējā funckijas konteksta mainīgie, kas tiek nodoti funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Parametru saraksts ir komatu atdalītu parametru virkne. Ja funkcijai nav parametru, tad iekavas ir tukšas.
+
+Funkcijas ķermenis <statements> ir ietverts figūriekavās, un satur apgalvojumus un izteiksmes, kas tiek izpildītas, kad funkcija tiek izsaukta. Funkcijas ķermenī ir jābūt vismaz vienam apgalvojumam vai izteiksmei. Ja funkcija ir tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli.
+
+Piemērs tīrai funkcijai, kas aprēķina divu skaitļu summu:
+\begin{verbatim}
+pure fn add(a, b) {
+    return a + b;
+}
+\end{verbatim}
+
+Piemērs netīrai funkcijai, kas pieskaita jaunu skaitli globālam mainīgajam:
+\begin{verbatim}
+mutant num = 4;
+impure fn addGlobal(newNum) {
+    num += newNum;
+}
+\end{verbatim}
+
+Funkcijas izsaukums ir izteiksme, kas satur funckijas nosaukumu, kam seko apaļās iekavas ar argumentu sarakstu. Argumenti ir vērtības, kas tiek nodotas funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Argumentu saraksts ir komatu atdalītu argumentu virkne. Ja funkcijai nav argumentu, tad iekavas ir tukšas. Argumentus padod funckijai secīgi, tādā pašā secībā kā tie ir definēti funkcijas parametru sarakstā. 
+
+Piemērs funkcijas izsaukumiem:
+\begin{verbatim}
+addGlobal(5);
+immutant sum = add(3, 7);
+\end{verbatim}
+
+\section{Kontroles plūsma}
+Kontroles plūsma ir mehānisms, kas nosaka programmas izpildes secību. Valodā Immutant ir definēti sekojoši kontroles plūsmas mehānismi: \texttt{if-else} zarošanās un cikls \texttt{while}.
+
+\subsection{Apgalvojums if-else}
+
+Apgalvojums \texttt{if-else} ļauj izpildīt dažādas koda daļas atkarībā no nosacījuma izpildes. Sintakse ir sekojoša:
+\begin{verbatim}
+if (<condition>) {
+    <statements>
+} else {
+    <statements>
+}
+\end{verbatim}
+
+<condition> ir loģiska izteiksme, kas rezultātā atgriež patiesuma vērtību. Ja izteiksmes vērtība ir patiesa, tad tiek izpildīti apgalvojumi <statements> iekš pirmās figūriekavas. Ja izteiksmes vērtība ir aplama, tad tiek izpildīti apgalvojumi <statements> iekš otrās figūriekavas pēc atslēgvārda \texttt{else}.
+
+Ja ir nepieciešams izpildīt vairākus nosacījumus, tad var izmantot vairākas \texttt{else if} zarošanās. Sintakse ir sekojoša:
+\begin{verbatim}
+if (<condition1>) {
+    <statements1>
+} else if (<condition2>) {
+    <statements2>
+} else {
+    <statements3>
+}
+\end{verbatim}
+
+Pie tam, apgalvojums \texttt{else} nav obligāts, un to var izlaist, ja nav nepieciešams izpildīt kodu gadījumā, ja neviens no nosacījumiem nav izpildīts.
+
+\subsection{Cikli}
+Cikls \texttt{while} ļauj izpildīt koda daļu atkārtoti, kamēr nosacījums ir izpildīts. Sintakse ir sekojoša:
+\begin{verbatim}
+while (<condition>) {
+    <statements>
+}
+\end{verbatim}
+
+<condition> ir loģiska izteiksme, kas rezultātā atgriež patiesuma vērtību. Ja izteiksmes vērtība ir patiesa, tad tiek izpildīti apgalvojumi <statements> iekš figūriekavām. Pēc apgalvojumu izpildes, nosacījums tiek pārbaudīts vēlreiz, un ja tas joprojām ir patiess, tad apgalvojumi tiek izpildīti vēlreiz. Šis process turpinās, kamēr nosacījums kļūst aplams. Ja nosacījums sākotnēji ir aplams, tad cikla ķermenis netiek izpildīts ne reizi.
 
 \section{Kļūdu veidi un apzīmējumi}
 
