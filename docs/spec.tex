@@ -60,17 +60,13 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \tableofcontents
 
 \newpage
-\chapter*{Apzīmējumu saraksts}
-\addcontentsline{toc}{section}{Apzīmējumu saraksts} 
+\chapter*{Apzīmējumu saraksts un terminu skaidrojumi}
+\addcontentsline{toc}{section}{Apzīmējumu saraksts un terminu skaidrojumi}
 
-
-\begin{tabular}{ll} 
-\textbf{AST} & Abstraktās sintakses koks \\
-\textbf{immutability} & Pilnīga datu nemainība (koncepts) \\
-\textbf{immutable} & Nemainīgs (datu īpašība) \\
-\textbf{read-only} & Tikai lasāmi (dati)
-\end{tabular}
-
+\begin{itemize}
+  \item \textbf{AST} - Abstraktās sintakses koks - koka datu struktūra.
+  \item \textbf{Datu nemainība} - Datu īpašība, kas neļauj mainīt to vērtību pēc sākotnējās inicializācijas. Programmēšanas valodas kontekstā tā izpaužas kā preventīva intepretatora uzvedība caur valodas semantiku, lai nodrošinātu pēc iespējas visaptverošāku datu nemainību \cite{immutability}.
+\end{itemize}
 
 \newpage
 \chapter*{Ievads}
@@ -177,7 +173,6 @@ Apgalvojumi jeb deklarācijas ir izteiksmes, kas veic kādu darbību, bet pašas
 
 Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē funkciju atmiņā, bet pati par sevi nedod nekādu vērtību.
 
-
 \section{Operatori}
 \label{section:operators}
 
@@ -185,7 +180,7 @@ Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vi
 
 Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts abiem operandiem starpā. Turpmāk tekstā kreisas operands tiek definēts kā šāda bināra operatora operands, kas atrodas pa kreisi no operatora, un labais kas attiecīgi ir pa labi no tā. Piemēram, izteiksmē \texttt{23 + 45} skaitlis \texttt{23} ir kreisas operands, \texttt{45} ir labais operands, un \texttt{+} ir binārais summas operators. \\
 
-\textbf{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
+\paragraph{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
 
 \begin{itemize}
   \item \texttt{+} saskaitīšana, atgriež divu skaitļu summu
@@ -215,6 +210,68 @@ Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts
   \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandu vērtības ir patiesas
   \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
 \end{itemize}
+
+\subsection{Operatoru darbības kārtība}
+
+Katram operatoram ir noteikta sava prioritāte, tas ir, kārtība, kādā apakšizteiksmes ar vairākiem operatoriem tiek izpildītas. Piemēram, reizināšanas operatoram ir augstāka prioritāte, nekā saskaitīšanas operatoram, tāpēc izteiksme \texttt{2 + 3 * 4} tiek izskaitļota kā \texttt{2 + (3 * 4)}, nevis \texttt{(2 + 3) * 4}. 
+Zemāk ir uzskaitīti operatori to prioritātes secībā, no augstākās uz zemāko. Operatori ar vienādu prioritāti tiek minēti kopīgi vienā saraksta apakšpunktā.
+
+\begin{itemize}
+  \item \texttt{!} (unārs nēgācijas operators)
+  \item \texttt{*}, \texttt{/}, \texttt{\%} (aritmētiskie reizināšanas, dalīšanas un modula operatori)
+  \item \texttt{+}, \texttt{-} (aritmētiskie saskaitīšanas un atņemšanas operatori)
+  \item \texttt{>}, \texttt{<}, \texttt{>=}, \texttt{<=} (aritmētiskie salīdzināšanas operatori)
+  \item \texttt{==}, \texttt{!=} (ekvivalences operatori)
+  \item \texttt{\&\&} (konjukcija)
+  \item \texttt{||} (disjunkcija) 
+\end{itemize}
+
+Ir kritiski atzīmēt, ka dažādu operatoru izpildes kārtību var mākslīgi paaugstināt, izmantojot apaļās iekavas. Izteiksmes iekavās tiek izpildītas pirmās, neatkarīgi no tajās esošo operatoru prioritātes.
+
+Skaidrības labad, tiek dots piemērs ar saliktu izteiksmi un tās izvērtēšanas kārtību:
+\begin{verbatim}
+3 + 4 % 2 == 3 && true || false
+\end{verbatim}
+
+Alternatīvi, to var pārrakstīt ar iekavām, kas ilustrē izvērtēšanas kārtību:
+\begin{verbatim}
+((3 + (4 % 2)) == 3) && (true || false)
+\end{verbatim}
+
+Tātad, apakšizteiksme 
+\begin{verbatim}
+  ((3 + (4 % 2)) == 3)
+\end{verbatim}
+tiek izvērtēta pirmā (jo atrodas labajā pusē), kas rezultātā atgriež patiesu vērtību.
+Pēc tam tiek izvērtēta apakšizteiksme
+\begin{verbatim}  (true || false)
+\end{verbatim}
+kas arī atgriež patiesu vērtību. Beigās tiek pielietots disjunkcijas operators \texttt{||}, kas atgriež patiesu vērtību, jo vismaz viens no abiem operandiem (kas īstenībā ir izteiksmes) ir patiess.
+
+% evaluation order
+\section{Izvērtēšanas kārtība}
+Līdzīgi kā daudzās citās programmēšanas valodās, piemēram Java un Ruby, arī valodā Immutant izteiksmju izvērtēšanas kārtība ir no kreisās uz labo pusi. Tas nozīmē, ka izteiksmes kreisais operands tiek izvērtēts pirms labā operanda. Tas, gan, negarantē ka jebkuras izteiksmes pirmie kreisējie operandi tiks izvērtēti pirmie, jo saliktas izteiksmes ar vairāk par vienu operatoru ņem vērā operatoru prioritātes un asociativitāti.
+
+Zemāk ir dots piemērs, kas ilustrē šo izvērtēšanas kārtību:
+
+\begin{verbatim}
+pure fn add(a, b) {
+    return a + b;
+}
+
+immutant sum = add(2, 3) + 4;
+\end{verbatim}
+
+Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek piešķirta vērtība, kas pēc būtības ir  izvērtēts izteiksmes \texttt{add(2, 3) + 4} rezultāts. Tā kā izteiksmes kreisais operands ir funkcijas izsaukums (skat. \ref{section:functions}) \texttt{add(2, 3)}, tad vispirms tiek izvērtēta šī apakšizteiksme, kas rezultātā atgriež skaitli \texttt{5}. Pēc tam tiek izvērtēts labais operands \texttt{4} (tas ir parasts skaitlis, tāpēc šeit netiek padarīts daudz darba), un beigās tiek pielietots saskaitīšanas operators \texttt{+}, kas atgriež summu \texttt{9}. Tātad, mainīgajam \texttt{sum} tiek piešķirta vērtība \texttt{9}.
+
+\subsection{Saīsinātā izvērtēšana}
+
+Interpretatora optimizācijas nolūkos, valoas specifikācijā ietilpst arī saīsinātās izvērtēšanas mehānisms, kas ļauj izvairīties no nevajadzīgu apakšizteiksmju izvērtēšanu, loģiskajās izteiksmēs ar disjunkciju \cite{short-circuit-logic}.
+
+Pēc definīcijas, loģiskā izteiksme ar disjunkciju ir patiesa, ja vismaz viens no tās operandiem ir patiess.
+Tā kā valodā Immutant izteiksmes tiek izvērtētas no kreisās puses uz labo, tad ir pietiekami izvērtēt tikai kreiso operandu, ja tas ir patiess.
+
+Piemēram, izteiksme \texttt{true || (someFunction() + 5 > 10)} izvērtējas kā patiesa, pie tam interpretators noignorēs (neizvērtēs) labo operandu.
 
 \section{Mainīgie}
 \label{section:vars}
@@ -246,6 +303,7 @@ Pirmo gadījumu lieto, ja mainīgā deklarācija ir veikta iepriekš, bet otro, 
 Lai inicializētu mainīgo, t.i. piešķirtu tam vērtību, ir jāizmanto piešķiršanas operatora simbols (\texttt{=}), kam seko izteiksme <expression>, kas rezultātā atgriež vērtību, ko piešķir mainīgajam.
 
 \section{Funkcijas}
+\label{section:functions}
 
 Funkcijas ir pilnībā vai daļēji izoltēts program-kods, kas var tikt izsaukts un izmantots ar dažādiem parametriem, dažādās vietās un dažādos laika brīžos. Funkcijas pašas par sevi ir daļa no programkoda, tomēr, lai tās varētu tikt izpildītas, ir nepieciešams tās izsaukt. 
 
