@@ -65,7 +65,10 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 
 \begin{itemize}
   \item \textbf{AST} - Abstraktās sintakses koks - koka datu struktūra.
-  \item \textbf{Datu nemainība} - Datu īpašība, kas neļauj mainīt to vērtību pēc sākotnējās inicializācijas. Programmēšanas valodas kontekstā tā izpaužas kā preventīva intepretatora uzvedība caur valodas semantiku, lai nodrošinātu pēc iespējas visaptverošāku datu nemainību \cite{immutability}.
+  \item \textbf{mutabilitāte} - Datu īpašība, kas ļauj mainīt to vērtību pēc sākotnējās inicializācijas. Programmēšanas valodas kontekstā tā izpaužas kā interpretatora uzvedība caur valodas semantiku, kas ļauj mainīt datu vērtības izpildes laikā \cite{immutability}.
+  \item \textbf{mutabls} - mutabilitātes īpašība, kas ļauj mainīt datu vērtību pēc sākotnējās inicializācijas. 
+  \item \textbf{nemutabls} - mutabilitātes īpašība, kas ļauj mainīt datu vērtību pēc sākotnējās inicializācijas.
+\item \textbf{Immutant} - Jauna pašizveidota interpretējama programmēšanas valoda ar datu nemainības semantiku, kas apskatīta šajā darbā.
 \end{itemize}
 
 \newpage
@@ -94,24 +97,33 @@ Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar 
 Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
 Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
 
+\subsubsection{Valodas nolūks}
+Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakņu efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. Lai nodrošinātu šos mērķus, valoda Immutant piedāvā šādas galvenās iezīmes:
+\begin{itemize}
+  \item \textbf{Datu nemainība:} Valoda Immutant ievieš stingru datu nemainības semantiku, kas nozīmē, ka pēc datu inicializācijas to vērtības nevar mainīt. Tas palīdz samazināt blakusefektu risku un padara programmas uzvedību paredzamu.
+  \item \textbf{Vienkārša sintakse:} Valodas sintakse ir veidota tā, lai tā būtu viegli saprotama un lietojama, padarot to pievilcīgu gan iesācējiem, gan pieredzējušiem programmētājiem.
+  \item \textbf{Dinamiskā tipizācija:} Valoda Immutant izmanto dinamisko tipizāciju, kas ļauj programmētājiem strādāt ar dažādiem datu tipiem bez nepieciešamības deklarēt to tipus pirms lietošanas.
+  \item \textbf{Funkcionālā programmēšana:} Valoda atbalsta daļu no funkcionālās programmēšanas paradigmām, nodrošinot izpildlaikā verificējamas tīras funkcijas, kas palīdz samazināt blakusefektu risku.
+\end{itemize}
+
 \section{Datu tipi}
 
-Immutant valodā tiek definēti tikai primitīvi datu tipi, kurus iedala 3 kategorijās: patiesuma, virknes tipa, un skaitļi. Par katru no šiem zemāk seko savs skaidrojums.
+Programmēšanas valodas pamatu veidu datu tipi un ar to saistītie mehānismi. Valodā Immutant tiek definēti tikai primitīvie datu tipi, kas satur skaitļus, virknes un patiesuma vērtības. Datu tipizācija ir dinamiska, kas nozīmē, ka datu tipa pārbaude tiek veikta izpildes laikā.
 
+\subsection{Primitīvie datu tipi}
 
-\subsection{Virknes}
-\textbf{Definīcija}
+Pirmatnējā Immutant valodas versijas tipu sistēma ietver tikai primitīvos datu tipus, t.i., pamata datu tipi, kas vēlāk var veidod citus tipus, piemēram, masīvus, objektus u.c.  Salikti datu tipi netiek iekļauti valodas versijā, kas tiek aprakstīta šajā dokumentā, lai saglabātu interpretatora vienkāršību un vairāk koncentrētos uz datu nemainības semantikas īstenošanu.
 
-Vikrne ir jebrkuš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
-
-Virknes var saturēt jebkādus simbolus, tostarp specsimbolus, kā \texttt{@,\^\space,\&} u.c. Proti, vikrnēs arī nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
-Piemērs dažādām viknēm seko zemāk. Tāpat, arī vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
+\subsubsection{Virknes}
+Virkne ir jebkurš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
+Tās var saturēt jebkādus simbolus, tostarp specsimbolus, kā \texttt{@,\^\space,\&} u.c. Proti, vikrnēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
+Piemērs dažādām viknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
 
 \begin{verbatim}
-"", "someString", "sentence with spaces", " ", ,"\""
+"", "someString", "garumzīmes īāē", " ", ,"\""
 \end{verbatim}
 
-Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš vikrnes. Lai nezutvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur specsimbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
+Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš vikrnes. Lai neuztvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur specsimbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
 
 Piemērs tādai virknei:
 
@@ -137,8 +149,7 @@ Dotās virknes rezultējošais teksts ir:
 There is something mysterious about the "\" character.
 \end{verbatim}
 
-\subsection{Skaitļi}
-\textbf{Definīcija}
+\subsubsection{Skaitļi}
 
 Skaitlis ir jebkura vērtība no Reālo skaitļu kopas. Ir svarīgi uzsvērt, ka irracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam irracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
 
@@ -153,13 +164,34 @@ Dotajā piemērā \texttt{PI} ir viena no valodā eksistējošām konstatēm, ka
 Valodas gramatika atļauj izmantot vadošo punktu priekšā skaitlim, kas apzīmē decimāldaļu skailim nulle. Piemēram, decimālskaitlis \texttt{.34} ir identisks ar \texttt{0.34}.
 
 
-\subsection{Patiesuma vērtības}
+\subsubsection{Patiesuma vērtības}
 
-\textbf{Definīcija}
+Patiesuma vērtības valodā Immutant seko divvērtīgai loģikai, kur ir tikai divas iespējamās vērtības: patiesa un aplama. Patiesu vērtību apzīmē ar \texttt{true}, bet aplamu ar \texttt{false}. Patiesuma vērtības ir pamats loģiskām izteiksmēm, kas tiek izmantotas kontroles plūsmas konstrukcijās, piemēram, nosacījumos un ciklos. 
 
-Patiesuma vērtības ir tādas vērtības, kuras ir vai nu patiesas vai nu aplamas.
+Patiesuma vērtību var iegūt vai nu to tieši uzdodot, vai arī piemērojot loģiskos operatorus (skat. sadaļu ~\ref{section:operators}).
 
-No augstāk redzamās definīcijas iziriet, ka valodai Immutant tiek definēta divvērtīga loģika. Tātad, patiesu vērtību apzīmē ar \texttt{true}, bet aplamu ar \texttt{false.}
+\subsection{Datu tipa konversija}
+
+Pastāv gadījumi, kad parādās nepieciešamība konvertēt viena datu tipa vērtību uz cita datu tipa vērtību. Piemēram, ja kādu aritmētisku operatoru, piemēram, saskaitīšanu, pielieto virknei un skaitlim. Tad ir nepieciešams konvertēt vienu no operandiem uz otra datu tipu, lai veiktu šo operāciju, šajā gadījumā virkne jāparveido uz skaitli vai skaitlis par virni. 
+
+Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā sabiedzrībā rada jokus, par to kā Javascript "5" + 3 ir "53", nevis 8.
+
+Tā kā programmēšanas valodas Immutant galvenais mērķis ir palīdzēt programmētājiem rakstīt paredzamāku kodu, datu tipu konversija tiek atbalstīta tikai tiešā veidā. Tas nozīmē, ka saskaitot virkni un skaitli, nav jāpiedomā vai rezultātā radīsies virkne vai skaitlis, jo zināms, ka neviennozīmīgu operāciju izpilde izmetīs izpildlaika kļūdu.
+% TODO: add which error exactly will be thown here, and ref the exceptions page.
+
+No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu uz citu, tad valoda Immutant piedāvā iebūvētas funkcijas, kas veic šo darbību. Šīs funkcijas ir aprakstītas zemāk:
+
+\begin{itemize}
+  \item \texttt{toString(value)} - Atgriež `value` vērtību pārvēstu virknes datu tipā.
+  Pārvēršanas loģika - doto vērtību pārvērš par virkni, izmantojot tās bāzes reprezentāciju. Piemēram, skaitlis \texttt{42} tiek pārvērsts par virkni \texttt{"42"}, bet patiesuma vērtība tiek pārvērsta par virkni \texttt{"true"} vai \texttt{"false"} attiecīgi. 
+  \item \texttt{toNumber(value)} - Atgriež vērtības skaitlisko reprezentāciju. Ja virkne satur derīgu skaitlisko vērtību, tad tā tiek pārvērsta par atbilstošu skaitli. Piemēram, virkne \texttt{"123.45"} tiek pārvērsta par skaitli \texttt{123.45}. Ja virkne nesatur derīgu skaitlisko vērtību, tiek izmests izņēmums \texttt{InvalidTypeConversionException}. patiesa vērtība \texttt{true} tiek pārvērsta par skaitli \texttt{1}, bet \texttt{false} par skaitli \texttt{0}. 
+  
+  Virkne ir uzskatāma par derīgu skaitlisko vērtību, ja tā satur tikai skaitli vai decimālskaitli. Ja skailim apkārt ir tukšuma simboli, tie tiek ignorēti. Piemēram, virknes \texttt{"  42  "} un \texttt{"-3.14"} ir derīgas skaitliskās vērtības, bet virknes \texttt{"123abc"} un \texttt{"hello"} nav derīgas.
+  \item \texttt{toBoolean(value)} - Pārveido dotā operanda vērtību par patiesuma vērtību. Vērtības \texttt{0}, \texttt{"0"}, \texttt{\char`"\char`"} (tukša virkne) un \texttt{false} tiek pārvērstas par aplamu vērtību \texttt{false}. Visas pārējās vērtības tiek pārvērstas par patiesu vērtību \texttt{true}.
+  \item \texttt{typeOf(value)} - Atgriež dotā operanda datu tipu kā virkni. Pieņem jebkura datu tipa vērtību kā argumentu, un atgriež vienu no šādām virkņu vērtībām: \texttt{\char`"number"}, \texttt{\char`"string"}, \texttt{"boolean"}.
+\end{itemize}
+
+Pie tam, datu tipu konversijas funkcijas neietekmē dotā operanda sākotnējo vērtību un datu tipu, bet gan atgriež jaunu vērtību ar konvertēto tipu. Ja datu tipa konversija nav iespējama, tiek izmests izņēmums \texttt{InvalidTypeConversionException}.
 
 \section{Konstrukcijas}
 
@@ -198,7 +230,7 @@ Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts
   \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
 \end{itemize}
 
-\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību. Šeit ir svarīgi atzīmet, ka valodai Immutant nav paredzēta jebkāda datu tipa konversija - tieša un netieša, ar ko tas, piemēram, atšķiras no valodas JavaScript\cite{ecma-262}. 
+\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību. 
 \begin{itemize}
   \item \texttt{==} ir vienāds, atgriež patiesu vērtību, ja abu operandu vērtības ir vienādas. Proti, atgriež aplamnu vērtību, ja abi operandi ir ar dažādiem datu tipiem.
   \item \texttt{!=} nav vienāds ar, atgriež patiesu vērtību, ja abu operandu vērtības nav vienādas, tai skaitā arī ja to datu tipi ir dažādi.
@@ -276,15 +308,21 @@ Piemēram, izteiksme \texttt{true || (someFunction() + 5 > 10)} izvērtējas kā
 \section{Mainīgie}
 \label{section:vars}
 
-Valoda nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas. Mainīgos ir atļauts deklarēt, t.i. reģistrēt mainīgā identifikatoru atmiņā, un tā inicializāciju izpildīt atsevišķi, bet ne otrādā secībā.
+Mainīgie ir programmēšanas valodas konstrukcija, kas ļauj saglabāt datus atmiņā un atsaukties uz tiem vēlāk programmā. Immutant valodā nošķir 2 veidu manīgos: tie kas nepaļaujas datu mutācijai jeb mainībai un tie, kas tai paļaujas. 
+
+\subsection{Mainīgo deklarācija un inicializācija}
+
+Mainīgo deklarācija ir apgalvojums, kas reģistrē mainīgā identifikatoru atmiņā, bet inicializācija ir apgalvojums, kas piešķir mainīgajam sākotnējo vērtību.
+
+Mainīgo deklarācija un inicializācija var notikt vienā solī, vai arī tās var izpildīt atsevišķi, tomēr jātur prātā ka mainīgajam ir jābūt deklarētam pirms tā inicializācijas vai jebkādas citas izmantošanas programmā, pretējā gadījumā tiek izmests izņēmums \texttt{UndeclaredVariableException}.
 
 Mainīgos deklarē sekojošā formā:
 \begin{verbatim}
 <mutability> <identifier>;
 \end{verbatim}
 
-Mainīgā deklarācija sākas ar vienu no 2 atslēgvārdiem <mutability> - ]\texttt{mutant} un \texttt{immutant} -, kas nosaka mainīgā mutācijas īpašību. Ja mainīgais ir deklarēts ar atslēgvārdu \texttt{mutant}, tad piešķirot doto mainīgo citam, abi šie mainīgie atsaucas uz vienu un to pašu atmiņas apgabalu, un tādējādi ir savstarpēji saistīti. Tātad, mainīgā vērtības maiņa ietekmē arī otru mainīgo. Šāda veida mainīgos sauc par \textbf{mutants} (no angļu valodas tulkojot - "mutanti").
-Turpretim, ja mainīgais ir deklarēts ar atslēgvārdu \texttt{immutant}, tad piešķirot doto mainīgo citam, abi šie mainīgie atsaucas uz diviem dažādiem atmiņas apgabaliem. Citādi sakot, mainīgā vērtības kopija plūst caur programmu, nevis atsauce uz to. Šāda veida mainīgos sauc par \textbf{immutants} (vārdu splēle angļu valodā, kombinējot datu īpašību \texttt{immutability} un lietvārdu \texttt{mutants}).
+
+Mainīgā deklarācija sākas ar vienu no 2 atslēgvārdiem <mutability> - \texttt{mutant} un \texttt{immutant} -, kas nosaka mainīgā mutācijas īpašību. 
 
 Mainīgo deklarāciju nobeidz patvaļīgs identifikators <identifier> jeb mainīgā nosaukums. Identifikators var saturēt burtus, ciparus un pasvītrojuma simbolu (\texttt{\_}), bet nedrīkst sākties ar ciparu. Tāpat, identifikators nedrīkst sakrist ar kādu no valodas atslēgvārdiem, piemēram, \texttt{mutant}, \texttt{immutant}, \texttt{if}, \texttt{else} u.c. (pilnu atslēgvārdu sarakstu skatīt sadaļā ~\ref{section:keywords}).
 
@@ -301,6 +339,23 @@ Mainīgā inicializācijai ir jāseko vienai no sekojošām formām:
 Pirmo gadījumu lieto, ja mainīgā deklarācija ir veikta iepriekš, bet otro, ja mainīgā deklarācija un inicializācija notiek vienlaicīgi.
 
 Lai inicializētu mainīgo, t.i. piešķirtu tam vērtību, ir jāizmanto piešķiršanas operatora simbols (\texttt{=}), kam seko izteiksme <expression>, kas rezultātā atgriež vērtību, ko piešķir mainīgajam.
+
+\subsection{Mainīgo mutabilitāte}
+\label{section:var-mutability}
+
+Mainīgo mutabilitāte jeb mainības īpašība nosaka, vai mainīgā vērtību ir iespējams mainīt pēc tā inicializācijas. 
+Valodā immutant ir divu veidu mainīgie: \textbf{mutable} un \textbf{immutable}, tos deklarē izmantojot atslēgvārdus \texttt{mutant} un \texttt{immutant} attiecīgi. Turpmāk šajā darbā tiks izmantoti šo terminu latviešu atvasinājumi, t.i., \textbf{mutabilitāte, mutabls} un \textbf{nemutabilitāte, nemutabls} lai raksturotu datu mainības īpašības.
+
+\subsubsection{Mutabilitāte \texttt{mutable}}
+
+Mutabls, atvasināts no angļu valodas vārda \texttt{mutable}, ir tāds mainīgais, kura vērtību ir iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{mutant}.
+
+
+Šeit ir acīmredzama vārdu spēle, jo angļu valodā \texttt{mutant} nozīmē "mutants", kas ir būtne, kas spēj mainīties. Programmatūrā šīs būtnes ir mainīgie. 
+
+\subsubsection{Mutabilitāte \texttt{immutable}}
+
+Nemutabls, atvasināts no angļu valodas vārda \texttt{immutable}, ir tāds mainīgais, kura vērtību nav iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{immutant}. Uzreiz var minēt, ka šeit ir pamanāma acīmredzama vārdu spēle, jo angļu valodā \texttt{immutant} ir neoloģisms, kas apvieno vārdus \texttt{immutable} un \texttt{mutant} radot jaunu vārdu, kas apzīmē mainīgo, kas nav maināms. Tas atbilst nemutabilitātes semantikai, kas izmantota funkcionālajā programmēšanā, un tādēļ arī izvēlēts kā nosaukums šai programmēšanas valodā.
 
 \section{Funkcijas}
 \label{section:functions}
