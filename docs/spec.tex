@@ -170,118 +170,6 @@ Patiesuma vērtības valodā Immutant seko divvērtīgai loģikai, kur ir tikai 
 
 Patiesuma vērtību var iegūt vai nu to tieši uzdodot, vai arī piemērojot loģiskos operatorus (skat. sadaļu ~\ref{section:operators}).
 
-\section{Konstrukcijas}
-
-\subsection{Izteiksmes}
-
-Izteiksmes ir konstrukcija, kas atgriež kādu vērtību. Piemēram, funckijas izsaukums ir izteiksme, kas rezultātā atgriež izpildītas funkcijas vērtību. Pie tam, arī aritmētiska vai loģiska operācija ir izteiksmes konstrukcijas, jo atgriež skaitlisku vai patiesuma vērtību attiecīgi.
-
-\subsection{Apgalvojumi}
-
-Apgalvojumi jeb deklarācijas ir izteiksmes, kas veic kādu darbību, bet pašas par sevi nedod nekādu vērtību. Piemēram, mainīgo inicializācija ir apgalvojums, jo tā veic darbību - piešķir vērtību mainīgajam, bet pati par sevi nedod nekādu vērtību.
-
-Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē funkciju atmiņā, bet pati par sevi nedod nekādu vērtību.
-
-\section{Operatori}
-\label{section:operators}
-
-Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
-
-Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts abiem operandiem starpā. Turpmāk tekstā kreisas operands tiek definēts kā šāda bināra operatora operands, kas atrodas pa kreisi no operatora, un labais kas attiecīgi ir pa labi no tā. Piemēram, izteiksmē \texttt{23 + 45} skaitlis \texttt{23} ir kreisas operands, \texttt{45} ir labais operands, un \texttt{+} ir binārais summas operators. \\
-
-\paragraph{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
-
-\begin{itemize}
-  \item \texttt{+} saskaitīšana, atgriež divu skaitļu summu
-  \item \texttt{-} atņemšana, atgriež pirmā skaitļa vērtību mīnus otrā skaitļa vērtību
-  \item \texttt{*} reizināšana, atgriež divu skaitļu reizinājumu
-  \item \texttt{/} dalīšana, atgriež kreisā operanda dalījumu ar labo operandu. Ja labais operands ir nulle, tad tiek izmests izņēmums \texttt{DivisionByZeroException}
-  \item \texttt{\%} modulis, atgriež kreisā skaitļa operanda moduli ar labā operanda vērtību
-\end{itemize}
-
-\textbf{Aritmētiskās salīdzināšanas operatori:} tiek pielietoti skaitļiem, un atgriež patiesuma vērtību. 
-\begin{itemize}
-  \item \texttt{>} lielāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka par labā operanda vērtību
-  \item \texttt{<} mazāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka par labā operanda vērtību
-  \item \texttt{>=} lielāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka vai vienāda ar labā operanda vērtību
-  \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
-\end{itemize}
-
-\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību. 
-\begin{itemize}
-  \item \texttt{==} ir vienāds, atgriež patiesu vērtību, ja abu operandu vērtības ir vienādas. Proti, atgriež aplamnu vērtību, ja abi operandi ir ar dažādiem datu tipiem.
-  \item \texttt{!=} nav vienāds ar, atgriež patiesu vērtību, ja abu operandu vērtības nav vienādas, tai skaitā arī ja to datu tipi ir dažādi.
-\end{itemize}
-
-\textbf{Loģiskie operatori:} Pielietoti patiesuma vērtībām, un atgriež patiesuma vērtību.
-\begin{itemize}
-  \item \texttt{!} nēgācija, apvērš patiesuma vērtību. Ir unārs operators. 
-  \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandu vērtības ir patiesas
-  \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
-\end{itemize}
-
-\subsection{Operatoru darbības kārtība}
-
-Katram operatoram ir noteikta sava prioritāte, tas ir, kārtība, kādā apakšizteiksmes ar vairākiem operatoriem tiek izpildītas. Piemēram, reizināšanas operatoram ir augstāka prioritāte, nekā saskaitīšanas operatoram, tāpēc izteiksme \texttt{2 + 3 * 4} tiek izskaitļota kā \texttt{2 + (3 * 4)}, nevis \texttt{(2 + 3) * 4}. 
-Zemāk ir uzskaitīti operatori to prioritātes secībā, no augstākās uz zemāko. Operatori ar vienādu prioritāti tiek minēti kopīgi vienā saraksta apakšpunktā.
-
-\begin{itemize}
-  \item \texttt{!} (unārs nēgācijas operators)
-  \item \texttt{*}, \texttt{/}, \texttt{\%} (aritmētiskie reizināšanas, dalīšanas un modula operatori)
-  \item \texttt{+}, \texttt{-} (aritmētiskie saskaitīšanas un atņemšanas operatori)
-  \item \texttt{>}, \texttt{<}, \texttt{>=}, \texttt{<=} (aritmētiskie salīdzināšanas operatori)
-  \item \texttt{==}, \texttt{!=} (ekvivalences operatori)
-  \item \texttt{\&\&} (konjukcija)
-  \item \texttt{||} (disjunkcija) 
-\end{itemize}
-
-Ir kritiski atzīmēt, ka dažādu operatoru izpildes kārtību var mākslīgi paaugstināt, izmantojot apaļās iekavas. Izteiksmes iekavās tiek izpildītas pirmās, neatkarīgi no tajās esošo operatoru prioritātes.
-
-Skaidrības labad, tiek dots piemērs ar saliktu izteiksmi un tās izvērtēšanas kārtību:
-\begin{verbatim}
-3 + 4 % 2 == 3 && true || false
-\end{verbatim}
-
-Alternatīvi, to var pārrakstīt ar iekavām, kas ilustrē izvērtēšanas kārtību:
-\begin{verbatim}
-((3 + (4 % 2)) == 3) && (true || false)
-\end{verbatim}
-
-Tātad, apakšizteiksme 
-\begin{verbatim}
-  ((3 + (4 % 2)) == 3)
-\end{verbatim}
-tiek izvērtēta pirmā (jo atrodas labajā pusē), kas rezultātā atgriež patiesu vērtību.
-Pēc tam tiek izvērtēta apakšizteiksme
-\begin{verbatim}  (true || false)
-\end{verbatim}
-kas arī atgriež patiesu vērtību. Beigās tiek pielietots disjunkcijas operators \texttt{||}, kas atgriež patiesu vērtību, jo vismaz viens no abiem operandiem (kas īstenībā ir izteiksmes) ir patiess.
-
-% evaluation order
-\section{Izvērtēšanas kārtība}
-Līdzīgi kā daudzās citās programmēšanas valodās, piemēram Java un Ruby, arī valodā Immutant izteiksmju izvērtēšanas kārtība ir no kreisās uz labo pusi. Tas nozīmē, ka izteiksmes kreisais operands tiek izvērtēts pirms labā operanda. Tas, gan, negarantē ka jebkuras izteiksmes pirmie kreisējie operandi tiks izvērtēti pirmie, jo saliktas izteiksmes ar vairāk par vienu operatoru ņem vērā operatoru prioritātes un asociativitāti.
-
-Zemāk ir dots piemērs, kas ilustrē šo izvērtēšanas kārtību:
-
-\begin{verbatim}
-pure fn add(a, b) {
-    return a + b;
-}
-
-immutant sum = add(2, 3) + 4;
-\end{verbatim}
-
-Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek piešķirta vērtība, kas pēc būtības ir  izvērtēts izteiksmes \texttt{add(2, 3) + 4} rezultāts. Tā kā izteiksmes kreisais operands ir funkcijas izsaukums (skat. \ref{section:functions}) \texttt{add(2, 3)}, tad vispirms tiek izvērtēta šī apakšizteiksme, kas rezultātā atgriež skaitli \texttt{5}. Pēc tam tiek izvērtēts labais operands \texttt{4} (tas ir parasts skaitlis, tāpēc šeit netiek padarīts daudz darba), un beigās tiek pielietots saskaitīšanas operators \texttt{+}, kas atgriež summu \texttt{9}. Tātad, mainīgajam \texttt{sum} tiek piešķirta vērtība \texttt{9}.
-
-\subsection{Saīsinātā izvērtēšana}
-
-Interpretatora optimizācijas nolūkos, valoas specifikācijā ietilpst arī saīsinātās izvērtēšanas mehānisms, kas ļauj izvairīties no nevajadzīgu apakšizteiksmju izvērtēšanu, loģiskajās izteiksmēs ar disjunkciju \cite{short-circuit-logic}.
-
-Pēc definīcijas, loģiskā izteiksme ar disjunkciju ir patiesa, ja vismaz viens no tās operandiem ir patiess.
-Tā kā valodā Immutant izteiksmes tiek izvērtētas no kreisās puses uz labo, tad ir pietiekami izvērtēt tikai kreiso operandu, ja tas ir patiess.
-
-Piemēram, izteiksme \texttt{true || (someFunction() + 5 > 10)} izvērtējas kā patiesa, pie tam interpretators noignorēs (neizvērtēs) labo operandu.
-
 \section{Mainīgie}
 \label{section:vars}
 
@@ -356,13 +244,13 @@ Turpretim, tīras funkcijas (skat. nodaļu ~\ref{section:functions}) var pieņem
 Tā kā valodā Immutant netiek definēti sarežģītāki datu tipi, piemēram, masīvi vai objekti, tad nav nepieciešams apskatīt mutabilitātes īpašības attiecībā uz šādiem datu tipiem. 
 
 \subsection{Datu tipa konversija}
+\label{section:datatype-conversion}
 
 Pastāv gadījumi, kad parādās nepieciešamība konvertēt viena datu tipa vērtību uz cita datu tipa vērtību. Piemēram, ja kādu aritmētisku operatoru, piemēram, saskaitīšanu, pielieto virknei un skaitlim. Tad ir nepieciešams konvertēt vienu no operandiem uz otra datu tipu, lai veiktu šo operāciju, šajā gadījumā virkne jāparveido uz skaitli vai skaitlis par virni. 
 
 Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā sabiedzrībā rada jokus, par to kā Javascript "5" + 3 ir "53", nevis 8.
 
-Tā kā programmēšanas valodas Immutant galvenais mērķis ir palīdzēt programmētājiem rakstīt paredzamāku kodu, datu tipu konversija tiek atbalstīta tikai tiešā veidā. Tas nozīmē, ka saskaitot virkni un skaitli, nav jāpiedomā vai rezultātā radīsies virkne vai skaitlis, jo zināms, ka neviennozīmīgu operāciju izpilde izmetīs izpildlaika kļūdu.
-% TODO: add which error exactly will be thown here, and ref the exceptions page.
+Tā kā programmēšanas valodas Immutant galvenais mērķis ir palīdzēt programmētājiem rakstīt paredzamāku kodu, datu tipu konversija tiek atbalstīta tikai tiešā veidā. Tas nozīmē, ka saskaitot virkni un skaitli, nav jāpiedomā vai rezultātā radīsies virkne vai skaitlis, jo zināms, ka neviennozīmīgu operāciju izpilde izmetīs izpildlaika kļūdu \texttt{ImplicitionConversionException}.
 
 No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu uz citu, tad valoda Immutant piedāvā iebūvētas funkcijas, kas veic šo darbību. Šīs funkcijas ir aprakstītas zemāk:
 
@@ -426,6 +314,117 @@ print(globalVar); // Izmests izņēmums: UndeclaredVariableException
 immutant globalVar = 10;
 \end{verbatim}
 
+\section{Operatori un inzteiksmes}
+\label{section:operators}
+
+\subsubsection{Izteiksmes}
+
+Izteiksmes ir konstrukcija, kas atgriež kādu vērtību. Piemēram, funckijas izsaukums ir izteiksme, kas rezultātā atgriež izpildītas funkcijas vērtību. Pie tam, arī aritmētiska vai loģiska operācija ir izteiksmes konstrukcijas, jo atgriež skaitlisku vai patiesuma vērtību attiecīgi.
+
+\subsection{Apgalvojumi}
+
+Apgalvojumi jeb deklarācijas ir izteiksmes, kas veic kādu darbību, bet pašas par sevi nedod nekādu vērtību. Piemēram, mainīgo inicializācija ir apgalvojums, jo tā veic darbību - piešķir vērtību mainīgajam, bet pati par sevi nedod nekādu vērtību.
+
+Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē funkciju atmiņā, bet pati par sevi nedod nekādu vērtību.
+
+\subsubsection{Operatori}
+
+Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
+
+Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts abiem operandiem starpā. Turpmāk tekstā kreisas operands tiek definēts kā šāda bināra operatora operands, kas atrodas pa kreisi no operatora, un labais kas attiecīgi ir pa labi no tā. Piemēram, izteiksmē \texttt{23 + 45} skaitlis \texttt{23} ir kreisas operands, \texttt{45} ir labais operands, un \texttt{+} ir binārais summas operators. \\
+
+\paragraph{Aritmētiskie operatori:} tiek pielietoti skaitļiem, un atgriež skaitlisku vērtību.
+
+\begin{itemize}
+  \item \texttt{+} saskaitīšana, atgriež divu skaitļu summu
+  \item \texttt{-} atņemšana, atgriež pirmā skaitļa vērtību mīnus otrā skaitļa vērtību
+  \item \texttt{*} reizināšana, atgriež divu skaitļu reizinājumu
+  \item \texttt{/} dalīšana, atgriež kreisā operanda dalījumu ar labo operandu. Ja labais operands ir nulle, tad tiek izmests izņēmums \texttt{InvalidOperationException}
+  \item \texttt{\%} modulis, atgriež kreisā skaitļa operanda moduli ar labā operanda vērtību
+\end{itemize}
+
+\textbf{Aritmētiskās salīdzināšanas operatori:} tiek pielietoti skaitļiem, un atgriež patiesuma vērtību. 
+\begin{itemize}
+  \item \texttt{>} lielāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka par labā operanda vērtību
+  \item \texttt{<} mazāks par, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka par labā operanda vērtību
+  \item \texttt{>=} lielāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir lielāka vai vienāda ar labā operanda vērtību
+  \item \texttt{<=} mazāks vai vienāds ar, atgriež patiesu vērtību, ja kreisā operanda vērtība ir mazāka vai vienāda ar labā operanda vērtību
+\end{itemize}
+
+\textbf{Ekvivalences operatori:} tiek pielietoti jebkura datu tipa operandiem un atgriež patiesuma vērtību. 
+\begin{itemize}
+  \item \texttt{==} ir vienāds, atgriež patiesu vērtību, ja abu operandu vērtības ir vienādas. Proti, atgriež aplamnu vērtību, ja abi operandi ir ar dažādiem datu tipiem.
+  \item \texttt{!=} nav vienāds ar, atgriež patiesu vērtību, ja abu operandu vērtības nav vienādas, tai skaitā arī ja to datu tipi ir dažādi.
+\end{itemize}
+
+\textbf{Loģiskie operatori:} Pielietoti patiesuma vērtībām, un atgriež patiesuma vērtību.
+\begin{itemize}
+  \item \texttt{!} nēgācija, apvērš patiesuma vērtību. Ir unārs operators. 
+  \item \texttt{\&\&} konjukcija, atgriež patiesu vērtību, ja abu operandu vērtības ir patiesas
+  \item \texttt{||} disjunkcija, atgriež patiesu vērtību, ja vismaz viena no abu operandu vērtībām ir patiesa.
+\end{itemize}
+
+\subsection{Operatoru darbības kārtība}
+
+Katram operatoram ir noteikta sava prioritāte, tas ir, kārtība, kādā apakšizteiksmes ar vairākiem operatoriem tiek izpildītas. Piemēram, reizināšanas operatoram ir augstāka prioritāte, nekā saskaitīšanas operatoram, tāpēc izteiksme \texttt{2 + 3 * 4} tiek izskaitļota kā \texttt{2 + (3 * 4)}, nevis \texttt{(2 + 3) * 4}. 
+Zemāk ir uzskaitīti operatori to prioritātes secībā, no augstākās uz zemāko. Operatori ar vienādu prioritāti tiek minēti kopīgi vienā saraksta apakšpunktā.
+
+\begin{itemize}
+  \item \texttt{!} (unārs nēgācijas operators)
+  \item \texttt{*}, \texttt{/}, \texttt{\%} (aritmētiskie reizināšanas, dalīšanas un modula operatori)
+  \item \texttt{+}, \texttt{-} (aritmētiskie saskaitīšanas un atņemšanas operatori)
+  \item \texttt{>}, \texttt{<}, \texttt{>=}, \texttt{<=} (aritmētiskie salīdzināšanas operatori)
+  \item \texttt{==}, \texttt{!=} (ekvivalences operatori)
+  \item \texttt{\&\&} (konjukcija)
+  \item \texttt{||} (disjunkcija) 
+\end{itemize}
+
+Ir kritiski atzīmēt, ka dažādu operatoru izpildes kārtību var mākslīgi paaugstināt, izmantojot apaļās iekavas. Izteiksmes iekavās tiek izpildītas pirmās, neatkarīgi no tajās esošo operatoru prioritātes.
+
+Skaidrības labad, tiek dots piemērs ar saliktu izteiksmi un tās izvērtēšanas kārtību:
+\begin{verbatim}
+3 + 4 % 2 == 3 && true || false
+\end{verbatim}
+
+Alternatīvi, to var pārrakstīt ar iekavām, kas ilustrē izvērtēšanas kārtību:
+\begin{verbatim}
+((3 + (4 % 2)) == 3) && (true || false)
+\end{verbatim}
+
+Tātad, apakšizteiksme 
+\begin{verbatim}
+  ((3 + (4 % 2)) == 3)
+\end{verbatim}
+tiek izvērtēta pirmā (jo atrodas labajā pusē), kas rezultātā atgriež patiesu vērtību.
+Pēc tam tiek izvērtēta apakšizteiksme
+\begin{verbatim}  (true || false)
+\end{verbatim}
+kas arī atgriež patiesu vērtību. Beigās tiek pielietots disjunkcijas operators \texttt{||}, kas atgriež patiesu vērtību, jo vismaz viens no abiem operandiem (kas īstenībā ir izteiksmes) ir patiess.
+
+\section{Izvērtēšanas kārtība}
+Līdzīgi kā daudzās citās programmēšanas valodās, piemēram Java un Ruby, arī valodā Immutant izteiksmju izvērtēšanas kārtība ir no kreisās uz labo pusi. Tas nozīmē, ka izteiksmes kreisais operands tiek izvērtēts pirms labā operanda. Tas, gan, negarantē ka jebkuras izteiksmes pirmie kreisējie operandi tiks izvērtēti pirmie, jo saliktas izteiksmes ar vairāk par vienu operatoru ņem vērā operatoru prioritātes un asociativitāti.
+
+Zemāk ir dots piemērs, kas ilustrē šo izvērtēšanas kārtību:
+
+\begin{verbatim}
+pure fn add(a, b) {
+    return a + b;
+}
+
+immutant sum = add(2, 3) + 4;
+\end{verbatim}
+
+Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek piešķirta vērtība, kas pēc būtības ir  izvērtēts izteiksmes \texttt{add(2, 3) + 4} rezultāts. Tā kā izteiksmes kreisais operands ir funkcijas izsaukums (skat. \ref{section:functions}) \texttt{add(2, 3)}, tad vispirms tiek izvērtēta šī apakšizteiksme, kas rezultātā atgriež skaitli \texttt{5}. Pēc tam tiek izvērtēts labais operands \texttt{4} (tas ir parasts skaitlis, tāpēc šeit netiek padarīts daudz darba), un beigās tiek pielietots saskaitīšanas operators \texttt{+}, kas atgriež summu \texttt{9}. Tātad, mainīgajam \texttt{sum} tiek piešķirta vērtība \texttt{9}.
+
+\subsection{Saīsinātā izvērtēšana}
+
+Interpretatora optimizācijas nolūkos, valoas specifikācijā ietilpst arī saīsinātās izvērtēšanas mehānisms, kas ļauj izvairīties no nevajadzīgu apakšizteiksmju izvērtēšanu, loģiskajās izteiksmēs ar disjunkciju \cite{short-circuit-logic}.
+
+Pēc definīcijas, loģiskā izteiksme ar disjunkciju ir patiesa, ja vismaz viens no tās operandiem ir patiess.
+Tā kā valodā Immutant izteiksmes tiek izvērtētas no kreisās puses uz labo, tad ir pietiekami izvērtēt tikai kreiso operandu, ja tas ir patiess.
+
+Piemēram, izteiksme \texttt{true || (someFunction() + 5 > 10)} izvērtējas kā patiesa, pie tam interpretators noignorēs (neizvērtēs) labo operandu.
+
 \section{Funkcijas}
 \label{section:functions}
 
@@ -475,6 +474,15 @@ addGlobal(5);
 immutant sum = add(3, 7);
 \end{verbatim}
 
+\subsection{Iebūvētas funckijas}
+
+Valodā Immutant ir definētas sekojošas iebūvētas funkcijas:
+\begin{itemize}
+  \item \texttt{print(value)} - Izvada dotā operanda vērtību uz konsoli. Pieņem jebkura datu tipa vērtību kā argumentu, un izvada tās reprezentāciju kā virkni uz konsoli.
+  \item \texttt{input(prompt)} - Parāda dotā virknes tipa argumenta vērtību kā uzvedni lietotājam, un gaida lietotāja ievadi. Atgriež lietotāja ievadīto vērtību kā virknes datu tipu.
+  \item \texttt{toString(value), toNumber(value), toBoolean(value), typeOf(value)} - Datu tipu konversijas funkcijas, kas aprakstītas sadaļā ~\ref{section:datatype-conversion}
+\end{itemize}
+
 \section{Kontroles plūsma}
 Kontroles plūsma ir mehānisms, kas nosaka programmas izpildes secību. Valodā Immutant ir definēti sekojoši kontroles plūsmas mehānismi: \texttt{if-else} zarošanās un cikls \texttt{while}.
 
@@ -504,6 +512,19 @@ if (<condition1>) {
 
 Pie tam, apgalvojums \texttt{else} nav obligāts, un to var izlaist, ja nav nepieciešams izpildīt kodu gadījumā, ja neviens no nosacījumiem nav izpildīts.
 
+Piemērs programmai, kas atkarība no skaitļa vērtības izvada atbilstošu ziņojumu:
+\begin{verbatim}
+immutant num = 10;
+
+if (num > 0) {
+    print("Number is greather than zero");
+} else if (num < 0) {
+    print("Number is less than zero");
+} else {
+    print("Number is zero");
+}
+\end{verbatim}
+
 \subsection{Cikli}
 Cikls \texttt{while} ļauj izpildīt koda daļu atkārtoti, kamēr nosacījums ir izpildīts. Sintakse ir sekojoša:
 \begin{verbatim}
@@ -514,7 +535,55 @@ while (<condition>) {
 
 <condition> ir loģiska izteiksme, kas rezultātā atgriež patiesuma vērtību. Ja izteiksmes vērtība ir patiesa, tad tiek izpildīti apgalvojumi <statements> iekš figūriekavām. Pēc apgalvojumu izpildes, nosacījums tiek pārbaudīts vēlreiz, un ja tas joprojām ir patiess, tad apgalvojumi tiek izpildīti vēlreiz. Šis process turpinās, kamēr nosacījums kļūst aplams. Ja nosacījums sākotnēji ir aplams, tad cikla ķermenis netiek izpildīts ne reizi.
 
-\section{Kļūdu veidi un apzīmējumi}
+Ciklisku darbību var nodeomstrēt ar fibonacci skaitļu virknes ģenerēšanu:
+\begin{verbatim}
+immutant n = 10; // Cik fibonacci skaitļus ģenerēt
+immutant prev = 0;
+immutant curr = 1;
+immutant count = 0; 
+while (count < n) {
+    print(curr);
+    immutant next = prev + curr;
+    prev = curr;
+    curr = next;
+    count += 1;
+}
+\end{verbatim}
+
+\section{Atslēgas vārdi}
+
+Valodā Immutant ir definēti sekojoši atslēgas vārdi, kas ir rezervēti valodas sintaksei un tiem nevar tikt piešķirta cita nozīme:
+\begin{itemize}
+  \item \texttt{immutant} - tiek lietots, lai deklarētu nemutablus mainīgos
+  \item \texttt{mutant} - tiek lietots, lai deklarētu mutablus mainīgos
+  \item \texttt{fn} - tiek lietots, lai definētu funkcijas
+  \item \texttt{pure} - tiek lietots, lai definētu tīras funkcijas
+  \item \texttt{impure} - tiek lietots, lai definētu netīras funkcijas
+  \item \texttt{if} - tiek lietots, lai definētu nosacījuma apgalvojumu
+  \item \texttt{else} - tiek lietots, lai definētu nosacījuma apgalvojuma alternatīvu
+  \item \texttt{while} - tiek lietots, lai definētu ciklu
+  \item \texttt{return} - tiek lietots, lai atgrieztu vērtību no funkcijas
+  \item \texttt{true} - patiesuma vērtība
+  \item \texttt{false} - aplamas vērtība
+\end{itemize}
+
+\section{Kļūdas un izņēmumi}
+
+% ImplicitionConversionException
+% InvalidTypeConversionException
+% UndeclaredVariableException
+% InvalidOperationException
+% ImmutableVariableModificationException
+
+Neviens vēl nav uzrakstījis nevainojamu programmu no pirmās reizes, tāpēc kļūdas un ar to sasitītā programmu atkļūdošana ir neizbēgama bet dabiska programmēšanas sastāvdaļa. Lai palīdzētu programmētājiem identificēt un novērst kļūdas, Immutant valodas interpretators izmet izņēmumus un kļūdu ziņojumus, kad tiek konstatēta kāda kļūda izpildes laikā. 
+\begin{itemize}
+  \item \texttt{ImplicitionConversionException} - Tiek izmests, kad tiek konstatēta netieša datu tipu konversija. Visbiežāk tas notiek pielietojot operatorus ar dažādiem datu tipiem, piemēram, saskaitot virkni un skaitli.
+  \item \texttt{InvalidTypeConversionException} - Tiek izmests, kad atļautā tiešā veida datu tipu konversija nav iespējama. Piemēram, mēģinot pārvērst virkni, kas nesatur derīgu skaitlisko vērtību, par skaitli.
+  \item \texttt{UndeclaredVariableException} - Tiek izmests, kad tiek izmantots mainīgais, kas nav deklarēts (vismaz ne redzamajā redzeslokā). 
+  \item \texttt{InvalidOperationException} - Tiek izmests, ja tiek veikta nederīga operācija, piemēram, dalīšana ar nuli.
+  \item \texttt{ImmutableVariableModificationException} - Tiek izmests, kad nemutablu mainīgo tiešā vai netiešā (caur netīru funkciju) veidā mēģina mainīt.
+  \item \texttt{SyntaxError} - Tiek izmests, ja programkods satur nekorektu sintaksi, kuru interpretators nespēj apstrādāt. (vairāk par sintakses apstrādi skat. nodaļā ~\ref{chap:arch})
+\end{itemize}
 
 % TODO: minēt ka ir regulāra valoda.
 % TODO: pie arhitektūras apraksta minēti lookahead daudzumu šai valodai
