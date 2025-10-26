@@ -378,6 +378,53 @@ No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu 
 
 Pie tam, datu tipu konversijas funkcijas neietekmē dotā operanda sākotnējo vērtību un datu tipu, bet gan atgriež jaunu vērtību ar konvertēto tipu. Ja datu tipa konversija nav iespējama, tiek izmests izņēmums \texttt{InvalidTypeConversionException}.
 
+\subsection{Mainīgo redzamība}
+Mainīgo redzamība ir tāda īpašība, kas nosaka kurās programmas daļas ir pieejams konkrētais mainīgais. Valodā Immutant mainīgo redzamība tiek noteikta pēc to deklarācijas vietas. Mainīgā redzesloks ir tā programmas daļa, kurā ir pieejams attiecīgais mainīgais.
+
+Piemērs globāla mainīgā deklarācijai un tā izmantošanai funkcijā:
+
+\begin{verbatim}
+immutant globalVar = 10;
+
+fn printGlobalVar() {
+  print(globalVar);
+}
+
+printGlobalVar(); // Izvada: 10
+\end{verbatim}
+
+Mainīgie, kas deklarēti ārpus jebkuras funkcijas ķermeņa, ir pieejami visā programmas kodā, ieskaitot visas funkcijas. Šādi mainīgie tiek saukti par globāliem mainīgajiem, t.i. to redzesloks aptver visu programmu.
+
+Funkcijas un jebkādas citas konstrukcijas ar ķermeni (valodā Immutant tie arī ir cikli un nosacījumi) izveido savu redzesloku, un attiecīgi mainīgie deklarēti šajā redzeslokā ir pieejami tikai šajā konstrukcijā un tās iekšējos redzeslokos.
+
+Piemērs lokāla mainīgā deklarācijai un tā izmantošanai funkcijā:
+\begin{verbatim}
+fn doMagic() {
+  immutant localVar = 5;
+  if(true) {
+    mutant anotherLocalVar = localVar + 10;
+  }
+}
+doMagic();
+\end{verbatim}
+
+Kā var redzēt, localVar eksistē visā \texttt{doMagic} funckijas redzeslokā, tai skaitā arī nosacījuma \texttt{if} ķermenī. Šajā konkrētajā gadījumā \texttt{anotherLocalVar} ir pieejams tikai \texttt{if} ķermenī.
+
+Mainīgie, kurus mēģina izmantot ārpus to deklarācijas redzesloka, izraisa izņēmumu \texttt{UndeclaredVariableException}. Pēc savas būtības tā ir nedeklarēto mainīgo izmantošana. Skatīt piemēru zemāk.
+
+\begin{verbatim}
+fn setLocalVar() {
+  immutant localVar = 5;
+}
+setLocalVar();
+print(localVar); // Izmests izņēmums: UndeclaredVariableException
+\end{verbatim}
+
+Līdzīgi situācija rodas, izmantojot mainīgo pirms tā deklarācijas:
+\begin{verbatim}
+print(globalVar); // Izmests izņēmums: UndeclaredVariableException
+immutant globalVar = 10;
+\end{verbatim}
 
 \section{Funkcijas}
 \label{section:functions}
