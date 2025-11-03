@@ -1,3 +1,4 @@
+
 # Compiler
 CC := gcc
 AR := ar
@@ -10,8 +11,8 @@ CORE_BUILD := $(BUILD_DIR)/core
 CLI_BUILD := $(BUILD_DIR)/interpreter
 
 # Core sources (exclude *.test.c)
-CORE_SRC := $(filter-out %.test.c,$(wildcard core/src/**/*.c))
-CORE_OBJS := $(patsubst core/src/%.c,$(CORE_BUILD)/%.o,$(CORE_SRC))
+CORE_SRC := $(shell find core/src -name '*.c' ! -name '*.test.c')
+CORE_OBJS := $(CORE_SRC:core/src/%.c=$(CORE_BUILD)/%.o)
 LIBCORE := $(BUILD_DIR)/libcore.a
 
 # CLI sources and objects
@@ -22,7 +23,7 @@ BIN := $(BUILD_DIR)/immutant
 # Default target
 all: $(BIN)
 
-# Build core objects
+# Build core objects (preserve folder structure)
 $(CORE_BUILD)/%.o: core/src/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -43,15 +44,15 @@ $(BIN): $(CLI_OBJ) $(LIBCORE)
 
 # Run CLI
 run: $(BIN)
-	./$(BIN)
+	@echo "Running $(BIN)..."
+	@$(BIN)
 
 # Run Ceedling tests in core/
 test:
 	@cd core && ceedling test
 
-
 # Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all run clean
+.PHONY: all run test clean

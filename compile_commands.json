@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-std=c11",
+      "-Wall",
+      "-Wextra",
+      "-Icore/include",
+      "-Icore/src",
+      "-c",
+      "-o",
+      "build/interpreter/main.o",
+      "interpreter/main.c"
+    ],
+    "directory": "/Users/rolandsfridemanis/coding/immutant",
+    "file": "/Users/rolandsfridemanis/coding/immutant/interpreter/main.c",
+    "output": "/Users/rolandsfridemanis/coding/immutant/build/interpreter/main.o"
+  }
+]
