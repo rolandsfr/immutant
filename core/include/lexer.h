@@ -1,6 +1,3 @@
-#ifndef LEXER_H
-#define LEXER_H
+#include <stddef.h>
 
-int multiply(int a, int b);
-
-#endif
+void scan_tokens(char* line, size_t length, char* buffer);

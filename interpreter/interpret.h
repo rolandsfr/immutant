@@ -1,0 +1,1 @@
+void interpret(const char* source, size_t length);

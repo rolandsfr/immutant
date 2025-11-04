@@ -1,4 +1,3 @@
-
 # Compiler
 CC := gcc
 AR := ar
@@ -16,8 +15,8 @@ CORE_OBJS := $(CORE_SRC:core/src/%.c=$(CORE_BUILD)/%.o)
 LIBCORE := $(BUILD_DIR)/libcore.a
 
 # CLI sources and objects
-CLI_SRC := interpreter/main.c
-CLI_OBJ := $(CLI_BUILD)/main.o
+CLI_SRC := interpreter/main.c interpreter/runners.c interpreter/interpret.c
+CLI_OBJ := $(CLI_SRC:interpreter/%.c=$(CLI_BUILD)/%.o)
 BIN := $(BUILD_DIR)/immutant
 
 # Default target
@@ -33,8 +32,8 @@ $(LIBCORE): $(CORE_OBJS)
 	@mkdir -p $(dir $@)
 	$(AR) rcs $@ $^
 
-# Build CLI object
-$(CLI_OBJ): $(CLI_SRC) $(LIBCORE)
+# Build CLI objects
+$(CLI_BUILD)/%.o: interpreter/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

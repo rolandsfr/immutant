@@ -3,6 +3,7 @@
     - src/**
   :include:
     - include
+    - src
   :test:
     - src/** # unit tests live next to code
 

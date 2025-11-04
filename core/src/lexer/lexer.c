@@ -1,9 +1,10 @@
-#include "lexer_internal.h"
+#include "lexer.h"
+#include <stddef.h>
+
+void scan_tokens(char* line, size_t length, char* buffer) {
+
+}
 
 int multiply(int a, int b) {
     return a * b;
-}
-
-int tokenize(int num) {
-    return num * 2;
 }
