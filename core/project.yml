@@ -32,7 +32,6 @@
 :plugins:
   :load_paths: []
   :enabled:
-    - beep # beeps when finished, so you don't waste time waiting for ceedling
     - module_generator # handy for quickly creating source, header, and test templates
     - report_tests_pretty_stdout
 

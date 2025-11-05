@@ -3,12 +3,6 @@
 #include "unity.h"
 #include "error.h" 
 
-extern int hadError;
-
-void setUp(void) {
-    hadError = 0;
-}
-
 void test_format_error_creates_correct_message(void) {
     const char* received_message = format_error(98, "Some error has occured");
     const char* expected = "[line 98] Error: Some error has occured\n";
@@ -16,8 +10,10 @@ void test_format_error_creates_correct_message(void) {
     free((void*)received_message);
 }
 
-void test_error_sets_hadError_flag(void) {
+void test_report_error_sets_hadError_flag(void) {
+    int hadError = 0;
+
     TEST_ASSERT_EQUAL_INT(0, hadError);
-    error(42, "Test error");
+    report_error(42, "Test error", &hadError);
     TEST_ASSERT_EQUAL_INT(1, hadError);
 }

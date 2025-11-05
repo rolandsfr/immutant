@@ -6,13 +6,13 @@
 int hadError = 0;
 
 void error(int line, char* message) {
-    report_error(line, message);
+    report_error(line, message, &hadError);
 }
 
-void report_error(int line, char* message) {
+void report_error(int line, char* message, int* hadError) {
     const char* formatted_msg = format_error(line, message);
     printf("%s", formatted_msg);
-    hadError = 1;
+    *hadError = 1;
 }
 
 const char* format_error(int line, const char* message) {
