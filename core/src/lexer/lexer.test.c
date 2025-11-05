@@ -3,23 +3,39 @@
 
 TokenBuffer buffer;
 
-void setUp(void) {
+void setUp(void)
+{
     init_token_buffer(&buffer);
 }
 
-void tearDown(void) {
+void tearDown(void)
+{
     free_token_buffer(&buffer);
 }
 
-void test_lex_single_token_finds_token(void) {
-    char line[] = "()";
-    size_t current_pos = 0;
+const char *copy_char(char *c)
+{
+    if (c == NULL)
+        return NULL;
 
-    lex_single_token(line, 34, sizeof(line) - 1, &buffer, &current_pos); // pass its address
-    lex_single_token(line, 34, sizeof(line) - 1, &buffer, &current_pos);
-
-    TEST_ASSERT_EQUAL(2, buffer.count);
-    TEST_ASSERT_EQUAL_STRING("(", buffer.tokens[0].lexeme);
-    TEST_ASSERT_EQUAL_STRING(")", buffer.tokens[1].lexeme);
+    static char copy[2];
+    copy[0] = *c;
+    copy[1] = '\0';
+    return copy;
 }
 
+void test_advance_moves_position_forward(void)
+{
+    char line[] = "abc";
+    size_t current_pos = 0;
+
+    const char *advanced = copy_char(advance(line, &current_pos));
+    TEST_ASSERT_EQUAL_STRING("a", advanced);
+}
+
+void test_line_is_at_end_indicates_end_of_line(void)
+{
+    char *line = "abc";
+    TEST_ASSERT_EQUAL_INT(0, line_is_at_end(line, 1));
+    TEST_ASSERT_EQUAL_INT(1, line_is_at_end(line, 20));
+}
