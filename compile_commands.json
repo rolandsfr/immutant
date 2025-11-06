@@ -7,6 +7,7 @@
       "-Wextra",
       "-Icore/include",
       "-Icore/src",
+      "-Icore/tests_build/vendor/unity/src",
       "-c",
       "-o",
       "build/interpreter/main.o",

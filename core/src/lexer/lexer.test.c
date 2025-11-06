@@ -13,7 +13,7 @@ void tearDown(void)
     free_token_buffer(&buffer);
 }
 
-const char *copy_char(char *c)
+const char *copy_char(const char *c)
 {
     if (c == NULL)
         return NULL;
@@ -29,7 +29,7 @@ void test_advance_moves_position_forward(void)
     char line[] = "abc";
     size_t current_pos = 0;
 
-    const char *advanced = copy_char(advance(line, &current_pos));
+    const char* advanced = copy_char(advance(line, &current_pos));
     TEST_ASSERT_EQUAL_STRING("a", advanced);
 }
 
