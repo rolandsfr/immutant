@@ -5,6 +5,7 @@
 
 #include "lexer.h"
 
+
 Token create_token(enum TokenType type, const char *lexeme, size_t length, int line)
 {
     Token token;
@@ -55,16 +56,6 @@ void free_token_buffer(TokenBuffer *buffer)
     buffer->capacity = 0;
 }
 
-int str_len_with_newline(const char *str)
-{
-    size_t len = 0;
-    while (str[len] != '\0' && str[len] != '\n')
-    {
-        len++;
-    }
-    return len;
-}
-
 /** looks up ahead 1 char from current position without consuming the character */
 const char *peek(char *line, size_t *current_pos)
 {
@@ -84,10 +75,12 @@ const char *advance(char *line, size_t *current_pos)
     return &line[*current_pos - 1];
 }
 
-/** advances position if character at current position matches expected one */
-int match_next(char *line, size_t *current_pos, char expected)
+/** advances position if character at current position matches expected one and returns bool
+ * if such advancement was made
+*/
+int match_next(char *line, size_t *current_pos, const char* expected)
 {
-    if (line[*current_pos] == expected)
+    if (line[*current_pos] == *expected)
     {
         (*current_pos)++;
         return 1;

@@ -110,7 +110,7 @@ int line_is_at_end(char *line, size_t current_pos);
 /**
  * Advances position if character at current position matches expected one.
  * @return number boolean indicating whether expected character was or was not matched */
-int match_next(char *line, size_t *current_pos, char expected);
+int match_next(char *line, size_t *current_pos, const char* expected);
 
 /** --------------------------- */
 
