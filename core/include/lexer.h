@@ -88,7 +88,7 @@ void free_token_buffer(TokenBuffer *buffer);
  * ---------------------------
  **/
 
-short int scan_tokens(char *line, int line_nr, size_t length, Token *out_token, size_t *current_pos);
+void scan_tokens(char *line, int line_nr, size_t length, TokenBuffer* token_buffer, size_t *current_pos);
 
 /** Base unit function for identifying closest lexeme from current position  */
 void lex_single_token(char *line, int line_nr, size_t length, TokenBuffer *buffer, size_t *current_pos);

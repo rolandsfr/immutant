@@ -94,26 +94,39 @@ int line_is_at_end(char *line, size_t current_pos)
     return current_pos >= strlen(line);
 }
 
-short int scan_tokens(char *line, int line_nr, size_t length, Token *out_token, size_t *current_pos)
-{
-    const char current_char = line[*current_pos];
-    const char *lexeme = &line[*current_pos];
 
-    switch (current_char)
+/** returns lexeme */
+void scan_tokens(char *line, int line_nr, size_t length, TokenBuffer* token_buffer, size_t *current_pos)
+{
+    const char* current_char = advance(line, current_pos);
+    const char *lexeme = &line[*current_pos - 1];
+
+    switch (*current_char)
     {
     case '(':
-        *out_token = create_token(TOKEN_LEFT_PAREN, lexeme, 1, line_nr);
+        add_token(token_buffer, create_token(TOKEN_LEFT_PAREN, lexeme, 1, line_nr));
         break;
     case ')':
-        *out_token = create_token(TOKEN_RIGHT_PAREN, lexeme, 1, line_nr);
+        add_token(token_buffer, create_token(TOKEN_RIGHT_PAREN, lexeme, 1, line_nr));
         break;
     case '{':
-        *out_token = create_token(TOKEN_LEFT_BRACE, lexeme, 1, line_nr);
+        add_token(token_buffer, create_token(TOKEN_LEFT_BRACE, lexeme, 1, line_nr));
         break;
     case '}':
-        *out_token = create_token(TOKEN_RIGHT_BRACE, lexeme, 1, line_nr);
+        add_token(token_buffer, create_token(TOKEN_RIGHT_BRACE, lexeme, 1, line_nr));
         break;
+    case '/':
+	// strip out comments
+	if(match_next(line, current_pos, "/")) {
+		// TODO: Maybe add util ignore_until_char that advanced until said char...?
+		while(strcmp(peek(line, current_pos), "\n")) {
+			advance(line, current_pos);
+		}
+	}
+	else {
+		add_token(token_buffer, create_token(TOKEN_SLASH, lexeme, 1, line_nr));
+	}
+
     }
 
-    return 0;
 }

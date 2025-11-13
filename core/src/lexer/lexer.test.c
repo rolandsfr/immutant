@@ -1,29 +1,6 @@
 #include "unity.h"
 #include "lexer.h"
-
-/** Util for copying char by value */
-const char *copy_char(const char *c)
-{
-    if (c == NULL)
-        return NULL;
-
-    static char copy[2];
-    copy[0] = *c;
-    copy[1] = '\0';
-    return copy;
-}
-
-TokenBuffer buffer;
-
-void setUp(void)
-{
-    init_token_buffer(&buffer);
-}
-
-void tearDown(void)
-{
-    free_token_buffer(&buffer);
-}
+#include "utils.h"
 
 
 /** fn advance moves position forward by one */
@@ -68,4 +45,38 @@ void test_match_next_returns_bool_on_advanced_matched_char(void)
 
 	TEST_ASSERT_EQUAL_INT(1, has_advanced);
 	TEST_ASSERT_EQUAL_INT(3, current_pos);
+}
+
+void test_scan_tokens_should_ignore_comments(void)
+{
+	char* line = "// some ordinary 123 comment \n";
+	TokenBuffer buffer;
+
+	init_token_buffer(&buffer);
+	size_t pos = 0;
+	scan_tokens(line, 0, 20, &buffer, &pos);
+
+	TEST_ASSERT_EQUAL_INT(0, buffer.count);
+
+	free_token_buffer(&buffer);
+}
+
+void test_scan_tokens_should_detect_slash_not_comment(void)
+{
+	char* line = "/2\n";
+	TokenBuffer buffer;
+
+	init_token_buffer(&buffer);
+	size_t pos = 0;
+	scan_tokens(line, 0, 20, &buffer, &pos);
+
+	
+	Token* tokens = buffer.tokens;
+	Token first_token = tokens[0];
+	const char* lexeme = copy_char(first_token.lexeme);
+
+	TEST_ASSERT_EQUAL_STRING("/", lexeme);
+	TEST_ASSERT_EQUAL_INT(1, buffer.count);
+
+	free_token_buffer(&buffer);
 }
