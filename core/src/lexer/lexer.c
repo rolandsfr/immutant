@@ -95,38 +95,55 @@ int line_is_at_end(char *line, size_t current_pos)
 }
 
 
-/** returns lexeme */
-void scan_tokens(char *line, int line_nr, size_t length, TokenBuffer* token_buffer, size_t *current_pos)
+/** returns lexeme of the next closes token */
+int scan_next_token(char *line, size_t *current_pos, int line_nr, Token* token)
 {
     const char* current_char = advance(line, current_pos);
-    const char *lexeme = &line[*current_pos - 1];
 
     switch (*current_char)
     {
     case '(':
-        add_token(token_buffer, create_token(TOKEN_LEFT_PAREN, lexeme, 1, line_nr));
-        break;
+         *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, line_nr);
+	 break;
     case ')':
-        add_token(token_buffer, create_token(TOKEN_RIGHT_PAREN, lexeme, 1, line_nr));
-        break;
+        *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, line_nr);
+	break;
     case '{':
-        add_token(token_buffer, create_token(TOKEN_LEFT_BRACE, lexeme, 1, line_nr));
-        break;
+        *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, line_nr);
+	break;
     case '}':
-        add_token(token_buffer, create_token(TOKEN_RIGHT_BRACE, lexeme, 1, line_nr));
-        break;
+        *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, line_nr);
+	break;
     case '/':
+	printf("detected slash");
 	// strip out comments
 	if(match_next(line, current_pos, "/")) {
 		// TODO: Maybe add util ignore_until_char that advanced until said char...?
-		while(strcmp(peek(line, current_pos), "\n")) {
+		while(*peek(line, current_pos) != '\n') {
 			advance(line, current_pos);
 		}
+		return 0;
 	}
 	else {
-		add_token(token_buffer, create_token(TOKEN_SLASH, lexeme, 1, line_nr));
+		*token = create_token(TOKEN_SLASH, current_char, 1, line_nr);
+		break; 
+	}
+    default:
+	*token = create_token(TOKEN_UNRECOGNIZED, "", 1, line_nr);
+    }
+
+    return 1;
+}
+
+
+void scan_tokens(char *line, int line_nr,  TokenBuffer* token_buffer, size_t *current_pos) {
+	Token token;
+
+	do {
+		scan_next_token(line, current_pos, line_nr, &token);
+		add_token(token_buffer, token);
 	}
 
-    }
+	while(token.type != TOKEN_UNRECOGNIZED);
 
 }

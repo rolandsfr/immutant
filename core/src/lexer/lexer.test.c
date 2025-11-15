@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "lexer.h"
 #include "utils.h"
+#include <assert.h>
+#include <stdlib.h>
 
 
 /** fn advance moves position forward by one */
@@ -50,33 +52,41 @@ void test_match_next_returns_bool_on_advanced_matched_char(void)
 void test_scan_tokens_should_ignore_comments(void)
 {
 	char* line = "// some ordinary 123 comment \n";
-	TokenBuffer buffer;
-
-	init_token_buffer(&buffer);
 	size_t pos = 0;
-	scan_tokens(line, 0, 20, &buffer, &pos);
+	Token token;
 
-	TEST_ASSERT_EQUAL_INT(0, buffer.count);
+	int token_emitted = scan_next_token(line, &pos, 0, &token);
+	TEST_ASSERT_EQUAL_INT(0, token_emitted);
 
-	free_token_buffer(&buffer);
 }
 
 void test_scan_tokens_should_detect_slash_not_comment(void)
 {
 	char* line = "/2\n";
-	TokenBuffer buffer;
-
-	init_token_buffer(&buffer);
 	size_t pos = 0;
-	scan_tokens(line, 0, 20, &buffer, &pos);
+	Token token;
 
-	
-	Token* tokens = buffer.tokens;
-	Token first_token = tokens[0];
-	const char* lexeme = copy_char(first_token.lexeme);
+	int token_produced = scan_next_token(line, &pos, 0, &token);
 
-	TEST_ASSERT_EQUAL_STRING("/", lexeme);
-	TEST_ASSERT_EQUAL_INT(1, buffer.count);
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
-	free_token_buffer(&buffer);
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("/", token.lexeme);
+	}
+}
+
+
+void test_scan_tokens_should_detect_ordinary_single_char_lexeme(void)
+{
+	char* line = "()\n";
+	size_t pos = 1;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, 0, &token);
+
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING(")", token.lexeme);
+	}
 }
