@@ -29,6 +29,7 @@ void test_line_is_at_end_indicates_end_of_line(void)
 void test_peek_looks_up_char_without_advancing(void)
 {
 	char *line = "mutant a;";
+
 	size_t current_pos = 6;
 
 	const char* peeked = copy_char(peek(line, &current_pos));
@@ -49,24 +50,26 @@ void test_match_next_returns_bool_on_advanced_matched_char(void)
 	TEST_ASSERT_EQUAL_INT(3, current_pos);
 }
 
-void test_scan_tokens_should_ignore_comments(void)
+void test_scan_next_token_should_ignore_comments(void)
 {
-	char* line = "// some ordinary 123 comment \n";
+	char* line = "// some ordinary 123 comment";
 	size_t pos = 0;
+	size_t line_nr = 0;
 	Token token;
 
-	int token_emitted = scan_next_token(line, &pos, 0, &token);
+	int token_emitted = scan_next_token(line, &pos, &line_nr, &token);
 	TEST_ASSERT_EQUAL_INT(0, token_emitted);
 
 }
 
-void test_scan_tokens_should_detect_slash_not_comment(void)
+void test_scan_next_token_should_detect_slash_not_comment(void)
 {
-	char* line = "/2\n";
+	char* line = "/2";
 	size_t pos = 0;
+	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, 0, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -75,18 +78,60 @@ void test_scan_tokens_should_detect_slash_not_comment(void)
 	}
 }
 
-
-void test_scan_tokens_should_detect_ordinary_single_char_lexeme(void)
+void test_scan_next_token_should_increment_line_nr_on_newline(void)
 {
-	char* line = "()\n";
-	size_t pos = 1;
+	char* line = "\n";
+	size_t pos = 0;
+	size_t line_nr = 2;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, 0, &token);
+	scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(3, line_nr);
+}
+
+void test_scan_next_token_should_not_increment_on_end_of_c_string(void)
+{
+	char* line = "";
+	size_t pos = 0;
+	size_t line_nr = 2;
+	Token token;
+
+	scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(2, line_nr);
+}
+
+void test_scan_next_token_should_detect_ordinary_single_char_lexeme(void)
+{
+	char* line = "()";
+	size_t pos = 1;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
 	if(token_produced) {
 		TEST_ASSERT_EQUAL_STRING(")", token.lexeme);
 	}
+}
+
+void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
+{
+	char* line = "{}() // some comment ()";
+	size_t pos = 0;
+	size_t line_nr = 0;
+
+	TokenBuffer token_buffer;
+	init_token_buffer(&token_buffer);
+
+	scan_tokens(line, &line_nr, &token_buffer, &pos);
+
+	TEST_ASSERT_EQUAL_INT(4, token_buffer.count);
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[3].lexeme, ")");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[1].lexeme, "}");
+
+	free_token_buffer(&token_buffer);
 }

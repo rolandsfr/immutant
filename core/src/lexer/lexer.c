@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "lexer.h"
+#include "error.h"
 
 
 Token create_token(enum TokenType type, const char *lexeme, size_t length, int line)
@@ -96,54 +97,73 @@ int line_is_at_end(char *line, size_t current_pos)
 
 
 /** returns lexeme of the next closes token */
-int scan_next_token(char *line, size_t *current_pos, int line_nr, Token* token)
+int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* token)
 {
     const char* current_char = advance(line, current_pos);
+    if(!current_char) return 0;
 
     switch (*current_char)
     {
     case '(':
-         *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, line_nr);
+         *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
 	 break;
     case ')':
-        *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, line_nr);
+        *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
 	break;
     case '{':
-        *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, line_nr);
+        *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
 	break;
     case '}':
-        *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, line_nr);
+        *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
 	break;
-    case '/':
-	printf("detected slash");
-	// strip out comments
-	if(match_next(line, current_pos, "/")) {
-		// TODO: Maybe add util ignore_until_char that advanced until said char...?
-		while(*peek(line, current_pos) != '\n') {
-			advance(line, current_pos);
-		}
-		return 0;
-	}
-	else {
-		*token = create_token(TOKEN_SLASH, current_char, 1, line_nr);
-		break; 
-	}
+    case '/': {
+		      // strip out comments
+		      if(match_next(line, current_pos, "/")) {
+			      const char* peeked_char = peek(line, current_pos);
+			      while(peeked_char != NULL && *peeked_char != '\n' && *peeked_char != '\0') {
+				      advance(line, current_pos);
+				      peeked_char = peek(line, current_pos);
+			      }
+			      return 0;
+		      }
+		      else {
+			      *token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
+			      break; 
+		      }
+	      }
+    case ' ':
+    case '\r':
+    case '\t':
+	return 0;
+	
+    case '\n':
+      *line_nr = *line_nr + 1;
+      return 0;
+
     default:
-	*token = create_token(TOKEN_UNRECOGNIZED, "", 1, line_nr);
+	*token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
     }
 
     return 1;
 }
 
 
-void scan_tokens(char *line, int line_nr,  TokenBuffer* token_buffer, size_t *current_pos) {
+void scan_tokens(char *line, size_t* line_nr,  TokenBuffer* token_buffer, size_t *current_pos) {
 	Token token;
 
 	do {
-		scan_next_token(line, current_pos, line_nr, &token);
+		int token_produced = scan_next_token(line, current_pos, line_nr, &token);
+
+		if(!token_produced) continue;
+
+		if(token.type == TOKEN_UNRECOGNIZED) {
+			printf("unexpected token %s", token.lexeme);
+			break;
+		}
+
 		add_token(token_buffer, token);
 	}
 
-	while(token.type != TOKEN_UNRECOGNIZED);
+	while(!line_is_at_end(line, *current_pos));
 
 }

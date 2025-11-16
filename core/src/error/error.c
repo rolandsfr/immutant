@@ -9,7 +9,7 @@ void error(int line, char* message) {
     report_error(line, message, &hadError);
 }
 
-void report_error(int line, char* message, int* hadError) {
+void report_error(size_t line, char* message, int* hadError) {
     const char* formatted_msg = format_error(line, message);
     printf("%s", formatted_msg);
     *hadError = 1;
