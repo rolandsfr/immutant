@@ -120,7 +120,7 @@ void test_scan_next_token_should_detect_ordinary_single_char_lexeme(void)
 
 void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 {
-	char* line = "{}() // some comment ()";
+	char* line = "{-() // some comment ++";
 	size_t pos = 0;
 	size_t line_nr = 0;
 
@@ -131,7 +131,7 @@ void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 
 	TEST_ASSERT_EQUAL_INT(4, token_buffer.count);
 	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[3].lexeme, ")");
-	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[1].lexeme, "}");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[1].lexeme, "-");
 
 	free_token_buffer(&token_buffer);
 }

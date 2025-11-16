@@ -116,6 +116,24 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
     case '}':
         *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
 	break;
+    case '.':
+        *token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
+	break;
+    case ',':
+        *token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
+	break;
+    case '-':
+        *token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
+	break;
+    case '+':
+        *token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
+	break;
+    case ';':
+        *token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
+	break;
+    case '*':
+        *token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
+	break;
     case '/': {
 		      // strip out comments
 		      if(match_next(line, current_pos, "/")) {

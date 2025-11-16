@@ -16,6 +16,7 @@ enum TokenType
     TOKEN_SLASH,
     TOKEN_SEMICOLON,
     TOKEN_DOT,
+    TOKEN_COMMA,
 
     // Comparison / logical tokens and assignment.
     TOKEN_BANG,
