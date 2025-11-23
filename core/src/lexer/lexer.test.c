@@ -115,6 +115,41 @@ void test_scan_next_token_should_detect_ordinary_single_char_lexeme(void)
 
 	if(token_produced) {
 		TEST_ASSERT_EQUAL_STRING(")", token.lexeme);
+		TEST_ASSERT_EQUAL_INT(TOKEN_RIGHT_PAREN, token.type);
+	}
+}
+
+void test_scan_next_token_should_detect_multichar_operators(void)
+{
+	char* line = "!=";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("!=", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_BANG_EQUAL, token.type);
+	}
+}
+
+void test_scan_next_token_should_detect_multichar_operators_with_single_char(void)
+{
+	char* line = "1>";
+	size_t pos = 1;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING(">", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_GREATER, token.type);
 	}
 }
 
@@ -135,3 +170,4 @@ void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 
 	free_token_buffer(&token_buffer);
 }
+

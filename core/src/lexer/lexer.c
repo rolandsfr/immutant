@@ -6,7 +6,6 @@
 #include "lexer.h"
 #include "error.h"
 
-
 Token create_token(enum TokenType type, const char *lexeme, size_t length, int line)
 {
     Token token;
@@ -21,6 +20,14 @@ Token create_token(enum TokenType type, const char *lexeme, size_t length, int l
     token.length = length;
     token.line = line;
     return token;
+}
+
+Token create_multi_char_token(char *line, size_t *pos, int line_nr, enum TokenType single, enum TokenType double_type, char expected_next) {
+    if (match_next(line, pos, &expected_next)) {
+        return create_token(double_type, line + *pos - 2, 2, line_nr);
+    }
+
+    return create_token(single, line + *pos - 1, 1, line_nr);
 }
 
 void init_token_buffer(TokenBuffer *buffer)
@@ -48,6 +55,7 @@ void add_token(TokenBuffer *buffer, Token token)
 
     buffer->tokens[buffer->count++] = token;
 }
+
 
 void free_token_buffer(TokenBuffer *buffer)
 {
@@ -104,62 +112,77 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
 
     switch (*current_char)
     {
-    case '(':
-         *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
-	 break;
-    case ')':
-        *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
-	break;
-    case '{':
-        *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
-	break;
-    case '}':
-        *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
-	break;
-    case '.':
-        *token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
-	break;
-    case ',':
-        *token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
-	break;
-    case '-':
-        *token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
-	break;
-    case '+':
-        *token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
-	break;
-    case ';':
-        *token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
-	break;
-    case '*':
-        *token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
-	break;
-    case '/': {
-		      // strip out comments
-		      if(match_next(line, current_pos, "/")) {
-			      const char* peeked_char = peek(line, current_pos);
-			      while(peeked_char != NULL && *peeked_char != '\n' && *peeked_char != '\0') {
-				      advance(line, current_pos);
-				      peeked_char = peek(line, current_pos);
-			      }
-			      return 0;
-		      }
-		      else {
-			      *token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
-			      break; 
-		      }
-	      }
-    case ' ':
-    case '\r':
-    case '\t':
-	return 0;
-	
-    case '\n':
-      *line_nr = *line_nr + 1;
-      return 0;
+        case '(':
+            *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
+            break;
+        case ')':
+            *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
+            break;
+        case '{':
+            *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
+            break;
+        case '}':
+            *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
+            break;
+        case '.':
+            *token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
+            break;
+        case ',':
+            *token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
+            break;
+        case '-':
+            *token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
+            break;
+        case '+':
+            *token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
+            break;
+        case ';':
+            *token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
+            break;
+        case '*':
+            *token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
+            break;
+        
+        // multi-char operators
+        case '!':
+            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_BANG, TOKEN_BANG_EQUAL, '=');
+            break;
+        case '=':
+            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_EQUAL, TOKEN_EQUAL_EQUAL, '=');
+            break;
+        case '>':
+            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_GREATER, TOKEN_GREATER_EQUAL, '=');
+            break;
+        case '<':
+            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
+            break;
 
-    default:
-	*token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+        case '/': {
+            // strip out comments
+            if(match_next(line, current_pos, "/")) {
+                const char* peeked_char = peek(line, current_pos);
+                while(peeked_char != NULL && *peeked_char != '\n' && *peeked_char != '\0') {
+                    advance(line, current_pos);
+                    peeked_char = peek(line, current_pos);
+                }
+                return 0;
+            }
+            else {
+                *token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
+                break; 
+            }
+        }
+        case ' ':
+        case '\r':
+        case '\t':
+            return 0;
+
+        case '\n':
+            *line_nr = *line_nr + 1;
+            return 0;
+
+        default:
+            *token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
     }
 
     return 1;
@@ -167,21 +190,18 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
 
 
 void scan_tokens(char *line, size_t* line_nr,  TokenBuffer* token_buffer, size_t *current_pos) {
-	Token token;
+    Token token;
 
-	do {
-		int token_produced = scan_next_token(line, current_pos, line_nr, &token);
+    do {
+        int token_produced = scan_next_token(line, current_pos, line_nr, &token);
 
-		if(!token_produced) continue;
+        if(!token_produced) continue;
 
-		if(token.type == TOKEN_UNRECOGNIZED) {
-			printf("unexpected token %s", token.lexeme);
-			break;
-		}
+        if(token.type == TOKEN_UNRECOGNIZED) {
+            printf("unexpected token %s", token.lexeme);
+            break;
+        }
 
-		add_token(token_buffer, token);
-	}
-
-	while(!line_is_at_end(line, *current_pos));
-
+        add_token(token_buffer, token);
+    } while(!line_is_at_end(line, *current_pos));
 }

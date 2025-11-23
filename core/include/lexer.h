@@ -57,7 +57,7 @@ enum TokenType
 typedef struct
 {
     enum TokenType type;
-    const char *lexeme;
+    char *lexeme;
     size_t length;
     int line;
 } Token;
