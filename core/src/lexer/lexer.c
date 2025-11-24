@@ -74,6 +74,19 @@ const char *peek(char *line, size_t *current_pos)
     return &line[*current_pos];
 }
 
+int peek_expect(char* line, size_t* current_pos, const char* expect_charset, int invert_expect) {
+    const char* peeked = peek(line, current_pos);
+
+    if (!peeked)
+        return 0;
+
+    for(int i = 0; expect_charset[i] != '\0'; i++)  {
+        if(expect_charset[i] == *peeked) return invert_expect ? 0 : 1;
+    }
+
+    return invert_expect ? 1 : 0;
+}
+
 /* returns character at the current position and advances the current position by one */
 const char *advance(char *line, size_t *current_pos)
 {
@@ -82,6 +95,20 @@ const char *advance(char *line, size_t *current_pos)
 
     (*current_pos)++;
     return &line[*current_pos - 1];
+}
+
+const char* advance_until(char* line, size_t* pos, const char* charset, int consume_last)
+{
+    const char* ch;
+    while(peek_expect(line, pos, charset, 1)) {
+        ch = advance(line, pos);
+    }
+
+    if(consume_last) {
+        ch = advance(line, pos);
+    }
+
+    return ch;
 }
 
 /** advances position if character at current position matches expected one and returns bool
@@ -97,6 +124,7 @@ int match_next(char *line, size_t *current_pos, const char* expected)
 
     return 0;
 }
+
 
 int line_is_at_end(char *line, size_t current_pos)
 {
@@ -160,11 +188,7 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
         case '/': {
             // strip out comments
             if(match_next(line, current_pos, "/")) {
-                const char* peeked_char = peek(line, current_pos);
-                while(peeked_char != NULL && *peeked_char != '\n' && *peeked_char != '\0') {
-                    advance(line, current_pos);
-                    peeked_char = peek(line, current_pos);
-                }
+                advance_until(line, current_pos, "\n\0", 0);
                 return 0;
             }
             else {

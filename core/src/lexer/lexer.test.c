@@ -38,6 +38,28 @@ void test_peek_looks_up_char_without_advancing(void)
 	TEST_ASSERT_EQUAL_INT(6, current_pos);
 }
 
+void test_peek_expect_matches_expected_without_advancing(void)
+{
+	char *line = "32=";
+
+	size_t current_pos = 2;
+
+	int matches_peeked = peek_expect(line, &current_pos, "=12", 0);
+
+	TEST_ASSERT_EQUAL_INT(1, matches_peeked);
+}
+
+void test_peek_expect_does_not_match_at_the_end_of_line(void)
+{
+	char *line = "32=";
+
+	size_t current_pos = 3;
+
+	int matches_peeked = peek_expect(line, &current_pos, "=12", 0);
+
+	TEST_ASSERT_EQUAL_INT(0, matches_peeked);
+}
+
 /** fn match_next returns true only if character at advanced position matches the expected one*/
 void test_match_next_returns_bool_on_advanced_matched_char(void)
 {
@@ -52,14 +74,18 @@ void test_match_next_returns_bool_on_advanced_matched_char(void)
 
 void test_scan_next_token_should_ignore_comments(void)
 {
-	char* line = "// some ordinary 123 comment";
+	char* line = "//some ordinary 123 comment";
 	size_t pos = 0;
 	size_t line_nr = 0;
 	Token token;
 
-	int token_emitted = scan_next_token(line, &pos, &line_nr, &token);
-	TEST_ASSERT_EQUAL_INT(0, token_emitted);
+	int token_emitted;
 
+    token_emitted = scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(0, token_emitted);
+	TEST_ASSERT_EQUAL_INT(27, pos); 
+	TEST_ASSERT_EQUAL_INT(1, line_is_at_end(line, pos));
 }
 
 void test_scan_next_token_should_detect_slash_not_comment(void)
@@ -72,6 +98,7 @@ void test_scan_next_token_should_detect_slash_not_comment(void)
 	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
+	TEST_ASSERT_EQUAL_INT(1, pos);
 
 	if(token_produced) {
 		TEST_ASSERT_EQUAL_STRING("/", token.lexeme);
@@ -155,7 +182,7 @@ void test_scan_next_token_should_detect_multichar_operators_with_single_char(voi
 
 void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 {
-	char* line = "{-() // some comment ++";
+	char* line = "{-() // some comment (";
 	size_t pos = 0;
 	size_t line_nr = 0;
 
