@@ -6,6 +6,8 @@
 #include "lexer.h"
 #include "error.h"
 
+#include "resolve.h"
+
 Token create_token(enum TokenType type, const char *lexeme, size_t length, int line)
 {
     Token token;
@@ -69,15 +71,23 @@ void free_token_buffer(TokenBuffer *buffer)
 const char *peek(char *line, size_t *current_pos)
 {
     if (line_is_at_end(line, *current_pos))
-        return NULL;
+        return "\0";
 
     return &line[*current_pos];
+}
+
+/** looks up ahead 2 chars from current position without consuming the characters */
+const char *peek_next(char *line, size_t current_pos)
+{
+    if(line_is_at_end(line, current_pos + 1)) return "\0";
+
+    return &line[current_pos + 1];
 }
 
 int peek_expect(char* line, size_t* current_pos, const char* expect_charset, int invert_expect) {
     const char* peeked = peek(line, current_pos);
 
-    if (!peeked)
+    if (*peeked == '\0')
         return 0;
 
     for(int i = 0; expect_charset[i] != '\0'; i++)  {
@@ -206,7 +216,31 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
             return 0;
 
         default:
-            *token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+            if(is_number_candidate(*current_char)) {
+                char* out_num = NULL;
+                //
+                // backtrack because first number cancidate char check already consumed position 
+                // and position starting with initial one is needed to resolve full number
+                *current_pos = *current_pos - 1;
+
+                int is_number_resolved = resolve_number(line, current_pos, &out_num);
+
+                if(!is_number_resolved) return 0;
+
+                size_t len = strlen(out_num);
+                *token = create_token(TOKEN_NUMBER, out_num, len, *line_nr);
+            } else if(*current_char == '\"') {
+                size_t start = *current_pos;
+                char* string_value = resolve_string(line, current_pos);
+
+                if(!string_value) return 0;
+
+                size_t len = *current_pos - start;
+
+                *token = create_token(TOKEN_STRING, string_value, len, *line_nr);
+            } else {
+                *token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+            }
     }
 
     return 1;

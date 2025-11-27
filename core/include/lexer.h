@@ -51,7 +51,7 @@ enum TokenType
     TOKEN_EOF,
 
     // Not supported - not part of syntax
-    TOKEN_UNRECOGNIZED
+    TOKEN_UNRECOGNIZED = 404
 };
 
 typedef struct
@@ -115,6 +115,8 @@ int line_is_at_end(char *line, size_t current_pos);
 
 /** same as peek but returns boolean like-number if peeked char matches any in provided charset string */
 int peek_expect(char* line, size_t* current_pos, const char* expect_charset, int invert_expect);
+
+const char *peek_next(char *line, size_t current_pos);
 
 /** advances position until is either end of line or target char was reached. consume last bool number dictates wether to advances 1 more once reached eol or target char*/
 const char* advance_until(char* line, size_t* pos, const char* charset, int consume_last);

@@ -1,9 +1,11 @@
-#include "unity.h"
-#include "lexer.h"
-#include "utils.h"
 #include <assert.h>
 #include <stdlib.h>
 
+#include "unity.h"
+#include "lexer.h"
+#include "utils.h"
+
+TEST_SOURCE_FILE("resolve/resolve.c");
 
 /** fn advance moves position forward by one */
 void test_advance_moves_position_forward(void)
@@ -177,6 +179,80 @@ void test_scan_next_token_should_detect_multichar_operators_with_single_char(voi
 	if(token_produced) {
 		TEST_ASSERT_EQUAL_STRING(">", token.lexeme);
         TEST_ASSERT_EQUAL_INT(TOKEN_GREATER, token.type);
+	}
+}
+
+void test_scan_next_token_should_resolve_strings(void)
+{
+	char* line = "\"sunny day\"";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("sunny day", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_STRING, token.type);
+	}
+}
+
+void test_scan_next_token_should_not_produce_string_if_line_ends_with_double_quote(void)
+{
+	char* line = "\"";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+	TEST_ASSERT_EQUAL_INT(0, token_produced);
+}
+
+void test_scan_next_token_should_resolve_full_double_precision_number(void) {
+	char* line = "39.456723asd=as";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+    TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("39.456723", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_NUMBER, token.type);
+	}
+}
+
+void test_scan_next_token_should_resolve_whole_number(void) {
+	char* line = "159";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+    TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("159", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_NUMBER, token.type);
+	}
+}
+
+void test_scan_next_token_should_resolve_zero(void) {
+	char* line = "0";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+    TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if(token_produced) {
+		TEST_ASSERT_EQUAL_STRING("0", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_NUMBER, token.type);
 	}
 }
 

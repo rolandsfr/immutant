@@ -1,3 +1,10 @@
+:defines:
+  :common: &common_defines []
+  :test:
+    - *common_defines
+    - TEST
+    - UNITY_INCLUDE_DOUBLE # Add it here without D prefix
+
 :paths:
   :source:
     - src/**
