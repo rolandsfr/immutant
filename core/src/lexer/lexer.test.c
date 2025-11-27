@@ -6,6 +6,7 @@
 #include "utils.h"
 
 TEST_SOURCE_FILE("resolve/resolve.c");
+TEST_SOURCE_FILE("resolve/keywords.c");
 
 /** fn advance moves position forward by one */
 void test_advance_moves_position_forward(void)
@@ -274,3 +275,37 @@ void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 	free_token_buffer(&token_buffer);
 }
 
+void test_scan_next_token_should_resolve_identifier(void)
+{
+
+    char* line = "_immutant";
+    size_t pos = 0;
+    size_t line_nr = 0;
+    Token token;
+
+    int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+    TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+    if(token_produced) {
+        TEST_ASSERT_EQUAL_STRING("_immutant", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_IDENTIFIER, token.type);
+    }
+}
+
+void test_scan_next_token_should_resolve_keyword(void)
+{
+    char* line = "else";
+    size_t pos = 0;
+    size_t line_nr = 0;
+    Token token;
+
+    int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+
+    TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+    if(token_produced) {
+        TEST_ASSERT_EQUAL_STRING("else", token.lexeme);
+        TEST_ASSERT_EQUAL_INT(TOKEN_ELSE, token.type);
+    }
+}

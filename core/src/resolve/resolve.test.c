@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "lexer.h"
 #include "unity.h"
 #include "resolve.h"
 
@@ -104,4 +105,49 @@ void test_is_number_candidate_should_not_allow_chars_starting_with_non_dot_non_n
 void test_is_number_candidate_should_not_allow_chars_starting_whith_leading_dot(void)
 {
     TEST_ASSERT_EQUAL_INT(is_number_candidate('.'), 1); // is a good candidate but string itself not parsable
+}
+
+void test_should_resolve_keywords(void)
+{
+    char* line = "immutant";
+    size_t pos = 0;
+    size_t len = 8;
+    enum TokenType token_out;
+
+    int is_keyword_resolved = resolve_keyword(line, pos, len, &token_out); 
+
+    TEST_ASSERT_EQUAL_INT(1, is_keyword_resolved);
+
+    if(is_keyword_resolved != -1) {
+        TEST_ASSERT_EQUAL_INT(TOKEN_IMMUTANT, token_out);
+    } 
+}
+
+void test_should_not_resolve_substring_keywords(void)
+{
+    char* line = "purely";
+    size_t pos = 0;
+    size_t len = 8;
+    enum TokenType token_out;
+
+    int is_keyword_resolved = resolve_keyword(line, pos, len, &token_out); 
+
+    TEST_ASSERT_EQUAL_INT(-1, is_keyword_resolved);
+}
+
+void test_should_resolve_alphanumeric_identifier(void)
+{
+    char* line = "var_name123!";
+    size_t pos = 0;
+    char* out_ident = NULL;
+
+    int is_identifier_resolved = resolve_identifier(line, &pos, &out_ident);
+
+    TEST_ASSERT_EQUAL_INT(1, is_identifier_resolved);
+
+    if(is_identifier_resolved) {
+        TEST_ASSERT_EQUAL_STRING("var_name123", out_ident);
+        TEST_ASSERT_EQUAL_INT(11, pos);
+        free(out_ident);
+    }
 }

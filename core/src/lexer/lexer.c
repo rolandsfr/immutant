@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 
 #include "lexer.h"
@@ -215,29 +216,45 @@ int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* tok
             *line_nr = *line_nr + 1;
             return 0;
 
+        // string literals
+        case '\"': {
+            size_t start = *current_pos;
+            char* string_value = resolve_string(line, current_pos);
+
+            if(!string_value) return 0;
+
+            size_t len = *current_pos - start;
+            *token = create_token(TOKEN_STRING, string_value, len, *line_nr);
+            break;
+        }
         default:
+            // backtrack because first cancidate char check already consumed position 
+            // and position starting with initial one is needed to resolve full number
             if(is_number_candidate(*current_char)) {
                 char* out_num = NULL;
-                //
-                // backtrack because first number cancidate char check already consumed position 
-                // and position starting with initial one is needed to resolve full number
                 *current_pos = *current_pos - 1;
-
                 int is_number_resolved = resolve_number(line, current_pos, &out_num);
 
                 if(!is_number_resolved) return 0;
 
                 size_t len = strlen(out_num);
                 *token = create_token(TOKEN_NUMBER, out_num, len, *line_nr);
-            } else if(*current_char == '\"') {
-                size_t start = *current_pos;
-                char* string_value = resolve_string(line, current_pos);
+            } else if(isalpha(*current_char) || *current_char == '_') {
+                *current_pos = *current_pos - 1;
+                char* out_identifier = NULL;
+                int is_identifier_resolved = resolve_identifier(line, current_pos, &out_identifier);
 
-                if(!string_value) return 0;
+                if(!is_identifier_resolved) return 0;
 
-                size_t len = *current_pos - start;
+                size_t len = strlen(out_identifier);
+                enum  TokenType keyword_type;
+                int is_keyword = resolve_keyword(out_identifier, 0, len, &keyword_type);
 
-                *token = create_token(TOKEN_STRING, string_value, len, *line_nr);
+                if(is_keyword == 1) {
+                    *token = create_token(keyword_type, out_identifier, len, *line_nr);
+                } else {
+                    *token = create_token(TOKEN_IDENTIFIER, out_identifier, len, *line_nr);
+                }
             } else {
                 *token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
             }

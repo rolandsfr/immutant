@@ -46,6 +46,9 @@ enum TokenType
     TOKEN_MUTANT,
     TOKEN_FN,
     TOKEN_RETURN,
+    TOKEN_IMPURE,
+    TOKEN_PURE,
+
 
     // End of file
     TOKEN_EOF,
