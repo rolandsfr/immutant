@@ -1,282 +1,333 @@
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "lexer.h"
+
 #include <ctype.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "lexer.h"
 #include "error.h"
-
 #include "resolve.h"
 
-Token create_token(enum TokenType type, const char *lexeme, size_t length, int line)
+Token create_token(enum TokenType type, const char* lexeme, size_t length,
+				   int line)
 {
-    Token token;
-    token.type = type;
+	Token token;
+	token.type = type;
 
-    // copy char by value to avoid tests reading full string from pointer
-    char *copy = malloc(length + 1);
-    strncpy(copy, lexeme, length);
-    copy[length] = '\0';
+	// copy char by value to avoid tests reading full string from pointer
+	char* copy = malloc(length + 1);
+	strncpy(copy, lexeme, length);
+	copy[length] = '\0';
 
-    token.lexeme = copy;
-    token.length = length;
-    token.line = line;
-    return token;
+	token.lexeme = copy;
+	token.length = length;
+	token.line = line;
+	return token;
 }
 
-Token create_multi_char_token(char *line, size_t *pos, int line_nr, enum TokenType single, enum TokenType double_type, char expected_next) {
-    if (match_next(line, pos, &expected_next)) {
-        return create_token(double_type, line + *pos - 2, 2, line_nr);
-    }
-
-    return create_token(single, line + *pos - 1, 1, line_nr);
-}
-
-void init_token_buffer(TokenBuffer *buffer)
+Token create_multi_char_token(char* line, size_t* pos, int line_nr,
+							  enum TokenType single, enum TokenType double_type,
+							  char expected_next)
 {
-    buffer->count = 0;
-    buffer->capacity = 64;
-    buffer->tokens = malloc(buffer->capacity * sizeof(Token));
+	if (match_next(line, pos, &expected_next)) {
+		return create_token(double_type, line + *pos - 2, 2, line_nr);
+	}
+
+	return create_token(single, line + *pos - 1, 1, line_nr);
 }
 
-void add_token(TokenBuffer *buffer, Token token)
+void init_token_buffer(TokenBuffer* buffer)
 {
-    // reallocate and increase total capacity if running out of buffer space
-    if (buffer->count >= buffer->capacity)
-    {
-        buffer->capacity *= 2;
-        buffer->tokens = realloc(buffer->tokens, buffer->capacity * sizeof(Token));
-
-        if (buffer->tokens == NULL)
-        {
-            // handle memory allocation failure
-            printf("Failed to allocate memory to save token\n");
-            exit(1);
-        }
-    }
-
-    buffer->tokens[buffer->count++] = token;
+	buffer->count = 0;
+	buffer->capacity = 64;
+	buffer->tokens = malloc(buffer->capacity * sizeof(Token));
 }
 
-
-void free_token_buffer(TokenBuffer *buffer)
+void add_token(TokenBuffer* buffer, Token token)
 {
-    free(buffer->tokens);
-    buffer->tokens = NULL;
-    buffer->count = 0;
-    buffer->capacity = 0;
+	// reallocate and increase total capacity if running out of buffer space
+	if (buffer->count >= buffer->capacity) {
+		buffer->capacity *= 2;
+		buffer->tokens =
+			realloc(buffer->tokens, buffer->capacity * sizeof(Token));
+
+		if (buffer->tokens == NULL) {
+			// handle memory allocation failure
+			printf("Failed to allocate memory to save token\n");
+			exit(1);
+		}
+	}
+
+	buffer->tokens[buffer->count++] = token;
 }
 
-/** looks up ahead 1 char from current position without consuming the character */
-const char *peek(char *line, size_t *current_pos)
+void free_token_buffer(TokenBuffer* buffer)
 {
-    if (line_is_at_end(line, *current_pos))
-        return "\0";
-
-    return &line[*current_pos];
+	free(buffer->tokens);
+	buffer->tokens = NULL;
+	buffer->count = 0;
+	buffer->capacity = 0;
 }
 
-/** looks up ahead 2 chars from current position without consuming the characters */
-const char *peek_next(char *line, size_t current_pos)
+/** looks up ahead 1 char from current position without consuming the character
+ */
+const char* peek(char* line, size_t* current_pos)
 {
-    if(line_is_at_end(line, current_pos + 1)) return "\0";
+	if (line_is_at_end(line, *current_pos))
+		return "\0";
 
-    return &line[current_pos + 1];
+	return &line[*current_pos];
 }
 
-int peek_expect(char* line, size_t* current_pos, const char* expect_charset, int invert_expect) {
-    const char* peeked = peek(line, current_pos);
-
-    if (*peeked == '\0')
-        return 0;
-
-    for(int i = 0; expect_charset[i] != '\0'; i++)  {
-        if(expect_charset[i] == *peeked) return invert_expect ? 0 : 1;
-    }
-
-    return invert_expect ? 1 : 0;
-}
-
-/* returns character at the current position and advances the current position by one */
-const char *advance(char *line, size_t *current_pos)
+/** looks up ahead 2 chars from current position without consuming the
+ * characters */
+const char* peek_next(char* line, size_t current_pos)
 {
-    if (line_is_at_end(line, *current_pos))
-        return NULL;
+	if (line_is_at_end(line, current_pos + 1))
+		return "\0";
 
-    (*current_pos)++;
-    return &line[*current_pos - 1];
+	return &line[current_pos + 1];
 }
 
-const char* advance_until(char* line, size_t* pos, const char* charset, int consume_last)
+int peek_expect(char* line, size_t* current_pos, const char* expect_charset,
+				int invert_expect)
 {
-    const char* ch;
-    while(peek_expect(line, pos, charset, 1)) {
-        ch = advance(line, pos);
-    }
+	const char* peeked = peek(line, current_pos);
 
-    if(consume_last) {
-        ch = advance(line, pos);
-    }
+	if (*peeked == '\0')
+		return 0;
 
-    return ch;
+	for (int i = 0; expect_charset[i] != '\0'; i++) {
+		if (expect_charset[i] == *peeked)
+			return invert_expect ? 0 : 1;
+	}
+
+	return invert_expect ? 1 : 0;
 }
 
-/** advances position if character at current position matches expected one and returns bool
- * if such advancement was made
-*/
-int match_next(char *line, size_t *current_pos, const char* expected)
+/* returns character at the current position and advances the current position
+ * by one */
+const char* advance(char* line, size_t* current_pos)
 {
-    if (line[*current_pos] == *expected)
-    {
-        (*current_pos)++;
-        return 1;
-    }
+	if (line_is_at_end(line, *current_pos))
+		return NULL;
 
-    return 0;
+	(*current_pos)++;
+	return &line[*current_pos - 1];
 }
 
-
-int line_is_at_end(char *line, size_t current_pos)
+const char* advance_until(char* line, size_t* pos, const char* charset,
+						  int consume_last)
 {
-    return current_pos >= strlen(line);
+	const char* ch;
+	while (peek_expect(line, pos, charset, 1)) {
+		ch = advance(line, pos);
+	}
+
+	if (consume_last) {
+		ch = advance(line, pos);
+	}
+
+	return ch;
 }
 
+/** advances position if character at current position matches expected one and
+ * returns bool if such advancement was made
+ */
+int match_next(char* line, size_t* current_pos, const char* expected)
+{
+	if (line[*current_pos] == *expected) {
+		(*current_pos)++;
+		return 1;
+	}
+
+	return 0;
+}
+
+int line_is_at_end(char* line, size_t current_pos)
+{
+	return current_pos >= strlen(line);
+}
+
+int resolve_and_create_number(char* line, size_t* current_pos, size_t line_nr,
+							  Token* out_token)
+{
+	char* out_num = NULL;
+	if (!resolve_number(line, current_pos, &out_num))
+		return 0;
+
+	size_t len = strlen(out_num);
+	*out_token = create_token(TOKEN_NUMBER, out_num, len, line_nr);
+
+	return 1;
+}
+
+int resolve_and_create_identifier(char* line, size_t* current_pos,
+								  size_t line_nr, Token* out_token)
+{
+	char* out_identifier = NULL;
+	if (!resolve_identifier(line, current_pos, &out_identifier))
+		return 0;
+
+	size_t len = strlen(out_identifier);
+	enum TokenType keyword_type;
+
+	if (resolve_keyword(out_identifier, 0, len, &keyword_type)) {
+		*out_token = create_token(keyword_type, out_identifier, len, line_nr);
+	} else {
+		*out_token =
+			create_token(TOKEN_IDENTIFIER, out_identifier, len, line_nr);
+	}
+
+	return 1;
+}
 
 /** returns lexeme of the next closes token */
-int scan_next_token(char *line, size_t *current_pos, size_t* line_nr, Token* token)
+int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
+					Token* token)
 {
-    const char* current_char = advance(line, current_pos);
-    if(!current_char) return 0;
+	const char* current_char = advance(line, current_pos);
+	if (!current_char)
+		return 0;
 
-    switch (*current_char)
-    {
-        case '(':
-            *token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
-            break;
-        case ')':
-            *token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
-            break;
-        case '{':
-            *token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
-            break;
-        case '}':
-            *token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
-            break;
-        case '.':
-            *token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
-            break;
-        case ',':
-            *token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
-            break;
-        case '-':
-            *token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
-            break;
-        case '+':
-            *token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
-            break;
-        case ';':
-            *token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
-            break;
-        case '*':
-            *token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
-            break;
-        
-        // multi-char operators
-        case '!':
-            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_BANG, TOKEN_BANG_EQUAL, '=');
-            break;
-        case '=':
-            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_EQUAL, TOKEN_EQUAL_EQUAL, '=');
-            break;
-        case '>':
-            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_GREATER, TOKEN_GREATER_EQUAL, '=');
-            break;
-        case '<':
-            *token = create_multi_char_token(line, current_pos, *line_nr, TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
-            break;
+	switch (*current_char) {
+	case '(':
+		*token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
+		break;
+	case ')':
+		*token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
+		break;
+	case '{':
+		*token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
+		break;
+	case '}':
+		*token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
+		break;
+	case '.':
+		*token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
+		break;
+	case ',':
+		*token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
+		break;
+	case '-':
+		*token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
+		break;
+	case '+':
+		*token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
+		break;
+	case ';':
+		*token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
+		break;
+	case '*':
+		*token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
+		break;
 
-        case '/': {
-            // strip out comments
-            if(match_next(line, current_pos, "/")) {
-                advance_until(line, current_pos, "\n\0", 0);
-                return 0;
-            }
-            else {
-                *token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
-                break; 
-            }
-        }
-        case ' ':
-        case '\r':
-        case '\t':
-            return 0;
+	// multi-char operators
+	case '!':
+		*token = create_multi_char_token(line, current_pos, *line_nr,
+										 TOKEN_BANG, TOKEN_BANG_EQUAL, '=');
+		break;
+	case '=':
+		*token = create_multi_char_token(line, current_pos, *line_nr,
+										 TOKEN_EQUAL, TOKEN_EQUAL_EQUAL, '=');
+		break;
+	case '>':
+		*token =
+			create_multi_char_token(line, current_pos, *line_nr, TOKEN_GREATER,
+									TOKEN_GREATER_EQUAL, '=');
+		break;
+	case '<':
+		*token = create_multi_char_token(line, current_pos, *line_nr,
+										 TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
+		break;
 
-        case '\n':
-            *line_nr = *line_nr + 1;
-            return 0;
+	case '/': {
+		// strip out comments
+		if (match_next(line, current_pos, "/")) {
+			advance_until(line, current_pos, "\n\0", 0);
+			return 0;
+		} else {
+			*token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
+			break;
+		}
+	}
+	case ' ':
+	case '\r':
+	case '\t':
+		return 0;
 
-        // string literals
-        case '\"': {
-            size_t start = *current_pos;
-            char* string_value = resolve_string(line, current_pos);
+	case '\n':
+		*line_nr = *line_nr + 1;
+		return 0;
 
-            if(!string_value) return 0;
+	// string literals
+	case '\"': {
+		size_t start = *current_pos;
+		char* string_value = resolve_string(line, current_pos);
 
-            size_t len = *current_pos - start;
-            *token = create_token(TOKEN_STRING, string_value, len, *line_nr);
-            break;
-        }
-        default:
-            // backtrack because first cancidate char check already consumed position 
-            // and position starting with initial one is needed to resolve full number
-            if(is_number_candidate(*current_char)) {
-                char* out_num = NULL;
-                *current_pos = *current_pos - 1;
-                int is_number_resolved = resolve_number(line, current_pos, &out_num);
+		if (!string_value)
+			return 0;
 
-                if(!is_number_resolved) return 0;
+		size_t len = *current_pos - start;
+		*token = create_token(TOKEN_STRING, string_value, len, *line_nr);
+		break;
+	}
+	default:
+		// backtrack because first cancidate char check already consumed
+		// position and position starting with initial one is needed to resolve
+		// full number
+		if (is_number_candidate(*current_char)) {
+			*current_pos = *current_pos - 1;
+			return resolve_and_create_number(line, current_pos, *line_nr,
+											 token);
+		} else if (isalpha(*current_char) || *current_char == '_') {
+			*current_pos = *current_pos - 1;
+			char* out_identifier = NULL;
+			int is_identifier_resolved =
+				resolve_identifier(line, current_pos, &out_identifier);
 
-                size_t len = strlen(out_num);
-                *token = create_token(TOKEN_NUMBER, out_num, len, *line_nr);
-            } else if(isalpha(*current_char) || *current_char == '_') {
-                *current_pos = *current_pos - 1;
-                char* out_identifier = NULL;
-                int is_identifier_resolved = resolve_identifier(line, current_pos, &out_identifier);
+			if (!is_identifier_resolved)
+				return 0;
 
-                if(!is_identifier_resolved) return 0;
+			size_t len = strlen(out_identifier);
+			enum TokenType keyword_type;
+			int is_keyword =
+				resolve_keyword(out_identifier, 0, len, &keyword_type);
 
-                size_t len = strlen(out_identifier);
-                enum  TokenType keyword_type;
-                int is_keyword = resolve_keyword(out_identifier, 0, len, &keyword_type);
+			if (is_keyword == 1) {
+				*token =
+					create_token(keyword_type, out_identifier, len, *line_nr);
+			} else {
+				*token = create_token(TOKEN_IDENTIFIER, out_identifier, len,
+									  *line_nr);
+			}
+		} else {
+			*token =
+				create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+		}
+	}
 
-                if(is_keyword == 1) {
-                    *token = create_token(keyword_type, out_identifier, len, *line_nr);
-                } else {
-                    *token = create_token(TOKEN_IDENTIFIER, out_identifier, len, *line_nr);
-                }
-            } else {
-                *token = create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
-            }
-    }
-
-    return 1;
+	return 1;
 }
 
+void scan_tokens(char* line, size_t* line_nr, TokenBuffer* token_buffer,
+				 size_t* current_pos)
+{
+	Token token;
 
-void scan_tokens(char *line, size_t* line_nr,  TokenBuffer* token_buffer, size_t *current_pos) {
-    Token token;
+	do {
+		int token_produced =
+			scan_next_token(line, current_pos, line_nr, &token);
 
-    do {
-        int token_produced = scan_next_token(line, current_pos, line_nr, &token);
+		if (!token_produced)
+			continue;
 
-        if(!token_produced) continue;
+		if (token.type == TOKEN_UNRECOGNIZED) {
+			printf("unexpected token %s", token.lexeme);
+			break;
+		}
 
-        if(token.type == TOKEN_UNRECOGNIZED) {
-            printf("unexpected token %s", token.lexeme);
-            break;
-        }
-
-        add_token(token_buffer, token);
-    } while(!line_is_at_end(line, *current_pos));
+		add_token(token_buffer, token);
+	} while (!line_is_at_end(line, *current_pos));
 }
