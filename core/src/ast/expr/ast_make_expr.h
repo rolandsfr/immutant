@@ -1,10 +1,11 @@
 #include "ast_expr.h"
+#include "lexer.h"
 
 #include "../ast_cnstrct.h"
 
 NumberExpr* make_number_expr(double value);
 
-BinaryExpr* make_binary_expr(Expr* left, char op, Expr* right);
+BinaryExpr* make_binary_expr(Expr* left, enum TokenType op, Expr* right);
 
 VariableExpr* make_variable_expr(const char* name);
 

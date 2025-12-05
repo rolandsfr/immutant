@@ -1,8 +1,11 @@
 
+#include "ast_make_expr.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 #include "ast_expr.h"
+#include "lexer.h"
 
 #include "../ast_cnstrct.h"
 
@@ -18,12 +21,12 @@ NumberExpr* make_number_expr(double value)
 	return n;
 }
 
-BinaryExpr* make_binary_expr(Expr* left, char operator, Expr* right)
+BinaryExpr* make_binary_expr(Expr* left, enum TokenType op, Expr* right)
 {
 	BinaryExpr* b = malloc(sizeof(BinaryExpr));
 	b->base.type = EXPR_BINARY;
 	b->left = left;
-	b->operator = operator;
+	b->operator = op;
 	b->right = right;
 	return b;
 }

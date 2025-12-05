@@ -11,8 +11,10 @@ int is_at_end(TokenBuffer* tokens, size_t pos)
 
 int check_token(TokenBuffer* tokens, size_t pos, enum TokenType type)
 {
-	if (is_at_end(tokens, pos))
+	if (is_at_end(tokens, pos)) {
+
 		return 0;
+	}
 	return tokens->tokens[pos].type == type;
 }
 
