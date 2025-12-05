@@ -8,6 +8,7 @@
 
 # dir for bundling test code and storing test runner related data
 tests_build/
+compile_commands.json
 
 # contains build artifact
 build/

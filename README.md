@@ -27,6 +27,14 @@ Running tests requires having ceedling being installed via ruby `gem`.
 
 To run all tests use `ceedling test` within the core/ lib or otherwise `make test` in the root.
 
+## LSP Context
+This project uses ceedling plugin `compile_commands_json_db` that generates `compile_commands.json` file for better LSP support (including ceedling vendor files too). It will be generated automatically when running tests in `core/tests_build/artifacts/compile_commands.json`. For some Unix based systems you may need symlink it to the root of the project for LSP to pick it up:
+
+```
+ln -s core/tests_build/artifacts/compile_commands.json compile_commands.json
+```
+
+
 ## Building
 
 To build the binary, make sure you have GNU GCC compiler installed and available in your PATH.

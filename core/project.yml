@@ -9,10 +9,10 @@
   :source:
     - src/**
   :include:
-    - include
-    - src
+    - include/**
+    - src/**
   :test:
-    - src/** # unit tests live next to code
+    - test/** 
 
 :flags:
   :preprocess:
@@ -41,9 +41,8 @@
   :enabled:
     - module_generator # handy for quickly creating source, header, and test templates
     - report_tests_pretty_stdout
+    - compile_commands_json_db
 
-:extension:
-  :executable: .out
 
 ---
 # Configuration Options specific to CMock. See CMock docs for details

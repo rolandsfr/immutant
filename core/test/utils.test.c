@@ -1,5 +1,7 @@
-#include "unity.h"
+
 #include "utils.h"
+
+#include "unity.h"
 
 void test_copy_char_should_copy_single_char_without_ref(void)
 {

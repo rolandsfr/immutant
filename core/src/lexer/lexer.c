@@ -70,7 +70,8 @@ void free_token_buffer(TokenBuffer* buffer)
 	buffer->capacity = 0;
 }
 
-/** looks up ahead 1 char from current position without consuming the character
+/** looks up ahead 1 char from current position without consuming the
+character
  */
 const char* peek(char* line, size_t* current_pos)
 {
@@ -106,7 +107,8 @@ int peek_expect(char* line, size_t* current_pos, const char* expect_charset,
 	return invert_expect ? 1 : 0;
 }
 
-/* returns character at the current position and advances the current position
+/* returns character at the current position and advances the current
+position
  * by one */
 const char* advance(char* line, size_t* current_pos)
 {
@@ -132,7 +134,8 @@ const char* advance_until(char* line, size_t* pos, const char* charset,
 	return ch;
 }
 
-/** advances position if character at current position matches expected one and
+/** advances position if character at current position matches expected one
+and
  * returns bool if such advancement was made
  */
 int match_next(char* line, size_t* current_pos, const char* expected)
@@ -192,120 +195,121 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 		return 0;
 
 	switch (*current_char) {
-	case '(':
-		*token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
-		break;
-	case ')':
-		*token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
-		break;
-	case '{':
-		*token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
-		break;
-	case '}':
-		*token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
-		break;
-	case '.':
-		*token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
-		break;
-	case ',':
-		*token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
-		break;
-	case '-':
-		*token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
-		break;
-	case '+':
-		*token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
-		break;
-	case ';':
-		*token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
-		break;
-	case '*':
-		*token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
-		break;
-
-	// multi-char operators
-	case '!':
-		*token = create_multi_char_token(line, current_pos, *line_nr,
-										 TOKEN_BANG, TOKEN_BANG_EQUAL, '=');
-		break;
-	case '=':
-		*token = create_multi_char_token(line, current_pos, *line_nr,
-										 TOKEN_EQUAL, TOKEN_EQUAL_EQUAL, '=');
-		break;
-	case '>':
-		*token =
-			create_multi_char_token(line, current_pos, *line_nr, TOKEN_GREATER,
-									TOKEN_GREATER_EQUAL, '=');
-		break;
-	case '<':
-		*token = create_multi_char_token(line, current_pos, *line_nr,
-										 TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
-		break;
-
-	case '/': {
-		// strip out comments
-		if (match_next(line, current_pos, "/")) {
-			advance_until(line, current_pos, "\n\0", 0);
-			return 0;
-		} else {
-			*token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
+		case '(':
+			*token = create_token(TOKEN_LEFT_PAREN, current_char, 1, *line_nr);
 			break;
+		case ')':
+			*token = create_token(TOKEN_RIGHT_PAREN, current_char, 1, *line_nr);
+			break;
+		case '{':
+			*token = create_token(TOKEN_LEFT_BRACE, current_char, 1, *line_nr);
+			break;
+		case '}':
+			*token = create_token(TOKEN_RIGHT_BRACE, current_char, 1, *line_nr);
+			break;
+		case '.':
+			*token = create_token(TOKEN_DOT, current_char, 1, *line_nr);
+			break;
+		case ',':
+			*token = create_token(TOKEN_COMMA, current_char, 1, *line_nr);
+			break;
+		case '-':
+			*token = create_token(TOKEN_MINUS, current_char, 1, *line_nr);
+			break;
+		case '+':
+			*token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
+			break;
+		case ';':
+			*token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
+			break;
+		case '*':
+			*token = create_token(TOKEN_STAR, current_char, 1, *line_nr);
+			break;
+
+		// multi-char operators
+		case '!':
+			*token = create_multi_char_token(line, current_pos, *line_nr,
+											 TOKEN_BANG, TOKEN_BANG_EQUAL, '=');
+			break;
+		case '=':
+			*token =
+				create_multi_char_token(line, current_pos, *line_nr,
+										TOKEN_EQUAL, TOKEN_EQUAL_EQUAL, '=');
+			break;
+		case '>':
+			*token = create_multi_char_token(line, current_pos, *line_nr,
+											 TOKEN_GREATER, TOKEN_GREATER_EQUAL,
+											 '=');
+			break;
+		case '<':
+			*token = create_multi_char_token(line, current_pos, *line_nr,
+											 TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
+			break;
+
+		case '/': {
+			// strip out comments
+			if (match_next(line, current_pos, "/")) {
+				advance_until(line, current_pos, "\n\0", 0);
+				return 0;
+			} else {
+				*token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);
+				break;
+			}
 		}
-	}
-	case ' ':
-	case '\r':
-	case '\t':
-		return 0;
-
-	case '\n':
-		*line_nr = *line_nr + 1;
-		return 0;
-
-	// string literals
-	case '\"': {
-		size_t start = *current_pos;
-		char* string_value = resolve_string(line, current_pos);
-
-		if (!string_value)
+		case ' ':
+		case '\r':
+		case '\t':
 			return 0;
 
-		size_t len = *current_pos - start;
-		*token = create_token(TOKEN_STRING, string_value, len, *line_nr);
-		break;
-	}
-	default:
-		// backtrack because first cancidate char check already consumed
-		// position and position starting with initial one is needed to resolve
-		// full number
-		if (is_number_candidate(*current_char)) {
-			*current_pos = *current_pos - 1;
-			return resolve_and_create_number(line, current_pos, *line_nr,
-											 token);
-		} else if (isalpha(*current_char) || *current_char == '_') {
-			*current_pos = *current_pos - 1;
-			char* out_identifier = NULL;
-			int is_identifier_resolved =
-				resolve_identifier(line, current_pos, &out_identifier);
+		case '\n':
+			*line_nr = *line_nr + 1;
+			return 0;
 
-			if (!is_identifier_resolved)
+		// string literals
+		case '\"': {
+			size_t start = *current_pos;
+			char* string_value = resolve_string(line, current_pos);
+
+			if (!string_value)
 				return 0;
 
-			size_t len = strlen(out_identifier);
-			enum TokenType keyword_type;
-			int is_keyword =
-				resolve_keyword(out_identifier, 0, len, &keyword_type);
-
-			if (is_keyword == 1) {
-				*token =
-					create_token(keyword_type, out_identifier, len, *line_nr);
-			} else {
-				*token = create_token(TOKEN_IDENTIFIER, out_identifier, len,
-									  *line_nr);
-			}
-		} else {
-			*token =
-				create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+			size_t len = *current_pos - start;
+			*token = create_token(TOKEN_STRING, string_value, len, *line_nr);
+			break;
 		}
+		default:
+			// backtrack because first cancidate char check already consumed
+			// position and position starting with initial one is needed to
+			// resolve full number
+			if (is_number_candidate(*current_char)) {
+				*current_pos = *current_pos - 1;
+				return resolve_and_create_number(line, current_pos, *line_nr,
+												 token);
+			} else if (isalpha(*current_char) || *current_char == '_') {
+				*current_pos = *current_pos - 1;
+				char* out_identifier = NULL;
+				int is_identifier_resolved =
+					resolve_identifier(line, current_pos, &out_identifier);
+
+				if (!is_identifier_resolved)
+					return 0;
+
+				size_t len = strlen(out_identifier);
+				enum TokenType keyword_type;
+				int is_keyword =
+					resolve_keyword(out_identifier, 0, len, &keyword_type);
+
+				if (is_keyword == 1) {
+					*token = create_token(keyword_type, out_identifier, len,
+										  *line_nr);
+				} else {
+					*token = create_token(TOKEN_IDENTIFIER, out_identifier, len,
+										  *line_nr);
+				}
+			} else {
+				*token =
+					create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+			}
 	}
 
 	return 1;

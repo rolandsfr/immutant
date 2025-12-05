@@ -7,14 +7,32 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 IncludeBlocks: Regroup      # Preserve | Merge | Regroup
-SortIncludes: true
+SortIncludes: true 
 IncludeCategories:
-  - Regex: '^<.*\.h>'
+  # 1. System headers: <stdio.h>, <stdlib.h>, <foo/bar.h>
+  - Regex: '^<.*>$'
     Priority: 1
-  - Regex: '^<.*>'
+
+  # 2. Unity special case
+  - Regex: '^"unity\.h"$'
     Priority: 2
-  - Regex: '.*'
+
+  # 3. Local headers with NO path: "foo.h", "bar.h"
+  #    (new, stricter version)
+  - Regex: '^"[^"/]+\.h"$'
     Priority: 3
+
+  # 4. Parent directory includes "../foo/bar.h"
+  - Regex: '^"\.\./.*"$'
+    Priority: 4
+
+  # 5. Same-folder-relative includes "./foo/bar.h"
+  - Regex: '^"\./.*"$'
+    Priority: 5
+
+  # 6. Fallback
+  - Regex: '.*'
+    Priority: 100
 
 BreakBeforeBraces: Linux
 IndentCaseLabels: true
