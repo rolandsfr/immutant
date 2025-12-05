@@ -1,15 +1,16 @@
-#include "unity.h"
-
 #include "parse_eq.h"
 
-#include "parser_helpers.h"
-#include "ast_make_expr.h"
+#include "unity.h"
 
 #include "Mockparse_comparison.h"
+#include "ast_make_expr.h"
+#include "lexer.h" // TODO: remove after decoupled
+#include "parser_helpers.h"
+#include "resolve.h" // TODO: remove after decoupled
+#
 
 void test_parse_equality(void)
 {
-
 	TokenBuffer tokens;
 	init_token_buffer(&tokens);
 

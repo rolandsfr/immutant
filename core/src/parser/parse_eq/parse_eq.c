@@ -1,13 +1,11 @@
 
-#include "./parse_eq.h"
+#include "parse_eq.h"
 
+#include "ast_cnstrct.h"
+#include "ast_make_expr.h"
 #include "lexer.h"
-
-#include "../helpers/parser_helpers.h"
-#include "../parse_comparison/parse_comparison.h"
-
-#include "ast/ast_cnstrct.h"
-#include "ast/expr/ast_make_expr.h"
+#include "parse_comparison.h"
+#include "parser_helpers.h"
 
 Expr* parse_equality(TokenBuffer* tokens, size_t* pos)
 {
