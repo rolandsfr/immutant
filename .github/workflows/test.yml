@@ -21,7 +21,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      # Install Ruby, Rake, Bundler, Ceedling
+      # Install Ruby, Rake, Bundler, Ceedling 
         run: |
           sudo apt-get update
           sudo apt-get install -y ruby ruby-dev rake
