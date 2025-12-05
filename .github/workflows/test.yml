@@ -13,13 +13,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Ruby and Ceedling (user space)
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      # Install Ruby, Rake, Bundler, Ceedling
         run: |
           sudo apt-get update
           sudo apt-get install -y ruby ruby-dev rake
+          gem install --user-install bundler
           gem install --user-install ceedling
+          # Add gem bin dir to PATH
           echo "$HOME/.local/share/gem/ruby/3.2.0/bin" >> $GITHUB_PATH
 
-      - name: Run tests
+      # Run Ceedling tests with JUnit reporter
+      - name: Run Ceedling tests
         working-directory: ./core
-        run: ceedling test:all
+        run: ceedling test:all TEST_REPORTERS=JUnit
+
+      # Upload JUnit XML for GitHub UI (optional but recommended)
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ceedling-test-report
+          path: ./core/build/test/test_results/*.xml
