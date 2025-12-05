@@ -23,10 +23,10 @@ jobs:
         working-directory: ./core
         run: ceedling test:all
 
-      # upload junit xml for github ui 
+      # Upload JUnit XML for GitHub UI (optional but recommended)
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ceedling-test-report
           path: ./core/build/test/test_results/*.xml
