@@ -23,20 +23,35 @@ void test_parse_term(void)
 	TokenBuffer tokens;
 	init_token_buffer(&tokens);
 
-	// Simulate tokens for the expression: a == b
-	add_token(&tokens, create_token(TOKEN_MINUS, "-", 1, 1));
+	// Simulate tokens for the expression:
 	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
+	add_token(&tokens, create_token(TOKEN_PLUS, "+", 1, 1));
+	add_token(&tokens, create_token(TOKEN_NUMBER, "4", 1, 1));
+	add_token(&tokens, create_token(TOKEN_SLASH, "/", 1, 1));
+	add_token(&tokens, create_token(TOKEN_NUMBER, "5", 1, 1));
 
 	size_t pos = 0;
 
-	Expr* res = parse_primary(&tokens, &pos);
+	Expr* res = parse_term(&tokens, &pos);
+
+	/** AST being asserted:
+	 *
+	 *         (+)
+	 *        /   \
+	 *      2     (/)
+	 *           /   \
+	 *          4     5
+	 *
+	 *  */
 
 	TEST_ASSERT_NOT_NULL(res);
-	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
-	TEST_ASSERT_EQUAL_STRING(EXPR_LITERAL_NUMBER,
-							 ((UnaryExpr*)res)->operand->type);
-
-	TEST_ASSERT_EQUAL_INT(TOKEN_MINUS, ((UnaryExpr*)res)->operator);
+	BinaryExpr* binary_expr = (BinaryExpr*)res;
+	TEST_ASSERT_BINARY_EXPR(binary_expr, TOKEN_PLUS);
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->left, "2");
+	BinaryExpr* right_expr = (BinaryExpr*)binary_expr->right;
+	TEST_ASSERT_BINARY_EXPR(right_expr, TOKEN_SLASH);
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(right_expr->left, "4");
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(right_expr->right, "5");
 
 	free_token_buffer(&tokens);
 }
