@@ -14,6 +14,12 @@ void free_expr(Expr* expr)
 
 	switch (expr->type) {
 		case EXPR_LITERAL_NUMBER: {
+			NumberExpr* n = (NumberExpr*)expr;
+			free(n->value);
+			free(n);
+			break;
+		}
+		case EXPR_LITERAL_BOOL: {
 			free(expr);
 			break;
 		}

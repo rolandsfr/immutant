@@ -2,17 +2,25 @@
 
 #include <stddef.h>
 
+#include "lexer.h"
+
 #include "../ast_cnstrct.h"
 
 typedef struct NumberExpr {
 	Expr base;
-	double value;
+	// double value;
+	char* value;
 } NumberExpr;
 
 typedef struct StringExpr {
 	Expr base;
 	char* value;
 } StringExpr;
+
+typedef struct BooleanExpr {
+	Expr base;
+	int value;
+} BooleanExpr;
 
 typedef struct VariableExpr {
 	Expr base;
@@ -21,7 +29,7 @@ typedef struct VariableExpr {
 
 typedef struct UnaryExpr {
 	Expr base;
-	char operator;
+	enum TokenType operator;
 	Expr* operand;
 } UnaryExpr;
 
@@ -29,7 +37,7 @@ typedef struct BinaryExpr {
 	Expr base;
 	Expr* left;
 	Expr* right;
-	char operator;
+	enum TokenType operator;
 } BinaryExpr;
 
 typedef struct CallExpr {

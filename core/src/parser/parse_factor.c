@@ -1,0 +1,18 @@
+#include "parse_factor.h"
+
+#include <stdio.h>
+
+#include "ast_cnstrct.h"
+#include "ast_make_expr.h"
+#include "lexer.h"
+#include "parse_lassoc.h"
+#include "parse_unary.h"
+#include "parser_helpers.h"
+
+Expr* parse_factor(TokenBuffer* tokens, size_t* pos)
+{
+	const TokenType operators[] = {TOKEN_SLASH, TOKEN_STAR};
+	const size_t operators_count = sizeof(operators) / sizeof(operators[0]);
+
+	return parse_lassoc(tokens, pos, parse_unary, operators, operators_count);
+}

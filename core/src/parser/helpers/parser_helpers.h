@@ -25,6 +25,17 @@ int check_token(TokenBuffer* tokens, size_t pos, enum TokenType type);
  *  otherwise, returns false **/
 int match_token(TokenBuffer* tokens, size_t* pos, int count, ...);
 
+/** same as match_token, but accepts array rather than variadic list */
+int match_any_token(TokenBuffer* tokens, size_t* pos,
+					const enum TokenType* types, size_t type_count);
+
 /** consumes and returns the token at the current position.
  * Advances position if token was consumed **/
 Token consume_token(TokenBuffer* tokens, size_t* pos);
+
+/** returns the type of the token at the previous position **/
+enum TokenType previous_token(TokenBuffer* tokens, size_t pos);
+
+/** returns the type of the token at the current position without consuming it
+ * **/
+enum TokenType peek_token(TokenBuffer* tokens, size_t pos);

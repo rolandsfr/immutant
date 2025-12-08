@@ -2,6 +2,8 @@
 
 #include <stdarg.h>
 
+#include "lexer.h"
+
 int sum(int a, int b) { return a + b; }
 
 int is_at_end(TokenBuffer* tokens, size_t pos)
@@ -16,6 +18,22 @@ int check_token(TokenBuffer* tokens, size_t pos, enum TokenType type)
 		return 0;
 	}
 	return tokens->tokens[pos].type == type;
+}
+
+enum TokenType peek_token(TokenBuffer* tokens, size_t pos)
+{
+	if (is_at_end(tokens, pos)) {
+		return TOKEN_EOF;
+	}
+	return tokens->tokens[pos].type;
+}
+
+enum TokenType previous_token(TokenBuffer* tokens, size_t pos)
+{
+	if (pos == 0 || is_at_end(tokens, pos - 1)) {
+		return TOKEN_EOF;
+	}
+	return tokens->tokens[pos - 1].type;
 }
 
 int match_token(TokenBuffer* tokens, size_t* pos, int count, ...)
@@ -33,6 +51,19 @@ int match_token(TokenBuffer* tokens, size_t* pos, int count, ...)
 	}
 
 	va_end(args);
+	return 0;
+}
+
+int match_any_token(TokenBuffer* tokens, size_t* pos,
+					const enum TokenType* types, size_t type_count)
+{
+	for (size_t i = 0; i < type_count; i++) {
+		if (check_token(tokens, *pos, types[i])) {
+			consume_token(tokens, pos);
+			return 1;
+		}
+	}
+
 	return 0;
 }
 

@@ -1,6 +1,7 @@
 
 #include "ast_make_expr.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,14 +13,6 @@
 /** Expression factories
  * ========================
  */
-
-NumberExpr* make_number_expr(double value)
-{
-	NumberExpr* n = malloc(sizeof(NumberExpr));
-	n->base.type = EXPR_LITERAL_NUMBER;
-	n->value = value;
-	return n;
-}
 
 BinaryExpr* make_binary_expr(Expr* left, enum TokenType op, Expr* right)
 {
@@ -39,6 +32,29 @@ StringExpr* make_string_expr(const char* value)
 	return s;
 }
 
+// TODO: change to accpeting and storing number instead of string once number
+// parsing is implemented
+NumberExpr* make_number_expr(const char* value)
+{
+	// NumberExpr* n = malloc(sizeof(NumberExpr));
+	// n->base.type = EXPR_LITERAL_NUMBER;
+	// n->value = value;
+	// return n;
+
+	NumberExpr* s = malloc(sizeof(NumberExpr));
+	s->base.type = EXPR_LITERAL_NUMBER;
+	s->value = strdup(value);
+	return s;
+}
+
+BooleanExpr* make_boolean_expr(int value)
+{
+	BooleanExpr* b = malloc(sizeof(BooleanExpr));
+	b->base.type = EXPR_LITERAL_BOOL;
+	b->value = value;
+	return b;
+}
+
 VariableExpr* make_variable_expr(const char* name)
 {
 	VariableExpr* v = malloc(sizeof(VariableExpr));
@@ -47,7 +63,7 @@ VariableExpr* make_variable_expr(const char* name)
 	return v;
 }
 
-UnaryExpr* make_unary_expr(char operator, Expr* operand)
+UnaryExpr* make_unary_expr(enum TokenType operator, Expr* operand)
 {
 	UnaryExpr* u = malloc(sizeof(UnaryExpr));
 	u->base.type = EXPR_UNARY;
@@ -72,7 +88,8 @@ void free_expr(Expr* expr)
 		return;
 
 	switch (expr->type) {
-		case EXPR_LITERAL_NUMBER: {
+		case EXPR_LITERAL_NUMBER:
+		case EXPR_LITERAL_BOOL: {
 			free(expr);
 			break;
 		}
