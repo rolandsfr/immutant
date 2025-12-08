@@ -9,10 +9,11 @@
 #include "parse_unary.h"
 #include "parser_helpers.h"
 
-Expr* parse_factor(TokenBuffer* tokens, size_t* pos)
+Expr* parse_factor(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
 {
 	const TokenType operators[] = {TOKEN_SLASH, TOKEN_STAR};
 	const size_t operators_count = sizeof(operators) / sizeof(operators[0]);
 
-	return parse_lassoc(tokens, pos, parse_unary, operators, operators_count);
+	return parse_lassoc(tokens, pos, parse_unary, operators, operators_count,
+						out_error);
 }

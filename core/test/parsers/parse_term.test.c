@@ -1,5 +1,3 @@
-
-
 #include "parse_term.h"
 
 #include "unity.h"
@@ -31,8 +29,9 @@ void test_parse_term(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "5", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
-	Expr* res = parse_term(&tokens, &pos);
+	Expr* res = parse_term(&tokens, &pos, &error);
 
 	/** AST being asserted:
 	 *

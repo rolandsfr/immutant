@@ -9,11 +9,12 @@
 #include "parse_lassoc.h"
 #include "parser_helpers.h"
 
-Expr* parse_term(TokenBuffer* tokens, size_t* pos)
+Expr* parse_term(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
 {
 
 	const TokenType operators[] = {TOKEN_MINUS, TOKEN_PLUS};
 	const size_t operators_count = sizeof(operators) / sizeof(operators[0]);
 
-	return parse_lassoc(tokens, pos, parse_factor, operators, operators_count);
+	return parse_lassoc(tokens, pos, parse_factor, operators, operators_count,
+						out_error);
 }

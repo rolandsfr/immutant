@@ -27,8 +27,9 @@ void test_parse_eq_should_parse_equality_expression(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "4", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
-	Expr* res = parse_equality(&tokens, &pos);
+	Expr* res = parse_equality(&tokens, &pos, &error);
 
 	/** AST being asserted:
 	 *

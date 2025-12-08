@@ -12,7 +12,7 @@
 #include "test_expr.h"
 
 // always consumes one token and returns a variable expression
-static Expr* dummy_parse(TokenBuffer* tokens, size_t* pos)
+static Expr* dummy_parse(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
 {
 	Token t = tokens->tokens[*pos];
 	(*pos)++;
@@ -32,6 +32,7 @@ void test_parse_lassoc_should_parse_left_associativity_expression(void)
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "c", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
 	Expr* first = (Expr*)make_variable_expr("a");
 	Expr* second = (Expr*)make_variable_expr("b");
@@ -44,8 +45,8 @@ void test_parse_lassoc_should_parse_left_associativity_expression(void)
 
 	const size_t operator_count = sizeof(operators) / sizeof(operators[0]);
 
-	Expr* res =
-		parse_lassoc(&tokens, &pos, dummy_parse, operators, operator_count);
+	Expr* res = parse_lassoc(&tokens, &pos, dummy_parse, operators,
+							 operator_count, &error);
 
 	/** Test for correct AST:
 

@@ -28,8 +28,9 @@ void test_cmp(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "5", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
-	Expr* res = parse_comparison(&tokens, &pos);
+	Expr* res = parse_comparison(&tokens, &pos, &error);
 
 	/** AST being asserted:
 	 *

@@ -5,16 +5,20 @@
 #include "lexer.h"
 #include "parser_helpers.h"
 
-typedef Expr* (*ParseFn)(TokenBuffer*, size_t*);
+typedef Expr* (*ParseFn)(TokenBuffer*, size_t*, ErrorCode*);
 
 Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
-				   const enum TokenType* operators, size_t operator_count)
+				   const enum TokenType* operators, size_t operator_count,
+				   ErrorCode* out_error)
 {
-	Expr* expr = next_precedence_fn(tokens, pos);
+	Expr* expr = next_precedence_fn(tokens, pos, out_error);
+	if (*out_error != NO_ERROR) {
+		return NULL;
+	}
 
 	while (match_any_token(tokens, pos, operators, operator_count)) {
 		Token operator = tokens->tokens[*pos - 1];
-		Expr* right = next_precedence_fn(tokens, pos);
+		Expr* right = next_precedence_fn(tokens, pos, out_error);
 
 		// creates nested binary expressions for left-associative chains
 		// left and right are sub-expressions that can be further binary

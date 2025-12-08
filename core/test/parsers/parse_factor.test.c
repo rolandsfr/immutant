@@ -27,9 +27,11 @@ void test_parse_factor(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "3", 1, 1));
 	add_token(&tokens, create_token(TOKEN_STAR, "*", 1, 1));
 	add_token(&tokens, create_token(TOKEN_NUMBER, "66", 2, 1));
-	size_t pos = 0;
 
-	BinaryExpr* res = (BinaryExpr*)parse_factor(&tokens, &pos);
+	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
+
+	BinaryExpr* res = (BinaryExpr*)parse_factor(&tokens, &pos, &error);
 	BinaryExpr* binary_expr = (BinaryExpr*)res;
 	BinaryExpr* left_expr = (BinaryExpr*)binary_expr->left;
 

@@ -27,8 +27,9 @@ void test_parse_unary(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
-	Expr* res = parse_primary(&tokens, &pos);
+	Expr* res = parse_primary(&tokens, &pos, &error);
 
 	TEST_ASSERT_NOT_NULL(res);
 	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
@@ -51,8 +52,9 @@ void test_parse_unary_should_allow_double_unary(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
 
 	size_t pos = 0;
+	ErrorCode error = NO_ERROR;
 
-	Expr* res = parse_unary(&tokens, &pos);
+	Expr* res = parse_unary(&tokens, &pos, &error);
 
 	TEST_ASSERT_NOT_NULL(res);
 	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
