@@ -93,7 +93,7 @@ void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 	TokenBuffer tokens;
 	ErrorReport error;
 
-	Expr* res = init_test_parse(&tokens, 4,
+	Expr* res = init_test_parse(&tokens, 3,
 								(SampleToken[]){
 									{TOKEN_LEFT_PAREN, "(", 1},
 									{TOKEN_NUMBER, "2", 1},
