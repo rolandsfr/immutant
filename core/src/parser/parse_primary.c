@@ -47,5 +47,9 @@ DEF_PARSE_FN(parse_primary)
 		return expr;
 	}
 
+	*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
+								   "Expected expression after operator",
+								   prev_token(tokens, *pos).line);
+
 	return NULL;
 }

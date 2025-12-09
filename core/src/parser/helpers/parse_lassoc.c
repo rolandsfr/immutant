@@ -22,20 +22,13 @@ Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
 		Token operator = tokens->tokens[*pos - 1];
 		Expr* right = next_precedence_fn(tokens, pos, out_error);
 
-		if (out_error->code != NO_ERROR) {
+		if (out_error->code != NO_ERROR || right == NULL) {
 			return NULL;
 		}
 
 		// creates nested binary expressions for left-associative chains
 		// left and right are sub-expressions that can be further binary
 		// expressions or literals/variables
-		if (right == NULL) {
-			*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
-										   "Expected expression after operator",
-										   operator.line);
-			return NULL;
-		}
-
 		expr = (Expr*)make_binary_expr(expr, operator.type, right);
 	}
 
