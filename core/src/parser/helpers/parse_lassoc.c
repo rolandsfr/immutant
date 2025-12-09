@@ -2,27 +2,36 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
+#include "error_codes.h"
 #include "lexer.h"
 #include "parser_helpers.h"
-
-typedef Expr* (*ParseFn)(TokenBuffer*, size_t*, ErrorCode*);
+#include "parser_singnature.h"
 
 Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
 				   const enum TokenType* operators, size_t operator_count,
-				   ErrorCode* out_error)
+				   ErrorReport* out_error)
 {
 	Expr* expr = next_precedence_fn(tokens, pos, out_error);
-	if (*out_error != NO_ERROR) {
+	if (out_error->code != NO_ERROR) {
 		return NULL;
 	}
 
 	while (match_any_token(tokens, pos, operators, operator_count)) {
 		Token operator = tokens->tokens[*pos - 1];
 		Expr* right = next_precedence_fn(tokens, pos, out_error);
+		if (out_error->code != NO_ERROR) {
+			return NULL;
+		}
 
 		// creates nested binary expressions for left-associative chains
 		// left and right are sub-expressions that can be further binary
 		// expressions or literals/variables
+		if (right == NULL) {
+			*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
+										   "Expected expression after operator",
+										   operator.line);
+			return NULL;
+		}
 		expr = (Expr*)make_binary_expr(expr, operator.type, right);
 	}
 

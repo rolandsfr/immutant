@@ -4,12 +4,14 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h"
 #include "parse_lassoc.h"
 #include "parse_term.h"
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 
-Expr* parse_comparison(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
+DEF_PARSE_FN(parse_comparison)
 {
 
 	const TokenType operators[] = {TOKEN_GREATER_EQUAL, TOKEN_GREATER,

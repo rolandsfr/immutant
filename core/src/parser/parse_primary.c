@@ -6,13 +6,14 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
-#include "error_codes.h"
+#include "error_report.h"
 #include "lexer.h"
 #include "parse_eq.h"
 #include "parse_lassoc.h"
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 
-Expr* parse_primary(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
+DEF_PARSE_FN(parse_primary)
 {
 
 	Token current_token = tokens->tokens[*pos];
@@ -35,9 +36,12 @@ Expr* parse_primary(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
 
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_PAREN)) {
 		Expr* expr = parse_equality(tokens, pos, out_error);
+		if (out_error->code != NO_ERROR) {
+			return NULL;
+		}
 		int is_matched = match_token(tokens, pos, 1, TOKEN_RIGHT_PAREN);
 		if (!is_matched) {
-			*out_error = ERROR_EXPECED_CLOSING_PAREN;
+			// *out_error =
 			return NULL;
 		}
 		return expr;

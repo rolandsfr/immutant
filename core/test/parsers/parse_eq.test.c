@@ -4,6 +4,7 @@
 
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
 #include "parse_eq.h"
@@ -13,23 +14,21 @@
 #include "parse_term.h"
 #include "parse_unary.h"
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
 
 void test_parse_eq_should_parse_equality_expression(void)
 {
 	TokenBuffer tokens;
-	init_token_buffer(&tokens);
-
-	// Simulate tokens for the expression:
-	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
-	add_token(&tokens, create_token(TOKEN_EQUAL_EQUAL, "==", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "4", 1, 1));
-
-	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
-
-	Expr* res = parse_equality(&tokens, &pos, &error);
+	ErrorReport error;
+	Expr* res = init_test_parse(&tokens, 3,
+								(SampleToken[]){
+									{TOKEN_NUMBER, "2", 1},
+									{TOKEN_EQUAL_EQUAL, "==", 2},
+									{TOKEN_NUMBER, "4", 1},
+								},
+								&error, parse_equality);
 
 	/** AST being asserted:
 	 *
@@ -46,4 +45,24 @@ void test_parse_eq_should_parse_equality_expression(void)
 	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->right, "4");
 
 	free_token_buffer(&tokens);
+}
+
+void test_parse_eq_should_exit_immediately_on_parse_error(void)
+{
+
+	TokenBuffer tokens;
+	ErrorReport error;
+
+	// Expr* res = init_test_parse(&tokens, 2,
+	// 							(SampleToken[]){
+	// 								{TOKEN_NUMBER, "2", 1},
+	// 								{TOKEN_EQUAL_EQUAL, "==", 2},
+	// 								// missing right-hand side operand
+	// 							},
+	// 							&error, parse_equality);
+
+	// TEST_ASSERT_NULL(res);
+	// TEST_ASSERT_EQUAL_INT(ERROR_PARSE_EXPECTED_EXPRESSION, error);
+
+	// free_token_buffer(&tokens);
 }

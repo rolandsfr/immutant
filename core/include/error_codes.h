@@ -1,3 +1,5 @@
 #pragma once
 
-typedef enum ErrorCode { ERROR_EXPECED_CLOSING_PAREN, NO_ERROR } ErrorCode;
+#include <stddef.h>
+
+typedef enum ErrorCode { ERROR_UNEXPECTED_TOKEN, NO_ERROR } ErrorCode;

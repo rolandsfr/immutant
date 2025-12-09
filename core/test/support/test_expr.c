@@ -3,6 +3,10 @@
 #include "unity.h"
 
 #include "ast_expr.h"
+#include "error_report.h"
+#include "lexer.h"
+#include "parser_singnature.h"
+#include "resolve.h"
 
 void TEST_ASSERT_UNARY_NUMBER_XPR(Expr* expr, enum TokenType expected_operator,
 								  char* value)
@@ -47,4 +51,22 @@ void TEST_ASSERT_LITERAL_BOOL_EXPR(Expr* expr, int expected_value)
 	TEST_ASSERT_NOT_NULL(expr);
 	TEST_ASSERT_EQUAL_INT(EXPR_LITERAL_BOOL, expr->type);
 	TEST_ASSERT_EQUAL_INT(expected_value, ((BooleanExpr*)expr)->value);
+}
+
+Expr* init_test_parse(TokenBuffer* tokens, int token_count,
+					  SampleToken sample_tokens[], ErrorReport* error,
+					  ParseFn parse)
+{
+
+	init_token_buffer(tokens);
+	for (int i = 0; i < token_count; i++) {
+		add_token(tokens,
+				  create_token(sample_tokens[i].type, sample_tokens[i].lexeme,
+							   sample_tokens[i].length, 1));
+	}
+
+	size_t pos = 0;
+	*error = init_no_error_report();
+
+	return parse(tokens, &pos, error);
 }

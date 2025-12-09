@@ -5,6 +5,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
 #include "parse_eq.h"
@@ -19,19 +20,18 @@
 void test_parse_factor(void)
 {
 	TokenBuffer tokens;
-	init_token_buffer(&tokens);
+	ErrorReport error;
 
-	// Simulate tokens for the expression: a == b
-	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
-	add_token(&tokens, create_token(TOKEN_SLASH, "/", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "3", 1, 1));
-	add_token(&tokens, create_token(TOKEN_STAR, "*", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "66", 2, 1));
+	BinaryExpr* res = (BinaryExpr*)init_test_parse(&tokens, 5,
+												   (SampleToken[]){
+													   {TOKEN_NUMBER, "2", 1},
+													   {TOKEN_SLASH, "/", 1},
+													   {TOKEN_NUMBER, "3", 1},
+													   {TOKEN_STAR, "*", 1},
+													   {TOKEN_NUMBER, "66", 2},
+												   },
+												   &error, parse_factor);
 
-	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
-
-	BinaryExpr* res = (BinaryExpr*)parse_factor(&tokens, &pos, &error);
 	BinaryExpr* binary_expr = (BinaryExpr*)res;
 	BinaryExpr* left_expr = (BinaryExpr*)binary_expr->left;
 

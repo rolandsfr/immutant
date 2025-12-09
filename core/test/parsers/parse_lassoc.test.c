@@ -6,13 +6,15 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
 
 // always consumes one token and returns a variable expression
-static Expr* dummy_parse(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
+static DEF_PARSE_FN(dummy_parse)
 {
 	Token t = tokens->tokens[*pos];
 	(*pos)++;
@@ -32,7 +34,7 @@ void test_parse_lassoc_should_parse_left_associativity_expression(void)
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "c", 1, 1));
 
 	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
+	ErrorReport error = init_no_error_report();
 
 	Expr* first = (Expr*)make_variable_expr("a");
 	Expr* second = (Expr*)make_variable_expr("b");

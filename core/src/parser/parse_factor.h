@@ -1,7 +1,7 @@
-
-#include "error_codes.h"
+#include "error_report.h"
 #include "lexer.h"
+#include "parser_singnature.h"
 
 #include "ast/ast_cnstrct.h"
 
-Expr* parse_factor(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error);
+DEF_PARSE_FN(parse_factor);

@@ -3,6 +3,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
 #include "parse_eq.h"
@@ -18,19 +19,17 @@
 void test_cmp(void)
 {
 	TokenBuffer tokens;
-	init_token_buffer(&tokens);
+	ErrorReport error;
 
-	// Simulate tokens for the expression:
-	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
-	add_token(&tokens, create_token(TOKEN_SLASH, "/", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "4", 1, 1));
-	add_token(&tokens, create_token(TOKEN_GREATER, ">", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "5", 1, 1));
-
-	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
-
-	Expr* res = parse_comparison(&tokens, &pos, &error);
+	Expr* res = init_test_parse(&tokens, 5,
+								(SampleToken[]){
+									{TOKEN_NUMBER, "2", 1},
+									{TOKEN_SLASH, "/", 1},
+									{TOKEN_NUMBER, "4", 1},
+									{TOKEN_GREATER, ">", 1},
+									{TOKEN_NUMBER, "5", 1},
+								},
+								&error, parse_comparison);
 
 	/** AST being asserted:
 	 *

@@ -4,12 +4,14 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h"
 #include "parse_lassoc.h"
 #include "parse_unary.h"
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 
-Expr* parse_factor(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
+DEF_PARSE_FN(parse_factor)
 {
 	const TokenType operators[] = {TOKEN_SLASH, TOKEN_STAR};
 	const size_t operators_count = sizeof(operators) / sizeof(operators[0]);

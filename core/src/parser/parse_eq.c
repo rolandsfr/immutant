@@ -10,7 +10,7 @@
 #include "parse_lassoc.h"
 #include "parser_helpers.h"
 
-Expr* parse_equality(TokenBuffer* tokens, size_t* pos, ErrorCode* out_error)
+Expr* parse_equality(TokenBuffer* tokens, size_t* pos, ErrorReport* out_error)
 {
 
 	const TokenType operators[] = {TOKEN_BANG_EQUAL, TOKEN_EQUAL_EQUAL};

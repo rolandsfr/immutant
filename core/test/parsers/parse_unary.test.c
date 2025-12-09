@@ -6,6 +6,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
 #include "parse_eq.h"
@@ -20,16 +21,14 @@
 void test_parse_unary(void)
 {
 	TokenBuffer tokens;
-	init_token_buffer(&tokens);
+	ErrorReport error;
 
-	// Simulate tokens for the expression: a == b
-	add_token(&tokens, create_token(TOKEN_MINUS, "-", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
-
-	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
-
-	Expr* res = parse_primary(&tokens, &pos, &error);
+	Expr* res = init_test_parse(&tokens, 2,
+								(SampleToken[]){
+									{TOKEN_MINUS, "-", 1},
+									{TOKEN_NUMBER, "2", 1},
+								},
+								&error, parse_primary);
 
 	TEST_ASSERT_NOT_NULL(res);
 	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
@@ -44,17 +43,14 @@ void test_parse_unary(void)
 void test_parse_unary_should_allow_double_unary(void)
 {
 	TokenBuffer tokens;
-	init_token_buffer(&tokens);
-
-	// Simulate tokens for the expression: --2
-	add_token(&tokens, create_token(TOKEN_MINUS, "-", 1, 1));
-	add_token(&tokens, create_token(TOKEN_MINUS, "-", 1, 1));
-	add_token(&tokens, create_token(TOKEN_NUMBER, "2", 1, 1));
-
-	size_t pos = 0;
-	ErrorCode error = NO_ERROR;
-
-	Expr* res = parse_unary(&tokens, &pos, &error);
+	ErrorReport error;
+	Expr* res = init_test_parse(&tokens, 3,
+								(SampleToken[]){
+									{TOKEN_MINUS, "-", 1},
+									{TOKEN_MINUS, "-", 1},
+									{TOKEN_NUMBER, "2", 1},
+								},
+								&error, parse_primary);
 
 	TEST_ASSERT_NOT_NULL(res);
 	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
