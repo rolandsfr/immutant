@@ -52,3 +52,27 @@ void test_cmp(void)
 
 	free_token_buffer(&tokens);
 }
+
+void test_cmp_should_exit_immediately_on_parse_error(void)
+{
+
+	TokenBuffer tokens;
+	ErrorReport error;
+
+	Expr* res = init_test_parse(&tokens, 4,
+								(SampleToken[]){
+									{TOKEN_NUMBER, "2", 1},
+									{TOKEN_SLASH, "/", 1},
+									{TOKEN_NUMBER, "4", 1},
+									{TOKEN_GREATER, ">", 1},
+								},
+								&error, parse_comparison);
+
+	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_EQUAL_INT(ERROR_UNEXPECTED_TOKEN, error.code);
+	TEST_ASSERT_EQUAL_STRING("Expected expression after operator",
+							 error.message);
+	TEST_ASSERT_EQUAL_INT(1, error.line);
+
+	free_token_buffer(&tokens);
+}
