@@ -1,8 +1,4 @@
-
-
 #include "parse_primary.h"
-
-#include <stdio.h>
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
@@ -17,14 +13,12 @@
 DEF_PARSE_FN(parse_primary)
 {
 
-	Token current_token = tokens->tokens[*pos];
-
 	if (match_token(tokens, pos, 1, TOKEN_STRING)) {
-		return (Expr*)make_string_expr(current_token.lexeme);
+		return (Expr*)make_string_expr(prev_token(tokens, *pos).lexeme);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_NUMBER)) {
-		return (Expr*)make_number_expr(current_token.lexeme);
+		return (Expr*)make_number_expr(prev_token(tokens, *pos).lexeme);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_TRUE)) {
@@ -46,12 +40,12 @@ DEF_PARSE_FN(parse_primary)
 		if (!is_matched) {
 			*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
 										   "Expected ')' after expression",
-										   current_token.line);
+										   tokens->tokens[*pos].line);
 			return NULL;
 		}
 
 		return expr;
 	}
 
-	return parse_equality(tokens, pos, out_error);
+	return NULL;
 }

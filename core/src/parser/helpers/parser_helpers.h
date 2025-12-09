@@ -39,3 +39,5 @@ enum TokenType previous_token(TokenBuffer* tokens, size_t pos);
 /** returns the type of the token at the current position without consuming it
  * **/
 enum TokenType peek_token(TokenBuffer* tokens, size_t pos);
+
+Token prev_token(TokenBuffer* tokens, size_t pos);

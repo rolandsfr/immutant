@@ -36,6 +36,14 @@ enum TokenType previous_token(TokenBuffer* tokens, size_t pos)
 	return tokens->tokens[pos - 1].type;
 }
 
+Token prev_token(TokenBuffer* tokens, size_t pos)
+{
+	if (pos == 0 || is_at_end(tokens, pos - 1)) {
+		return tokens->tokens[tokens->count - 1];
+	}
+	return tokens->tokens[pos - 1];
+}
+
 int match_token(TokenBuffer* tokens, size_t* pos, int count, ...)
 {
 	va_list args;
@@ -69,9 +77,11 @@ int match_any_token(TokenBuffer* tokens, size_t* pos,
 
 Token consume_token(TokenBuffer* tokens, size_t* pos)
 {
-	if (!is_at_end(tokens, *pos)) {
-		(*pos)++;
+	if (is_at_end(tokens, *pos)) {
+		return create_token(TOKEN_EOF, "", 0, 1);
 	}
+
+	(*pos)++;
 
 	Token token = tokens->tokens[*pos - 1];
 	return token;

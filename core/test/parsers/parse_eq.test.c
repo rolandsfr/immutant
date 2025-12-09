@@ -4,6 +4,7 @@
 
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
@@ -26,7 +27,7 @@ void test_parse_eq_should_parse_equality_expression(void)
 								(SampleToken[]){
 									{TOKEN_NUMBER, "2", 1},
 									{TOKEN_EQUAL_EQUAL, "==", 2},
-									{TOKEN_NUMBER, "4", 1},
+									{TOKEN_NUMBER, "7", 1},
 								},
 								&error, parse_equality);
 
@@ -42,7 +43,7 @@ void test_parse_eq_should_parse_equality_expression(void)
 	BinaryExpr* binary_expr = (BinaryExpr*)res;
 	TEST_ASSERT_BINARY_EXPR(binary_expr, TOKEN_EQUAL_EQUAL);
 	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->left, "2");
-	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->right, "4");
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->right, "7");
 
 	free_token_buffer(&tokens);
 }
@@ -53,16 +54,16 @@ void test_parse_eq_should_exit_immediately_on_parse_error(void)
 	TokenBuffer tokens;
 	ErrorReport error;
 
-	// Expr* res = init_test_parse(&tokens, 2,
-	// 							(SampleToken[]){
-	// 								{TOKEN_NUMBER, "2", 1},
-	// 								{TOKEN_EQUAL_EQUAL, "==", 2},
-	// 								// missing right-hand side operand
-	// 							},
-	// 							&error, parse_equality);
+	Expr* res = init_test_parse(&tokens, 2,
+								(SampleToken[]){
+									{TOKEN_NUMBER, "2", 1},
+									{TOKEN_EQUAL_EQUAL, "==", 2},
+									// missing right-hand side operand
+								},
+								&error, parse_equality);
 
-	// TEST_ASSERT_NULL(res);
-	// TEST_ASSERT_EQUAL_INT(ERROR_PARSE_EXPECTED_EXPRESSION, error);
+	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_EQUAL_INT(ERROR_UNEXPECTED_TOKEN, error.code);
 
-	// free_token_buffer(&tokens);
+	free_token_buffer(&tokens);
 }

@@ -24,10 +24,9 @@ void test_parse_primary_should_parse_literal_values(void)
 {
 	TokenBuffer tokens;
 	ErrorReport error;
-	Expr* res = init_test_parse(&tokens, 2,
+	Expr* res = init_test_parse(&tokens, 1,
 								(SampleToken[]){
 									{TOKEN_NUMBER, "2", 1},
-									{TOKEN_EOF, "", 0},
 								},
 								&error, parse_primary);
 
@@ -65,9 +64,9 @@ void test_parse_primary_should_parse_parenthesized_expression(void)
 	Expr* res = init_test_parse(&tokens, 5,
 								(SampleToken[]){
 									{TOKEN_LEFT_PAREN, "(", 1},
-									{TOKEN_NUMBER, "2", 1},
+									{TOKEN_NUMBER, "8", 1},
 									{TOKEN_PLUS, "+", 1},
-									{TOKEN_NUMBER, "3", 1},
+									{TOKEN_NUMBER, "9", 1},
 									{TOKEN_RIGHT_PAREN, ")", 1},
 								},
 								&error, parse_primary);
@@ -83,8 +82,8 @@ void test_parse_primary_should_parse_parenthesized_expression(void)
 	TEST_ASSERT_NOT_NULL(res);
 	BinaryExpr* binary_expr = (BinaryExpr*)res;
 	TEST_ASSERT_BINARY_EXPR(binary_expr, TOKEN_PLUS);
-	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->left, "2");
-	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->right, "3");
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->left, "8");
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(binary_expr->right, "9");
 
 	free_token_buffer(&tokens);
 }
@@ -94,13 +93,11 @@ void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 	TokenBuffer tokens;
 	ErrorReport error;
 
-	// Expr* res = parse_primary(&tokens, &pos, &error);
 	Expr* res = init_test_parse(&tokens, 4,
 								(SampleToken[]){
 									{TOKEN_LEFT_PAREN, "(", 1},
 									{TOKEN_NUMBER, "2", 1},
 									{TOKEN_PLUS, "+", 1},
-									{TOKEN_NUMBER, "3", 1},
 								},
 								&error, parse_primary);
 
