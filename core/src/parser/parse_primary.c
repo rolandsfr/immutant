@@ -6,6 +6,7 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
+#include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h"
 #include "parse_eq.h"
@@ -39,11 +40,16 @@ DEF_PARSE_FN(parse_primary)
 		if (out_error->code != NO_ERROR) {
 			return NULL;
 		}
+
 		int is_matched = match_token(tokens, pos, 1, TOKEN_RIGHT_PAREN);
+
 		if (!is_matched) {
-			// *out_error =
+			*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
+										   "Expected ')' after expression",
+										   current_token.line);
 			return NULL;
 		}
+
 		return expr;
 	}
 
