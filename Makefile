@@ -1,8 +1,10 @@
 # Compiler
 CC := gcc
 AR := ar
-CFLAGS := -std=c11 -Wall -Wextra -Icore/include -Icore/src
 LDFLAGS :=
+
+INCLUDES := $(shell find core/src -type d)
+CFLAGS := -std=c11 -Wall -Wextra $(foreach dir,$(INCLUDES),-I$(dir)) -Icore/include
 
 # Directories
 BUILD_DIR := build
