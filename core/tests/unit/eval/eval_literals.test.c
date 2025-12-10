@@ -3,6 +3,7 @@
 #include "assert_value.h"
 #include "ast_expr.h"
 #include "eval.h"
+#include "eval_binary.h"
 #include "eval_unary.h"
 #include "make_runtime_err.h"
 #include "make_values.h"

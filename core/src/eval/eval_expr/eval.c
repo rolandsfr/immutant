@@ -5,6 +5,7 @@
 
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
+#include "eval_binary.h"
 #include "eval_unary.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
@@ -35,8 +36,8 @@ Value eval_expr(Expr* expr, RuntimeError* err)
 		case EXPR_UNARY:
 			return eval_unary((UnaryExpr*)expr, err);
 
-			// case EXPR_BINARY:
-			// 	return eval_binary((BinaryExpr*)expr, err);
+		case EXPR_BINARY:
+			return eval_binary((BinaryExpr*)expr, err);
 
 			// case EXPR_CALL:
 			// 	return eval_call((CallExpr*)expr, err);

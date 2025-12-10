@@ -5,6 +5,7 @@
 #include "assert_value.h"
 #include "ast_expr.h"
 #include "eval.h"
+#include "eval_binary.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
 #include "require_t.h"
@@ -56,4 +57,27 @@ void test_eval_unary_should_negate_boolean(void)
 	Value result = eval_unary(&unary_expr, &err);
 
 	TEST_ASSERT_BOOL_VALUE(result, 0);
+}
+
+void test_eval_unary_should_eval_binary_inside_unary(void)
+{
+	NumberExpr num_left = {.base = {.type = EXPR_LITERAL_NUMBER}, .value = "5"};
+
+	NumberExpr num_right = {.base = {.type = EXPR_LITERAL_NUMBER},
+							.value = "3"};
+
+	BinaryExpr binary_expr = {.base = {.type = EXPR_BINARY},
+							  .operator = TOKEN_PLUS,
+							  .left = (Expr*)&num_left,
+							  .right = (Expr*)&num_right};
+
+	UnaryExpr unary_expr = {.base = {.type = EXPR_UNARY},
+							.operator = TOKEN_MINUS,
+							.operand = (Expr*)&binary_expr};
+
+	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+
+	Value result = eval_unary(&unary_expr, &err);
+
+	TEST_ASSERT_NUMBER_VALUE(result, -8.0);
 }

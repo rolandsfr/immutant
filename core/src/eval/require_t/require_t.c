@@ -33,3 +33,14 @@ int require_bool(Value v, RuntimeError* err)
 	}
 	return 1;
 }
+
+int require_numbers(Value value1, Value value2, RuntimeError* err)
+{
+	if (value1.type != VAL_NUMBER || value2.type != VAL_NUMBER) {
+		*err = make_runtime_error(RUNTIME_EXPECTED_DIFFERENT_TYPE,
+								  "Expected both values to be numbers");
+		return 0;
+	}
+
+	return 1;
+}
