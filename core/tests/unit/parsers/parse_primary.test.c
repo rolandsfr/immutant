@@ -106,3 +106,20 @@ void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 
 	free_token_buffer(&tokens);
 }
+
+void test_parse_primary_should_detect_unexpected_token(void)
+{
+	TokenBuffer tokens;
+	ErrorReport error;
+
+	Expr* res = init_test_parse(&tokens, 1,
+								(SampleToken[]){
+									{TOKEN_UNRECOGNIZED, "@", 1},
+								},
+								&error, parse_primary);
+
+	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_EQUAL_INT(ERROR_INVALID_TOKEN, error.code);
+
+	free_token_buffer(&tokens);
+}

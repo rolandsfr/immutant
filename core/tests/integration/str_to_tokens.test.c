@@ -65,3 +65,25 @@ void test_should_convert_string_to_tokens()
 
 	free_token_buffer(&tokens);
 }
+
+void test_should_throw_on_unexpected_char()
+{
+	char* input = "1 + 2 * ($ - -3)";
+
+	TokenBuffer tokens;
+	init_token_buffer(&tokens);
+	size_t pos = 0, line = 1;
+
+	scan_tokens(input, &line, &tokens, &pos);
+
+	TEST_ASSERT_EQUAL_INT(10, tokens.count);
+
+	pos = 0;
+
+	ErrorReport error = init_no_error_report();
+	Expr* ast = parse_equality(&tokens, &pos, &error);
+	TEST_ASSERT_NULL(ast);
+	TEST_ASSERT_EQUAL_INT(ERROR_INVALID_TOKEN, error.code);
+
+	free_token_buffer(&tokens);
+}

@@ -329,7 +329,6 @@ void scan_tokens(char* line, size_t* line_nr, TokenBuffer* token_buffer,
 
 		if (token.type == TOKEN_UNRECOGNIZED) {
 			printf("unexpected token %s", token.lexeme);
-			break;
 		}
 
 		add_token(token_buffer, token);

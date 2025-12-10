@@ -13,6 +13,13 @@
 DEF_PARSE_FN(parse_primary)
 {
 
+	if (match_token(tokens, pos, 1, TOKEN_UNRECOGNIZED)) {
+		*out_error =
+			make_error_report(ERROR_INVALID_TOKEN, "Invalid token encountered",
+							  tokens->tokens[*pos].line);
+		return NULL;
+	}
+
 	if (match_token(tokens, pos, 1, TOKEN_STRING)) {
 		return (Expr*)make_string_expr(prev_token(tokens, *pos).lexeme);
 	}
