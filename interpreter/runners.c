@@ -4,6 +4,8 @@
 #include <unistd.h>
 
 #include "interpret.h"
+#include "str_val.h"
+#include "types.h"
 
 void run_file(const char* script_name)
 {
@@ -28,6 +30,7 @@ void run_file(const char* script_name)
 void run_interactive()
 {
 	char code_line[256];
+	size_t line_nr = 1;
 
 	while (1) {
 		printf(">>> ");
@@ -48,6 +51,9 @@ void run_interactive()
 			break;
 		}
 
-		// Value val = interpret_source(code_line, strlen(code_line));
+		Value val = interpret_source(code_line, strlen(code_line), &line_nr);
+		if (val.type != VAL_NULL) {
+			printf("%s\n", str_val(val));
+		}
 	}
 }
