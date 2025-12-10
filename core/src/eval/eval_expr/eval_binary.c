@@ -30,12 +30,11 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 	switch (expr->operator) {
 		case TOKEN_PLUS: {
 
-			if (require_number(left_value, err) &&
-				require_number(right_value, err)) {
+			if (check_numbers(left_value, right_value, err)) {
 				return make_number(left_value.number + right_value.number);
 			}
-			if (require_string(left_value, err) &&
-				require_string(right_value, err)) {
+
+			if (check_strings(left_value, right_value, err)) {
 				size_t new_len =
 					strlen(left_value.string) + strlen(right_value.string) + 1;
 				char* concatenated = malloc(new_len);

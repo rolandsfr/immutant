@@ -44,3 +44,12 @@ int require_numbers(Value value1, Value value2, RuntimeError* err)
 
 	return 1;
 }
+
+int check_strings(Value value1, Value value2, RuntimeError* err)
+{
+	return (value1.type == VAL_STRING && value2.type == VAL_STRING);
+}
+int check_numbers(Value value1, Value value2, RuntimeError* err)
+{
+	return (value1.type == VAL_NUMBER && value2.type == VAL_NUMBER);
+}
