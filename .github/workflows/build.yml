@@ -1,11 +1,11 @@
 
-name: Build and Run
+name: Build Binary
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_run:
+    workflows: ["Ceedling Tests"]
+    types:
+      - completed
 
 jobs:
   build:
