@@ -9,6 +9,7 @@
 #include "ast_make_expr.h"
 #include "error_codes.h"
 #include "error_report.h"
+#include "is_equal.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
 #include "parse_eq.h"

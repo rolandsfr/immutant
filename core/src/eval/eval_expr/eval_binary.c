@@ -7,6 +7,7 @@
 #include "ast_expr.h"
 #include "eval.h"
 #include "eval_singature.h"
+#include "is_equal.h"
 #include "lexer.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
@@ -105,6 +106,12 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 				return make_bool(left_value.number <= right_value.number);
 			}
 			return make_null();
+		}
+		case TOKEN_EQUAL_EQUAL: {
+			return make_bool(is_equal(left_value, right_value));
+		}
+		case TOKEN_BANG_EQUAL: {
+			return make_bool(!is_equal(left_value, right_value));
 		}
 	}
 

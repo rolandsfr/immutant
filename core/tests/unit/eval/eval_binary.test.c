@@ -7,6 +7,7 @@
 #include "ast_expr.h"
 #include "eval.h"
 #include "eval_unary.h"
+#include "is_equal.h"
 #include "lexer.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
@@ -255,5 +256,65 @@ void test_eval_binary_should_compare_numbers_stricly(void)
 
 	comp_expr.operator = TOKEN_LESS_EQUAL;
 	result = eval_binary(&comp_expr, &err);
+	TEST_ASSERT_BOOL_VALUE(result, 1);
+}
+
+/** tests for equality */
+void test_eval_binary_should_immediately_return_false_on_inequal_types_for_equality_operator(
+	void)
+{
+	NumberExpr num_left = {.base = {.type = EXPR_LITERAL_NUMBER},
+						   .value = "42"};
+
+	StringExpr str_right = {.base = {.type = EXPR_LITERAL_STRING},
+							.value = "42"};
+
+	BinaryExpr eq_expr = {.base = {.type = EXPR_BINARY},
+						  .operator = TOKEN_EQUAL_EQUAL,
+						  .left = (Expr*)&num_left,
+						  .right = (Expr*)&str_right};
+
+	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+
+	Value result = eval_binary(&eq_expr, &err);
+	TEST_ASSERT_BOOL_VALUE(result, 0);
+}
+
+void test_eval_binary_should_compare_equal_numbers_on_equality_operator(void)
+{
+	NumberExpr num_left = {.base = {.type = EXPR_LITERAL_NUMBER},
+						   .value = "3.14"};
+
+	NumberExpr num_right = {.base = {.type = EXPR_LITERAL_NUMBER},
+							.value = "3.14"};
+
+	BinaryExpr eq_expr = {.base = {.type = EXPR_BINARY},
+						  .operator = TOKEN_EQUAL_EQUAL,
+						  .left = (Expr*)&num_left,
+						  .right = (Expr*)&num_right};
+
+	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+
+	Value result = eval_binary(&eq_expr, &err);
+	TEST_ASSERT_BOOL_VALUE(result, 1);
+}
+
+void test_eval_binary_should_compare_unequal_strings_on_inequality_operator(
+	void)
+{
+	StringExpr str_left = {.base = {.type = EXPR_LITERAL_STRING},
+						   .value = "hello"};
+
+	StringExpr str_right = {.base = {.type = EXPR_LITERAL_STRING},
+							.value = "world"};
+
+	BinaryExpr eq_expr = {.base = {.type = EXPR_BINARY},
+						  .operator = TOKEN_BANG_EQUAL,
+						  .left = (Expr*)&str_left,
+						  .right = (Expr*)&str_right};
+
+	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+
+	Value result = eval_binary(&eq_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }

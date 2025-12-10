@@ -6,6 +6,7 @@
 #include "ast_expr.h"
 #include "eval.h"
 #include "eval_binary.h"
+#include "is_equal.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
 #include "require_t.h"

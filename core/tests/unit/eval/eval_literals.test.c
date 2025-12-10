@@ -5,6 +5,7 @@
 #include "eval.h"
 #include "eval_binary.h"
 #include "eval_unary.h"
+#include "is_equal.h"
 #include "make_runtime_err.h"
 #include "make_values.h"
 #include "require_t.h"
