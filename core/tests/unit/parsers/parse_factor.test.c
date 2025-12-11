@@ -21,7 +21,7 @@
 void test_parse_factor(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	BinaryExpr* res = (BinaryExpr*)init_test_parse(&tokens, 5,
 												   (SampleToken[]){

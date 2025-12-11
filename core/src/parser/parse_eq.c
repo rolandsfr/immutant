@@ -9,8 +9,9 @@
 #include "parse_comparison.h"
 #include "parse_lassoc.h"
 #include "parser_helpers.h"
+#include "parser_singnature.h"
 
-Expr* parse_equality(TokenBuffer* tokens, size_t* pos, ErrorReport* out_error)
+DEF_PARSE_FN(parse_equality)
 {
 
 	const TokenType operators[] = {TOKEN_BANG_EQUAL, TOKEN_EQUAL_EQUAL};

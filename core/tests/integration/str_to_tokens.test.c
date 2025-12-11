@@ -47,7 +47,7 @@ void test_should_convert_string_to_tokens()
 
 	pos = 0;
 
-	ErrorReport error = init_no_error_report();
+	Error error = {-1};
 	Expr* ast = parse_equality(&tokens, &pos, &error);
 
 	TEST_ASSERT_BINARY_EXPR((BinaryExpr*)ast, TOKEN_PLUS);

@@ -3,18 +3,18 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
-#include "error_codes.h"
+#include "error.h"
 #include "lexer.h"
 #include "parser_helpers.h"
 #include "parser_singnature.h"
 
 Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
 				   const enum TokenType* operators, size_t operator_count,
-				   ErrorReport* out_error)
+				   Error* out_error)
 {
 	Expr* expr = next_precedence_fn(tokens, pos, out_error);
 
-	if (out_error->code != NO_ERROR) {
+	if (out_error && out_error->type != ERROR_NONE) {
 		return NULL;
 	}
 
@@ -22,7 +22,7 @@ Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
 		Token operator = tokens->tokens[*pos - 1];
 		Expr* right = next_precedence_fn(tokens, pos, out_error);
 
-		if (out_error->code != NO_ERROR || right == NULL) {
+		if (out_error && out_error->type != ERROR_NONE || right == NULL) {
 			return NULL;
 		}
 

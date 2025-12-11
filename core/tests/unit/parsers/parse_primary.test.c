@@ -24,7 +24,7 @@
 void test_parse_primary_should_parse_literal_values(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 	Expr* res = init_test_parse(&tokens, 1,
 								(SampleToken[]){
 									{TOKEN_NUMBER, "2", 1},
@@ -41,7 +41,7 @@ void test_parse_primary_should_parse_literal_values(void)
 void test_parse_primary_should_parse_boolean_values(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 1,
 								(SampleToken[]){
@@ -59,7 +59,7 @@ void test_parse_primary_should_parse_boolean_values(void)
 void test_parse_primary_should_parse_parenthesized_expression(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	// Expr* res = parse_primary(&tokens, &pos, &error);
 	Expr* res = init_test_parse(&tokens, 5,
@@ -92,18 +92,17 @@ void test_parse_primary_should_parse_parenthesized_expression(void)
 void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 3,
 								(SampleToken[]){
 									{TOKEN_LEFT_PAREN, "(", 1},
 									{TOKEN_NUMBER, "2", 1},
-									{TOKEN_PLUS, "+", 1},
 								},
 								&error, parse_primary);
 
 	TEST_ASSERT_NULL(res);
-	TEST_ASSERT_EQUAL_INT(ERROR_UNEXPECTED_TOKEN, error.code);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNEXPECTED_TOKEN, error.type);
 
 	free_token_buffer(&tokens);
 }
@@ -111,7 +110,7 @@ void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 void test_parse_primary_should_detect_unexpected_token(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 1,
 								(SampleToken[]){
@@ -120,7 +119,7 @@ void test_parse_primary_should_detect_unexpected_token(void)
 								&error, parse_primary);
 
 	TEST_ASSERT_NULL(res);
-	TEST_ASSERT_EQUAL_INT(ERROR_INVALID_TOKEN, error.code);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_MISSING_EXPRESSION, error.type);
 
 	free_token_buffer(&tokens);
 }

@@ -20,18 +20,27 @@ Value interpret_source(char* source, size_t length, size_t* line_nr)
 
 	size_t cursor = 0;
 
-	scan_tokens(source, line_nr, &token_buffer, &cursor, NULL);
+	ErrorBuffer lex_error_buffer;
+	init_error_buffer(&lex_error_buffer);
+	scan_tokens(source, line_nr, &token_buffer, &cursor, &lex_error_buffer);
+
+	for (size_t i = 0; i < lex_error_buffer.count; i++) {
+		Error lex_error = lex_error_buffer.errors[i];
+		int hadError = 1;
+		report_error(lex_error.line, lex_error.message, &hadError);
+	}
 
 	// resetting cursor back to 0 to reuse it in parsing cursor = 0;
-	ErrorReport error_report = init_no_error_report();
 
+	Error error = {-1};
 	cursor = 0;
-	Expr* expr = parse_equality(&token_buffer, &cursor, &error_report);
-	if (error_report.code != NO_ERROR) {
+	Expr* expr = parse_equality(&token_buffer, &cursor, &error);
+
+	if (lex_error_buffer.count > 0 || error.type != ERROR_NONE) {
 		// Handle error (for simplicity, returning a default Value here)
-		free_token_buffer(&token_buffer);
 		int hadError = 1;
-		report_error(*line_nr, error_report.message, &hadError);
+		report_error(*line_nr, error.message, &hadError);
+		free_token_buffer(&token_buffer);
 		return make_null();
 	}
 

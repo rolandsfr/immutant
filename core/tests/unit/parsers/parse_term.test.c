@@ -21,7 +21,7 @@
 void test_parse_term(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 	Expr* res = init_test_parse(&tokens, 5,
 								(SampleToken[]){
 									{TOKEN_NUMBER, "2", 1},

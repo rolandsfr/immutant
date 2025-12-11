@@ -55,8 +55,7 @@ void TEST_ASSERT_LITERAL_BOOL_EXPR(Expr* expr, int expected_value)
 }
 
 Expr* init_test_parse(TokenBuffer* tokens, int token_count,
-					  SampleToken sample_tokens[], ErrorReport* error,
-					  ParseFn parse)
+					  SampleToken sample_tokens[], Error* error, ParseFn parse)
 {
 
 	init_token_buffer(tokens);
@@ -67,7 +66,7 @@ Expr* init_test_parse(TokenBuffer* tokens, int token_count,
 	}
 
 	size_t pos = 0;
-	*error = init_no_error_report();
+	*error = (Error){-1};
 
 	return parse(tokens, &pos, error);
 }

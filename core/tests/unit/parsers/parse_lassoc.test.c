@@ -35,7 +35,7 @@ void test_parse_lassoc_should_parse_left_associativity_expression(void)
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "c", 1, 1));
 
 	size_t pos = 0;
-	ErrorReport error = init_no_error_report();
+	Error error = {-1};
 
 	Expr* first = (Expr*)make_variable_expr("a");
 	Expr* second = (Expr*)make_variable_expr("b");

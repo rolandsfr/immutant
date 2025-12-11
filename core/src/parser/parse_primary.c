@@ -2,7 +2,7 @@
 
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
-#include "error_codes.h"
+#include "error.h"
 #include "error_report.h"
 #include "lexer.h"
 #include "parse_eq.h"
@@ -12,14 +12,6 @@
 
 DEF_PARSE_FN(parse_primary)
 {
-
-	if (match_token(tokens, pos, 1, TOKEN_UNRECOGNIZED)) {
-		*out_error =
-			make_error_report(ERROR_INVALID_TOKEN, "Invalid token encountered",
-							  tokens->tokens[*pos].line);
-		return NULL;
-	}
-
 	if (match_token(tokens, pos, 1, TOKEN_STRING)) {
 		return (Expr*)make_string_expr(prev_token(tokens, *pos).lexeme);
 	}
@@ -38,25 +30,29 @@ DEF_PARSE_FN(parse_primary)
 
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_PAREN)) {
 		Expr* expr = parse_equality(tokens, pos, out_error);
-		if (out_error->code != NO_ERROR) {
+		if (out_error && out_error->type != ERROR_NONE) {
 			return NULL;
 		}
 
 		int is_matched = match_token(tokens, pos, 1, TOKEN_RIGHT_PAREN);
 
 		if (!is_matched) {
-			*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
-										   "Expected ')' after expression",
-										   tokens->tokens[*pos].line);
+			if (out_error) {
+				*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+									 .message = "Expected ')' after expression",
+									 .line = tokens->tokens[*pos].line};
+			}
 			return NULL;
 		}
 
 		return expr;
 	}
 
-	*out_error = make_error_report(ERROR_UNEXPECTED_TOKEN,
-								   "Expected expression after operator",
-								   prev_token(tokens, *pos).line);
+	if (prev_token(tokens, *pos).type != TOKEN_LEFT_PAREN && out_error) {
+		*out_error = (Error){.type = SYNTAX_ERROR_MISSING_EXPRESSION,
+							 .message = "Expected expression",
+							 .line = tokens->tokens[*pos].line};
+	}
 
 	return NULL;
 }

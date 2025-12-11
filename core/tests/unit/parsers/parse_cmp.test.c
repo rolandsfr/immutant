@@ -4,6 +4,7 @@
 #include "ast_expr.h"
 #include "ast_make_expr.h"
 #include "error.h"
+#include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_comparison.h"
@@ -20,7 +21,7 @@
 void test_cmp(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 5,
 								(SampleToken[]){
@@ -58,7 +59,7 @@ void test_cmp_should_exit_immediately_on_parse_error(void)
 {
 
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 4,
 								(SampleToken[]){
@@ -70,9 +71,8 @@ void test_cmp_should_exit_immediately_on_parse_error(void)
 								&error, parse_comparison);
 
 	TEST_ASSERT_NULL(res);
-	TEST_ASSERT_EQUAL_INT(ERROR_UNEXPECTED_TOKEN, error.code);
-	TEST_ASSERT_EQUAL_STRING("Expected expression after operator",
-							 error.message);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_MISSING_EXPRESSION, error.type);
+	TEST_ASSERT_EQUAL_STRING("Expected expression", error.message);
 	TEST_ASSERT_EQUAL_INT(1, error.line);
 
 	free_token_buffer(&tokens);

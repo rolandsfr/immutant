@@ -23,7 +23,7 @@
 void test_parse_eq_should_parse_equality_expression(void)
 {
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error = {0};
 	Expr* res = init_test_parse(&tokens, 3,
 								(SampleToken[]){
 									{TOKEN_NUMBER, "2", 1},
@@ -53,7 +53,7 @@ void test_parse_eq_should_exit_immediately_on_parse_error(void)
 {
 
 	TokenBuffer tokens;
-	ErrorReport error;
+	Error error;
 
 	Expr* res = init_test_parse(&tokens, 2,
 								(SampleToken[]){
@@ -64,7 +64,7 @@ void test_parse_eq_should_exit_immediately_on_parse_error(void)
 								&error, parse_equality);
 
 	TEST_ASSERT_NULL(res);
-	TEST_ASSERT_EQUAL_INT(ERROR_UNEXPECTED_TOKEN, error.code);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_MISSING_EXPRESSION, error.type);
 
 	free_token_buffer(&tokens);
 }

@@ -30,5 +30,4 @@ typedef struct SampleToken {
 } SampleToken;
 
 Expr* init_test_parse(TokenBuffer* tokens, int token_count,
-					  SampleToken sample_tokens[], ErrorReport* error,
-					  ParseFn parse);
+					  SampleToken sample_tokens[], Error* error, ParseFn parse);
