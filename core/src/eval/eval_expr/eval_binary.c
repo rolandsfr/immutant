@@ -5,25 +5,25 @@
 #include <string.h>
 
 #include "ast_expr.h"
+#include "error.h"
 #include "eval.h"
 #include "eval_singature.h"
 #include "is_equal.h"
 #include "lexer.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
+#include "parser_singnature.h"
 #include "require_t.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
 DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 {
 	Value left_value = eval_expr(expr->left, err);
-	if (err->type != RUNTIME_NO_ERROR) {
+	if (err->type != ERROR_NONE) {
 		return make_null();
 	}
 
 	Value right_value = eval_expr(expr->right, err);
-	if (err->type != RUNTIME_NO_ERROR) {
+	if (err->type != ERROR_NONE) {
 		return make_null();
 	}
 
@@ -39,9 +39,13 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 					strlen(left_value.string) + strlen(right_value.string) + 1;
 				char* concatenated = malloc(new_len);
 				if (!concatenated) {
-					*err = make_runtime_error(
-						RUNTIME_INTERNAL_ERROR,
-						"Memory allocation failed during string concatenation");
+					if (err) {
+						*err =
+							(Error){.type = ERROR_OUT_OF_MEMORY,
+									.message = "Memory allocation failed "
+											   "during string concatenation"};
+					}
+
 					return make_null();
 				}
 				strcpy(concatenated, left_value.string);
@@ -49,9 +53,10 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 				return make_string(concatenated);
 			}
 
-			*err = make_runtime_error(
-				RUNTIME_EXPECTED_DIFFERENT_TYPE,
-				"Operands to '+' must be both numbers or both strings");
+			*err = (Error){
+				.type = RUNTIME_UNEXPECTED_TYPE,
+				.message =
+					"Operands to '+' must be both numbers or both strings"};
 
 			return make_null();
 		}
@@ -71,15 +76,20 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 		case TOKEN_SLASH: {
 			if (require_numbers(left_value, right_value, err)) {
 				if (right_value.number == 0) {
-					*err = make_runtime_error(RUNTIME_DIVIDE_BY_ZERO,
-											  "Division by zero is illegal");
+					if (err) {
+						*err =
+							(Error){.type = RUNTIME_DIVIDE_BY_ZERO,
+									.message = "Division by zero is illegal"};
+					}
 					return make_null();
 				}
 				return make_number(left_value.number / right_value.number);
 			}
 
-			*err = make_runtime_error(RUNTIME_EXPECTED_DIFFERENT_TYPE,
-									  "Operands to '/' must be numbers");
+			if (err) {
+				*err = (Error){.type = RUNTIME_UNEXPECTED_TYPE,
+							   .message = "Operands to '/' must be numbers"};
+			}
 			return make_null();
 		}
 		case TOKEN_GREATER: {
@@ -114,7 +124,7 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 		}
 	}
 
-	*err =
-		make_runtime_error(RUNTIME_INTERNAL_ERROR, "Unknown binary operator");
+	fprintf(stderr, "Internal interpreter error: unknown binary operator\n");
+
 	return make_null();
 }

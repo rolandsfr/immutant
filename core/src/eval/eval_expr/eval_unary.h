@@ -1,5 +1,7 @@
+#include "eval_singature.h"
+
 typedef struct Value Value;
-typedef struct RuntimeError RuntimeError;
+typedef struct Error Error;
 typedef struct UnaryExpr UnaryExpr;
 
-Value eval_unary(struct UnaryExpr* expr, RuntimeError* err);
+DEF_EVAL_EXPR(eval_unary, UnaryExpr);

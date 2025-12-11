@@ -4,6 +4,6 @@
 
 typedef struct BinaryExpr BinaryExpr;
 typedef struct Value Value;
-typedef struct RuntimeError RuntimeError;
+typedef struct Error Error;
 
 DEF_EVAL_EXPR(eval_binary, BinaryExpr);

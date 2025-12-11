@@ -18,7 +18,6 @@
 #include "lexer.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "lexer.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
 #include "parse_comparison.h"
 #include "parse_eq.h"
@@ -33,7 +32,6 @@
 #include "resolve.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "resolve.h"
-#include "runtime_err.h"
 #include "test_expr.h"
 #include "value_t.h"
 

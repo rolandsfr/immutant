@@ -4,81 +4,57 @@
 
 #include "assert_value.h"
 #include "ast_expr.h"
+#include "ast_make_expr.h"
+#include "error.h"
 #include "eval.h"
 #include "eval_binary.h"
 #include "is_equal.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
 #include "require_t.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
 void test_eval_unary_should_not_work_with_strings(void)
 {
-	StringExpr str_expr = {.base = {.type = EXPR_LITERAL_STRING},
-						   .value = "omg"};
-	UnaryExpr unary_expr = {
-		.base = {.type = EXPR_UNARY},
-		.operator = TOKEN_BANG, // Using '!' operator for demonstration
-		.operand = (Expr*)&str_expr};
+	UnaryExpr* unary_expr =
+		make_unary_expr(TOKEN_MINUS, (Expr*)make_string_expr("hello"));
+	Error err = {-1};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Value result = eval_unary(unary_expr, &err);
 
-	Value result = eval_unary(&unary_expr, &err);
-
-	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_EXPECTED_DIFFERENT_TYPE);
+	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_UNEXPECTED_TYPE);
 }
 
 void test_eval_unary_should_negate_number(void)
 {
-	NumberExpr num_expr = {.base = {.type = EXPR_LITERAL_NUMBER},
-						   .value = "10"};
+	UnaryExpr* expr =
+		make_unary_expr(TOKEN_MINUS, (Expr*)make_number_expr("10"));
+	Error err = {-1};
 
-	UnaryExpr unary_expr = {.base = {.type = EXPR_UNARY},
-							.operator = TOKEN_MINUS,
-							.operand = (Expr*)&num_expr};
-
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
-
-	Value result = eval_unary(&unary_expr, &err);
+	Value result = eval_unary(expr, &err);
 
 	TEST_ASSERT_NUMBER_VALUE(result, -10.0);
 }
 
 void test_eval_unary_should_negate_boolean(void)
 {
-	BooleanExpr bool_expr = {.base = {.type = EXPR_LITERAL_BOOL}, .value = 1};
-
-	UnaryExpr unary_expr = {.base = {.type = EXPR_UNARY},
-							.operator = TOKEN_BANG,
-							.operand = (Expr*)&bool_expr};
-
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
-
-	Value result = eval_unary(&unary_expr, &err);
+	UnaryExpr* expr = make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(1));
+	Error err = {-1};
+	Value result = eval_unary(expr, &err);
 
 	TEST_ASSERT_BOOL_VALUE(result, 0);
 }
 
 void test_eval_unary_should_eval_binary_inside_unary(void)
 {
-	NumberExpr num_left = {.base = {.type = EXPR_LITERAL_NUMBER}, .value = "5"};
 
-	NumberExpr num_right = {.base = {.type = EXPR_LITERAL_NUMBER},
-							.value = "3"};
+	BinaryExpr* bin = make_binary_expr((Expr*)make_number_expr("5"), TOKEN_PLUS,
+									   (Expr*)make_number_expr("3"));
 
-	BinaryExpr binary_expr = {.base = {.type = EXPR_BINARY},
-							  .operator = TOKEN_PLUS,
-							  .left = (Expr*)&num_left,
-							  .right = (Expr*)&num_right};
+	UnaryExpr* expr = make_unary_expr(TOKEN_MINUS, (Expr*)bin);
 
-	UnaryExpr unary_expr = {.base = {.type = EXPR_UNARY},
-							.operator = TOKEN_MINUS,
-							.operand = (Expr*)&binary_expr};
+	Error err = {-1};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
-
-	Value result = eval_unary(&unary_expr, &err);
+	Value result = eval_unary(expr, &err);
 
 	TEST_ASSERT_NUMBER_VALUE(result, -8.0);
 }

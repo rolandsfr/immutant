@@ -2,18 +2,18 @@
 
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
+#include "error.h"
 #include "eval.h"
-#include "make_runtime_err.h"
+#include "eval_singature.h"
 #include "make_values.h"
 #include "require_t.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
-Value eval_unary(struct UnaryExpr* expr, RuntimeError* err)
+DEF_EVAL_EXPR(eval_unary, UnaryExpr)
 {
 	Value operand_value = eval_expr(expr->operand, err);
 
-	if (err->type != RUNTIME_NO_ERROR) {
+	if (err && err->type != ERROR_NONE) {
 		return make_null();
 	}
 
@@ -41,8 +41,8 @@ Value eval_unary(struct UnaryExpr* expr, RuntimeError* err)
 			return make_bool(bool_val);
 		}
 		default:
-			*err = make_runtime_error(RUNTIME_INTERNAL_ERROR,
-									  "Unknown unary operator");
+			fprintf(stderr,
+					"Internal interpreter error: unknown unary operator\n");
 			return make_null();
 	}
 }

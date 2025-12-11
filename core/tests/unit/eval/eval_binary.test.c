@@ -10,11 +10,9 @@
 #include "eval_unary.h"
 #include "is_equal.h"
 #include "lexer.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
 #include "require_t.h"
 #include "resolve.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
 void test_eval_binary_should_concat_strings_on_plus_token(void)
@@ -29,7 +27,7 @@ void test_eval_binary_should_concat_strings_on_plus_token(void)
 							  .left = (Expr*)&str_left,
 							  .right = (Expr*)&str_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&concat_expr, &err);
 
@@ -48,11 +46,11 @@ void test_eval_binary_should_error_on_plus_token_with_mismatched_types(void)
 							   .left = (Expr*)&num_left,
 							   .right = (Expr*)&str_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&invalid_expr, &err);
 
-	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_EXPECTED_DIFFERENT_TYPE);
+	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_UNEXPECTED_TYPE);
 }
 
 void test_eval_binary_should_add_numbers_on_plus_token(void)
@@ -67,7 +65,7 @@ void test_eval_binary_should_add_numbers_on_plus_token(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&add_expr, &err);
 
@@ -86,7 +84,7 @@ void test_eval_binary_should_subtract_numbers_on_minus_token(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&sub_expr, &err);
 
@@ -104,7 +102,7 @@ void test_eval_binary_should_multiply_numbers_on_star_token(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&mul_expr, &err);
 
@@ -123,7 +121,7 @@ void test_eval_binary_should_divide_numbers_on_slash_token(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&div_expr, &err);
 
@@ -143,7 +141,7 @@ void test_eval_binary_should_return_floating_point_result_on_division_according_
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&div_expr, &err);
 
@@ -162,7 +160,7 @@ void test_eval_binary_should_error_on_divide_by_zero(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&div_expr, &err);
 
@@ -180,7 +178,7 @@ void test_eval_binary_should_return_0_on_0_divided_by_number(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&div_expr, &err);
 
@@ -203,7 +201,7 @@ void test_eval_binary_should_eval_unary_inside_binary_expression(void)
 							  .left = (Expr*)&num_left,
 							  .right = (Expr*)&unary_expr};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&binary_expr, &err);
 
@@ -223,7 +221,7 @@ void test_eval_binary_should_compare_numbers_non_stricly(void)
 							.left = (Expr*)&num_left,
 							.right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&comp_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
@@ -250,7 +248,7 @@ void test_eval_binary_should_compare_numbers_stricly(void)
 							.left = (Expr*)&num_left,
 							.right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&comp_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
@@ -275,7 +273,7 @@ void test_eval_binary_should_immediately_return_false_on_inequal_types_for_equal
 						  .left = (Expr*)&num_left,
 						  .right = (Expr*)&str_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&eq_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 0);
@@ -294,7 +292,7 @@ void test_eval_binary_should_compare_equal_numbers_on_equality_operator(void)
 						  .left = (Expr*)&num_left,
 						  .right = (Expr*)&num_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&eq_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
@@ -314,7 +312,7 @@ void test_eval_binary_should_compare_unequal_strings_on_inequality_operator(
 						  .left = (Expr*)&str_left,
 						  .right = (Expr*)&str_right};
 
-	RuntimeError err = {.type = RUNTIME_NO_ERROR, .message = NULL};
+	Error err = {-1};
 
 	Value result = eval_binary(&eq_expr, &err);
 	TEST_ASSERT_BOOL_VALUE(result, 1);

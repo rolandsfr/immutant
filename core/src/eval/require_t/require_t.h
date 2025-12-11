@@ -1,11 +1,16 @@
 typedef struct Value Value;
-typedef struct RuntimeError RuntimeError;
+typedef struct Error Error;
 
-int require_number(Value value, RuntimeError* err);
-int require_string(Value value, RuntimeError* err);
-int require_bool(Value value, RuntimeError* err);
+#define DEF_REQUIRE_T_FN(fn_name) int fn_name(Value value, Error* err)
 
-int require_numbers(Value value1, Value value2, RuntimeError* err);
+#define DEF_REQUIRE_T_SEVERAL_FN(fn_name)                                      \
+	int fn_name(Value value1, Value value2, Error* err)
 
-int check_strings(Value value1, Value value2, RuntimeError* err);
-int check_numbers(Value value1, Value value2, RuntimeError* err);
+DEF_REQUIRE_T_FN(require_number);
+DEF_REQUIRE_T_FN(require_string);
+DEF_REQUIRE_T_FN(require_bool);
+
+DEF_REQUIRE_T_SEVERAL_FN(require_numbers);
+
+DEF_REQUIRE_T_SEVERAL_FN(check_strings);
+DEF_REQUIRE_T_SEVERAL_FN(check_numbers);

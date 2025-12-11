@@ -4,13 +4,12 @@
 
 #include "ast_expr.h"
 #include "error.h"
+#include "error_codes.h"
 #include "error_report.h"
 #include "eval.h"
 #include "lexer.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
 #include "parse_eq.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
 Value interpret_source(char* source, size_t length, size_t* line_nr)
@@ -44,10 +43,10 @@ Value interpret_source(char* source, size_t length, size_t* line_nr)
 		return make_null();
 	}
 
-	RuntimeError runtime_error = make_runtime_error(RUNTIME_NO_ERROR, "");
+	Error runtime_error = {-1};
 	Value result = eval_expr(expr, &runtime_error);
 
-	if (runtime_error.type != RUNTIME_NO_ERROR) {
+	if (runtime_error.type != ERROR_NONE) {
 		// Handle runtime error (for simplicity, returning a default Value here)
 		free_token_buffer(&token_buffer);
 		int hadError = 1;

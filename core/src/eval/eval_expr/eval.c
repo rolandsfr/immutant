@@ -5,14 +5,13 @@
 
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
+#include "error.h"
 #include "eval_binary.h"
 #include "eval_unary.h"
-#include "make_runtime_err.h"
 #include "make_values.h"
-#include "runtime_err.h"
 #include "value_t.h"
 
-Value eval_expr(Expr* expr, RuntimeError* err)
+Value eval_expr(Expr* expr, Error* err)
 {
 	switch (expr->type) {
 		case EXPR_LITERAL_NUMBER: {
@@ -30,20 +29,20 @@ Value eval_expr(Expr* expr, RuntimeError* err)
 			return make_string(strdup(s->value));
 		}
 
-			// case EXPR_VARIABLE:
-			// 	return eval_variable((VariableExpr*)expr, err);
-
 		case EXPR_UNARY:
 			return eval_unary((UnaryExpr*)expr, err);
 
 		case EXPR_BINARY:
 			return eval_binary((BinaryExpr*)expr, err);
 
+			// case EXPR_VARIABLE:
+			// 	return eval_variable((VariableExpr*)expr, err);
+
 			// case EXPR_CALL:
 			// 	return eval_call((CallExpr*)expr, err);
 	}
 
-	*err =
-		make_runtime_error(RUNTIME_INTERNAL_ERROR, "Unknown expression type");
+	fprintf(stderr, "Internal interpreter error: unknown expression type\n");
+
 	return make_null();
 }
