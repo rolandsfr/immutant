@@ -27,6 +27,9 @@ Value interpret_source(char* source, size_t length, size_t* line_nr)
 		Error lex_error = lex_error_buffer.errors[i];
 		int hadError = 1;
 		report_error(lex_error.line, lex_error.message, &hadError);
+		if (i == lex_error_buffer.count - 1) {
+			return make_null();
+		}
 	}
 
 	// resetting cursor back to 0 to reuse it in parsing cursor = 0;
