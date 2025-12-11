@@ -5,6 +5,7 @@
 
 #include "assert_value.h"
 #include "ast_expr.h"
+#include "error.h"
 #include "eval.h"
 #include "eval_unary.h"
 #include "is_equal.h"

@@ -20,7 +20,7 @@ Value interpret_source(char* source, size_t length, size_t* line_nr)
 
 	size_t cursor = 0;
 
-	scan_tokens(source, line_nr, &token_buffer, &cursor);
+	scan_tokens(source, line_nr, &token_buffer, &cursor, NULL);
 
 	// resetting cursor back to 0 to reuse it in parsing cursor = 0;
 	ErrorReport error_report = init_no_error_report();

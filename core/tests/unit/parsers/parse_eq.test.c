@@ -4,6 +4,7 @@
 
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error.h"
 #include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled

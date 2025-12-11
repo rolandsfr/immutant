@@ -33,3 +33,28 @@ const char* format_error(int line, const char* message)
 			 message);
 	return buffer;
 }
+
+void init_error_buffer(ErrorBuffer* buffer)
+{
+	buffer->count = 0;
+	buffer->capacity = 8;
+	buffer->errors = malloc(buffer->capacity * sizeof(Error));
+}
+
+void add_error(ErrorBuffer* buffer, Error error)
+{
+	// reallocate and increase total capacity if running out of buffer space
+	if (buffer->count >= buffer->capacity) {
+		buffer->capacity *= 2;
+		buffer->errors =
+			realloc(buffer->errors, buffer->capacity * sizeof(Error));
+
+		if (buffer->errors == NULL) {
+			// handle memory allocation failure
+			printf("Failed to allocate memory to save error\n");
+			exit(1);
+		}
+	}
+
+	buffer->errors[buffer->count++] = error;
+}

@@ -5,6 +5,7 @@
 
 #include "unity.h"
 
+#include "error.h"
 #include "lexer.h"
 
 void test_resolve_string_should_resolve_empty_string(void)

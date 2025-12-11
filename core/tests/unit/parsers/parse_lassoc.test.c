@@ -6,6 +6,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parser_helpers.h"

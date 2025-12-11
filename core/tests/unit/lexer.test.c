@@ -6,6 +6,8 @@
 
 #include "unity.h"
 
+#include "assert_error.h"
+#include "error.h"
 #include "utils.h"
 
 TEST_SOURCE_FILE("resolve/resolve.c");
@@ -90,7 +92,7 @@ void test_scan_next_token_should_ignore_comments(void)
 
 	int token_emitted;
 
-	token_emitted = scan_next_token(line, &pos, &line_nr, &token);
+	token_emitted = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(0, token_emitted);
 	TEST_ASSERT_EQUAL_INT(27, pos);
@@ -104,7 +106,7 @@ void test_scan_next_token_should_detect_slash_not_comment(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 	TEST_ASSERT_EQUAL_INT(1, pos);
@@ -121,7 +123,7 @@ void test_scan_next_token_should_increment_line_nr_on_newline(void)
 	size_t line_nr = 2;
 	Token token;
 
-	scan_next_token(line, &pos, &line_nr, &token);
+	scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(3, line_nr);
 }
@@ -133,7 +135,7 @@ void test_scan_next_token_should_not_increment_on_end_of_c_string(void)
 	size_t line_nr = 2;
 	Token token;
 
-	scan_next_token(line, &pos, &line_nr, &token);
+	scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(2, line_nr);
 }
@@ -145,7 +147,7 @@ void test_scan_next_token_should_detect_ordinary_single_char_lexeme(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -162,7 +164,7 @@ void test_scan_next_token_should_detect_multichar_operators(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -180,7 +182,7 @@ void test_scan_next_token_should_detect_multichar_operators_with_single_char(
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -197,7 +199,7 @@ void test_scan_next_token_should_resolve_strings(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -215,9 +217,28 @@ void test_scan_next_token_should_not_produce_string_if_line_ends_with_double_quo
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	Error out_error;
+	int token_produced =
+		scan_next_token(line, &pos, &line_nr, &token, &out_error);
 
 	TEST_ASSERT_EQUAL_INT(0, token_produced);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNTERMINATED_STRING, out_error.type);
+}
+
+void test_scan_next_token_should_return_syntax_error_if_invalid_token_found(
+	void)
+{
+	char* line = "@";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	Error out_error;
+	int token_produced =
+		scan_next_token(line, &pos, &line_nr, &token, &out_error);
+
+	TEST_ASSERT_EQUAL_INT(0, token_produced);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_INVALID_TOKEN, out_error.type);
 }
 
 void test_scan_next_token_should_resolve_full_double_precision_number(void)
@@ -227,7 +248,7 @@ void test_scan_next_token_should_resolve_full_double_precision_number(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
 	if (token_produced) {
@@ -243,7 +264,7 @@ void test_scan_next_token_should_resolve_whole_number(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
 	if (token_produced) {
@@ -259,7 +280,7 @@ void test_scan_next_token_should_resolve_zero(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
 	if (token_produced) {
@@ -277,11 +298,38 @@ void test_scan_tokens_should_add_tokens_to_buffer_until_end_of_line(void)
 	TokenBuffer token_buffer;
 	init_token_buffer(&token_buffer);
 
-	scan_tokens(line, &line_nr, &token_buffer, &pos);
+	scan_tokens(line, &line_nr, &token_buffer, &pos, NULL);
 
 	TEST_ASSERT_EQUAL_INT(4, token_buffer.count);
 	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[3].lexeme, ")");
 	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[1].lexeme, "-");
+
+	free_token_buffer(&token_buffer);
+}
+
+void test_scan_tokens_should_scan_all_but_return_errors(void)
+{
+	char* line = "3 + @ - $()";
+	size_t pos = 0;
+	size_t line_nr = 0;
+
+	TokenBuffer token_buffer;
+	init_token_buffer(&token_buffer);
+
+	ErrorBuffer error_buffer;
+	init_error_buffer(&error_buffer);
+	scan_tokens(line, &line_nr, &token_buffer, &pos, &error_buffer);
+
+	TEST_ASSERT_EQUAL_INT(5, token_buffer.count);
+
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[0].lexeme, "3");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[1].lexeme, "+");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[2].lexeme, "-");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[3].lexeme, "(");
+	TEST_ASSERT_EQUAL_STRING(token_buffer.tokens[4].lexeme, ")");
+
+	TEST_ASSERT_ERRORS(error_buffer, 2, SYNTAX_ERROR_INVALID_TOKEN,
+					   SYNTAX_ERROR_INVALID_TOKEN);
 
 	free_token_buffer(&token_buffer);
 }
@@ -294,7 +342,7 @@ void test_scan_next_token_should_resolve_identifier(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 
@@ -311,7 +359,7 @@ void test_scan_next_token_should_resolve_keyword(void)
 	size_t line_nr = 0;
 	Token token;
 
-	int token_produced = scan_next_token(line, &pos, &line_nr, &token);
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
 
 	TEST_ASSERT_EQUAL_INT(1, token_produced);
 

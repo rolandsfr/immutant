@@ -3,6 +3,7 @@
 #include "unity.h"
 
 #include "ast_expr.h"
+#include "error.h"
 #include "error_report.h"
 #include "lexer.h"
 #include "parser_singnature.h"

@@ -1,5 +1,4 @@
 
-
 #include "parse_unary.h"
 
 #include "unity.h"
@@ -7,6 +6,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "error.h"
 #include "error_codes.h"
 #include "error_report.h"
 #include "is_equal.h"

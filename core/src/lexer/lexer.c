@@ -188,7 +188,7 @@ int resolve_and_create_identifier(char* line, size_t* current_pos,
 
 /** returns lexeme of the next closes token */
 int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
-					Token* token)
+					Token* token, Error* out_error)
 {
 	const char* current_char = advance(line, current_pos);
 	if (!current_char)
@@ -270,8 +270,16 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 			size_t start = *current_pos;
 			char* string_value = resolve_string(line, current_pos);
 
-			if (!string_value)
+			if (!string_value) {
+
+				if (out_error) {
+					*out_error =
+						(Error){.type = SYNTAX_ERROR_UNTERMINATED_STRING,
+								.line = *line_nr,
+								.message = "Unterminated string literal"};
+				}
 				return 0;
+			}
 
 			size_t len = *current_pos - start;
 			*token = create_token(TOKEN_STRING, string_value, len, *line_nr);
@@ -283,8 +291,18 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 			// resolve full number
 			if (is_number_candidate(*current_char)) {
 				*current_pos = *current_pos - 1;
-				return resolve_and_create_number(line, current_pos, *line_nr,
-												 token);
+				int is_resolved = resolve_and_create_number(line, current_pos,
+															*line_nr, token);
+				if (!is_resolved) {
+					if (out_error) {
+						*out_error =
+							(Error){.type = SYNTAX_ERROR_INVALID_NUMBER,
+									.line = *line_nr,
+									.message = "Invalid number"};
+					}
+
+					return 0;
+				}
 			} else if (isalpha(*current_char) || *current_char == '_') {
 				*current_pos = *current_pos - 1;
 				char* out_identifier = NULL;
@@ -307,29 +325,37 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 										  *line_nr);
 				}
 			} else {
-				*token =
-					create_token(TOKEN_UNRECOGNIZED, current_char, 1, *line_nr);
+				if (out_error) {
+					*out_error = (Error){.type = SYNTAX_ERROR_INVALID_TOKEN,
+										 .line = *line_nr};
+					snprintf(out_error->message, sizeof(out_error->message),
+							 "Invalid token: '%c'", *current_char);
+				}
+				return 0;
 			}
 	}
 
 	return 1;
 }
+const Error no_error = {.type = ERROR_NONE, .line = 0, .message = ""};
 
 void scan_tokens(char* line, size_t* line_nr, TokenBuffer* token_buffer,
-				 size_t* current_pos)
+				 size_t* current_pos, ErrorBuffer* out_errors)
 {
 	Token token;
+	Error error = no_error;
 
 	do {
+		error = no_error;
 		int token_produced =
-			scan_next_token(line, current_pos, line_nr, &token);
+			scan_next_token(line, current_pos, line_nr, &token, &error);
+
+		if (error.type != ERROR_NONE && out_errors != NULL) {
+			add_error(out_errors, error);
+		}
 
 		if (!token_produced)
 			continue;
-
-		if (token.type == TOKEN_UNRECOGNIZED) {
-			printf("unexpected token %s", token.lexeme);
-		}
 
 		add_token(token_buffer, token);
 	} while (!line_is_at_end(line, *current_pos));
