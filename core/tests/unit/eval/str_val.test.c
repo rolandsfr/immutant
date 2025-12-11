@@ -32,9 +32,23 @@ void test_str_val_number_decimal(void)
 	TEST_ASSERT_EQUAL_STRING("3.14", result);
 }
 
+void test_str_negative_number(void)
+{
+	Value number_val = {.type = VAL_NUMBER, .number = -7.5};
+	const char* result = str_val(number_val);
+	TEST_ASSERT_EQUAL_STRING("-7.5", result);
+}
+
 void test_str_val_string(void)
 {
 	Value string_val = {.type = VAL_STRING, .string = "Hello, World!"};
 	const char* result = str_val(string_val);
 	TEST_ASSERT_EQUAL_STRING("Hello, World!", result);
+}
+
+void test_str_val_large_number(void)
+{
+	Value number_val = {.type = VAL_NUMBER, .number = 93499 + 14439.5};
+	const char* result = str_val(number_val);
+	TEST_ASSERT_EQUAL_STRING("107938.5", result);
 }

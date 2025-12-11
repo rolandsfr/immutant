@@ -57,3 +57,17 @@ void test_interpret_source_string_concatenation()
 	Value result = interpret_source("\"Hello, \" + \"world!\"", 21, &line_nr);
 	TEST_ASSERT_STRING_VALUE(result, "Hello, world!");
 }
+
+void test_interpret_unary_negation()
+{
+	size_t line_nr = 0;
+	Value result = interpret_source("-42", 3, &line_nr);
+	TEST_ASSERT_NUMBER_VALUE(result, -42);
+}
+
+void test_large_number_addition()
+{
+	size_t line_nr = 0;
+	Value result = interpret_source("93499 + 14439.5", 15, &line_nr);
+	TEST_ASSERT_NUMBER_VALUE(result, 107938.5);
+}

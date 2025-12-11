@@ -10,7 +10,16 @@ const char* str_val(Value value)
 			return value.string;
 		case VAL_NUMBER: {
 			static char buffer[32];
-			snprintf(buffer, sizeof(buffer), "%g", value.number);
+			snprintf(buffer, sizeof(buffer), "%Lf", value.number);
+
+			// trim trailing zeros via ptr arithmetic
+			char* p = buffer + strlen(buffer) - 1;
+			while (p > buffer && *p == '0')
+				p--;
+			if (*p == '.')
+				p--; // remove decimal if integer
+			*(p + 1) = '\0';
+
 			return buffer;
 		}
 		case VAL_BOOL:
