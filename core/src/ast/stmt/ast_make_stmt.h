@@ -13,4 +13,6 @@ BlockStmt* make_block_stmt(Stmt** statements, size_t count);
 
 IfStmt* make_if_stmt(Expr* condition, Stmt* then_branch, Stmt* else_branch);
 
+ExprStmt* make_expr_stmt(Expr* expression);
+
 void free_expr(Expr* expr);

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 
 void error(int line, char* message);

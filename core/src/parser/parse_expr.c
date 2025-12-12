@@ -6,6 +6,9 @@
 #include "ast_make_expr.h"
 #include "lexer.h"
 #include "parse_eq.h"
-#include "parser_singnature.h"
 
-DEF_PARSE_FN(parse_expr) { return parse_equality(tokens, pos, out_error); }
+Expr* parse_expr(TokenBuffer* tokens, size_t* pos, Error* out_error)
+{
+
+	return parse_equality(tokens, pos, out_error);
+}

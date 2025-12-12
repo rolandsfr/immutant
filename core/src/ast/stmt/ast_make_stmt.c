@@ -21,7 +21,7 @@ VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer)
 }
 
 FunDeclStmt* make_fun_decl_stmt(const char* name, char** param_names,
-																size_t param_count, Stmt* body)
+								size_t param_count, Stmt* body)
 {
 	FunDeclStmt* f = malloc(sizeof(FunDeclStmt));
 	f->base.type = STMT_FUN_DECL;
@@ -57,4 +57,12 @@ IfStmt* make_if_stmt(Expr* condition, Stmt* then_branch, Stmt* else_branch)
 	i->then_branch = then_branch;
 	i->else_branch = else_branch;
 	return i;
+}
+
+ExprStmt* make_expr_stmt(Expr* expression)
+{
+	ExprStmt* e = malloc(sizeof(ExprStmt));
+	e->base.type = STMT_EXPR;
+	e->expression = expression;
+	return e;
 }
