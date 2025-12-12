@@ -123,6 +123,9 @@ const char* advance(char* line, size_t* current_pos);
 
 int line_is_at_end(char* line, size_t current_pos);
 
+/** returns bool if current position is at the end of the token buffer */
+int is_at_end(TokenBuffer* buffer, size_t current_pos);
+
 /** same as peek but returns boolean like-number if peeked char matches any in
  * provided charset string */
 int peek_expect(char* line, size_t* current_pos, const char* expect_charset,

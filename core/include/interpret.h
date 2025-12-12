@@ -4,4 +4,10 @@
 
 typedef struct Value Value;
 
-Value interpret_source(char* source, size_t length, size_t* line_nr);
+typedef struct Values {
+	Value* items;
+	size_t count;
+	size_t capacity;
+} Values;
+
+Values interpret_source(char* source, size_t length, size_t* line_nr);

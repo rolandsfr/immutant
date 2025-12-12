@@ -51,9 +51,12 @@ void run_interactive()
 			break;
 		}
 
-		Value val = interpret_source(code_line, strlen(code_line), &line_nr);
-		if (val.type != VAL_NULL) {
-			printf("%s\n", str_val(val));
+		Values val = interpret_source(code_line, strlen(code_line), &line_nr);
+		for (size_t i = 0; i < val.count; i++) {
+			Value v = val.items[i];
+			if (v.type != VAL_NULL) {
+				printf("%s\n", str_val(v));
+			}
 		}
 	}
 }
