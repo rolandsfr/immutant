@@ -58,3 +58,12 @@ void test_eval_unary_should_eval_binary_inside_unary(void)
 
 	TEST_ASSERT_NUMBER_VALUE(result, -8.0);
 }
+
+void test_eval_unary_should_negate_boolean_false(void)
+{
+	UnaryExpr* expr = make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(0));
+	Error err = {-1};
+	Value result = eval_unary(expr, &err);
+
+	TEST_ASSERT_BOOL_VALUE(result, 1);
+}

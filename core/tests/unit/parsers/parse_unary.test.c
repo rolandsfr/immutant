@@ -86,3 +86,24 @@ void test_parse_unary_should_return_if_parse_error(void)
 
 	free_token_buffer(&tokens);
 }
+
+void test_parse_unary_should_parse_negation_of_boolean(void)
+{
+	TokenBuffer tokens;
+	Error error;
+
+	Expr* res = init_test_parse(&tokens, 2,
+								(SampleToken[]){
+									{TOKEN_BANG, "!", 1},
+									{TOKEN_FALSE, "false", 1},
+								},
+								&error, parse_unary);
+
+	TEST_ASSERT_NOT_NULL(res);
+
+	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
+	TEST_ASSERT_EQUAL_INT(TOKEN_BANG, ((UnaryExpr*)res)->operator);
+	TEST_ASSERT_EQUAL_INT(EXPR_LITERAL_BOOL, ((UnaryExpr*)res)->operand->type);
+
+	free_token_buffer(&tokens);
+}

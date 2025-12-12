@@ -13,7 +13,7 @@
 
 DEF_PARSE_FN(parse_unary)
 {
-	if (match_token(tokens, pos, 1, TOKEN_MINUS, TOKEN_BANG)) {
+	if (match_token(tokens, pos, 2, TOKEN_MINUS, TOKEN_BANG)) {
 		TokenType operator_token = previous_token(tokens, *pos);
 		Expr* right = parse_unary(tokens, pos, out_error);
 
