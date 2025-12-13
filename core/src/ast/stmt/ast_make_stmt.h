@@ -2,7 +2,8 @@
 
 #include "../ast_cnstrct.h"
 
-VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer);
+VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer,
+								enum MutabilityType mutability);
 
 FunDeclStmt* make_fun_decl_stmt(const char* name, char** param_names,
 								size_t param_count, Stmt* body);

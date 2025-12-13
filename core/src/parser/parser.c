@@ -5,6 +5,7 @@
 #include "ast_stmt.h"
 #include "error.h"
 #include "lexer.h"
+#include "parse_dclr.h"
 #include "parse_expr_stmt.h"
 
 void init_stmts_buffer(Stmts* stmts)
@@ -14,7 +15,7 @@ void init_stmts_buffer(Stmts* stmts)
 	stmts->expr_stmts = malloc(stmts->capacity * sizeof(ExprStmt*));
 }
 
-void add_expr_stmt(Stmts* stmts, ExprStmt* expr_stmt)
+void add_stmt(Stmts* stmts, Stmt* expr_stmt)
 {
 	if (stmts->count >= stmts->capacity) {
 		stmts->capacity *= 2;
@@ -32,11 +33,13 @@ Stmts parse(TokenBuffer* tokens, Error* out_error)
 	init_stmts_buffer(&stmts);
 
 	while (!is_at_end(tokens, pos)) {
-		ExprStmt* expr_stmt = parse_expr_stmt(tokens, &pos, out_error);
-		if (out_error && out_error->type != ERROR_NONE || expr_stmt == NULL) {
+		Stmt* stmt = parse_dclr(tokens, &pos, out_error);
+
+		if (out_error && out_error->type != ERROR_NONE || stmt == NULL) {
 			break;
 		}
-		add_expr_stmt(&stmts, expr_stmt);
+
+		add_stmt(&stmts, stmt);
 	}
 
 	return stmts;

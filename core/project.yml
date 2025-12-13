@@ -20,20 +20,17 @@
 
 :project:
   # how to use ceedling. If you're not sure, leave this as `gem` and `?`
+  :which_ceedling: gem
+  :ceedling_version: '?'
 
-  :ceedling_version: 1.0.1
-
-  # optional features. If you don't need them, keep them turned off for performance
-  :use_mocks: TRUE
-  :use_decorators: :auto # decorate Ceedling's output text. options are :auto, :all, or :none
-
-  # tweak the way ceedling handles automatic tasks
+  :use_decorators: :auto 
   :build_root: tests_build
   :test_file_prefix: ""
   :test_file_suffix: ".test.c"
   :default_tasks:
     - test:all
 
+  :use_mocks: TRUE
   :release_build: FALSE
 
 :plugins:
@@ -44,24 +41,18 @@
     - compile_commands_json_db
 
 
----
 # Configuration Options specific to CMock. See CMock docs for details
 # ====
 # ====
 # ====
 
 :cmock:
-  :mock_path: test/support/mocks
-  :stub_path: test/support/stubs
-  :mock_prefix: mock_
+  :mock_prefix: Mock
   :when_no_prototypes: :warn
   :enforce_strict_ordering: TRUE
   :plugins:
-    :enabled:
-      - :ignore
-      - :callback
-      - stdout_pretty_tests_report
-      - module_generator
+    - :ignore
+    - :callback
   :treat_as:
     uint8: HEX8
     uint16: HEX16

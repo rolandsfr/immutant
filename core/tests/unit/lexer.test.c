@@ -10,8 +10,7 @@
 #include "error.h"
 #include "utils.h"
 
-TEST_SOURCE_FILE("resolve/resolve.c");
-TEST_SOURCE_FILE("resolve/keywords.c");
+#include "resolve.h"
 
 /** fn advance moves position forward by one */
 void test_advance_moves_position_forward(void)

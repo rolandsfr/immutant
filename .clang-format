@@ -7,7 +7,7 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 IncludeBlocks: Regroup      # Preserve | Merge | Regroup
-SortIncludes: true 
+SortIncludes: true
 IncludeCategories:
   # 1. System headers: <stdio.h>, <stdlib.h>, <foo/bar.h>
   - Regex: '^<.*>$'

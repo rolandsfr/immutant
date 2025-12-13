@@ -11,12 +11,14 @@
  * ========================
  */
 
-VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer)
+VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer,
+								enum MutabilityType mutability)
 {
 	VarDeclStmt* v = malloc(sizeof(VarDeclStmt));
 	v->base.type = STMT_VAR_DECL;
 	v->name = strdup(name);
 	v->initializer = initializer;
+	v->mutability = mutability;
 	return v;
 }
 

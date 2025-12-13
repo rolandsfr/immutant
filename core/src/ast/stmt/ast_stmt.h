@@ -4,10 +4,13 @@
 
 #include "../ast_cnstrct.h"
 
+enum MutabilityType { MUTABLE, IMMUTABLE };
+
 typedef struct VarDeclStmt {
 	Stmt base;
 	char* name;
 	Expr* initializer;
+	enum MutabilityType mutability;
 } VarDeclStmt;
 
 typedef struct FunDeclStmt {
