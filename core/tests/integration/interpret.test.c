@@ -34,6 +34,7 @@
 #include "parser_singnature.h"
 #include "require_t.h"
 #include "resolve.h"
+#include "sync_parse.h"
 #include "test_expr.h"
 #include "value_t.h"
 

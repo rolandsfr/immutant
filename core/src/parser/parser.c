@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "parse_dclr.h"
 #include "parse_expr_stmt.h"
+#include "sync_parse.h"
 
 void init_stmts_buffer(Stmts* stmts)
 {
@@ -36,7 +37,10 @@ Stmts parse(TokenBuffer* tokens, Error* out_error)
 		Stmt* stmt = parse_dclr(tokens, &pos, out_error);
 
 		if (out_error && out_error->type != ERROR_NONE || stmt == NULL) {
-			break;
+			printf("Error encountered during parsing: %s\n",
+				   out_error->message);
+			sync_parse(tokens, &pos, out_error);
+			continue;
 		}
 
 		add_stmt(&stmts, stmt);
