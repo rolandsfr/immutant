@@ -62,9 +62,9 @@ Values interpret_source(char* source, size_t length, size_t* line_nr)
 		return results;
 	}
 
-	for (size_t i = 0; i < stmts.count; i++) {
+	for (size_t i = 0; i < stmts.len; i++) {
 		Error runtime_error = {-1};
-		ExprStmt* expr_stmt = stmts.expr_stmts[i];
+		ExprStmt* expr_stmt = stmts.data[i];
 		Value value = eval_expr(expr_stmt->expression, &runtime_error);
 
 		if (runtime_error.type != ERROR_NONE) {

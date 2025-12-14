@@ -9,29 +9,12 @@
 #include "parse_expr_stmt.h"
 #include "sync_parse.h"
 
-void init_stmts_buffer(Stmts* stmts)
-{
-	stmts->count = 0;
-	stmts->capacity = 8;
-	stmts->expr_stmts = malloc(stmts->capacity * sizeof(ExprStmt*));
-}
-
-void add_stmt(Stmts* stmts, Stmt* expr_stmt)
-{
-	if (stmts->count >= stmts->capacity) {
-		stmts->capacity *= 2;
-		stmts->expr_stmts =
-			realloc(stmts->expr_stmts, stmts->capacity * sizeof(ExprStmt*));
-	}
-	stmts->expr_stmts[stmts->count++] = expr_stmt;
-}
-
 Stmts parse(TokenBuffer* tokens, ErrorBuffer* out_errors)
 {
 	size_t pos = 0;
 
 	Stmts stmts;
-	init_stmts_buffer(&stmts);
+	Stmts_init(&stmts);
 
 	while (!is_at_end(tokens, pos)) {
 		Error error = {-1};
@@ -43,7 +26,7 @@ Stmts parse(TokenBuffer* tokens, ErrorBuffer* out_errors)
 			continue;
 		}
 
-		add_stmt(&stmts, stmt);
+		Stmts_push(&stmts, (ExprStmt*)stmt);
 	}
 
 	return stmts;
