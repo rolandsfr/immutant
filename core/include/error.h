@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "array.h"
+
 void error(int line, char* message);
 void report_error(size_t line, const char* message, int* hadError);
 const char* format_error(int line, const char* message);
@@ -31,12 +33,8 @@ typedef struct Error {
 	char message[128];
 } Error;
 
-typedef struct ErrorBuffer {
-	size_t count;
-	size_t capacity;
-	Error* errors;
-} ErrorBuffer;
+ARR_DEFINE(Error, ErrorBuffer);
 
-void init_error_buffer(ErrorBuffer* buffer);
+void report_errors(ErrorBuffer* errors);
 
-void add_error(ErrorBuffer* buffer, Error error);
+int had_errors(ErrorBuffer* errors);

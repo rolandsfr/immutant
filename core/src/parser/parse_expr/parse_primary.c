@@ -51,7 +51,7 @@ DEF_PARSE_FN(parse_primary)
 	if (prev_token(tokens, *pos).type != TOKEN_LEFT_PAREN && out_error) {
 		*out_error = (Error){.type = SYNTAX_ERROR_MISSING_EXPRESSION,
 							 .message = "Expected expression",
-							 .line = tokens->tokens[*pos].line};
+							 .line = tokens->tokens[*pos - 1].line};
 	}
 
 	return NULL;

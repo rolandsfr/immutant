@@ -16,10 +16,12 @@ ExprStmt* parse_expr_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 	if (!match_token(tokens, pos, 1, TOKEN_SEMICOLON)) {
 		if (out_error) {
-			*out_error = (Error){
-				.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
-				.message = "Expected ';' after expression statement.",
-			};
+
+			Token token = peek_token_full(tokens, *pos);
+			*out_error =
+				(Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+						.message = "Expected ';' after expression statement.",
+						.line = token.line};
 		}
 
 		free_expr(expr);

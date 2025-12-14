@@ -26,7 +26,7 @@ void add_stmt(Stmts* stmts, Stmt* expr_stmt)
 	stmts->expr_stmts[stmts->count++] = expr_stmt;
 }
 
-Stmts parse(TokenBuffer* tokens, Error* out_error)
+Stmts parse(TokenBuffer* tokens, ErrorBuffer* out_errors)
 {
 	size_t pos = 0;
 
@@ -34,12 +34,12 @@ Stmts parse(TokenBuffer* tokens, Error* out_error)
 	init_stmts_buffer(&stmts);
 
 	while (!is_at_end(tokens, pos)) {
-		Stmt* stmt = parse_dclr(tokens, &pos, out_error);
+		Error error = {-1};
+		Stmt* stmt = parse_dclr(tokens, &pos, &error);
 
-		if (out_error && out_error->type != ERROR_NONE || stmt == NULL) {
-			printf("Error encountered during parsing: %s\n",
-				   out_error->message);
-			sync_parse(tokens, &pos, out_error);
+		if (error.type != ERROR_NONE || stmt == NULL) {
+			ErrorBuffer_push(out_errors, error);
+			sync_parse(tokens, &pos, &error);
 			continue;
 		}
 

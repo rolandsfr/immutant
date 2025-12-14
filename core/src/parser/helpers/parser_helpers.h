@@ -41,3 +41,5 @@ enum TokenType previous_token(TokenBuffer* tokens, size_t pos);
 enum TokenType peek_token(TokenBuffer* tokens, size_t pos);
 
 Token prev_token(TokenBuffer* tokens, size_t pos);
+
+Token peek_token_full(TokenBuffer* tokens, size_t pos);

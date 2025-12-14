@@ -28,6 +28,14 @@ enum TokenType peek_token(TokenBuffer* tokens, size_t pos)
 	return tokens->tokens[pos].type;
 }
 
+Token peek_token_full(TokenBuffer* tokens, size_t pos)
+{
+	if (is_at_end(tokens, pos)) {
+		return create_token(TOKEN_EOF, "", 0, 1);
+	}
+	return tokens->tokens[pos];
+}
+
 enum TokenType previous_token(TokenBuffer* tokens, size_t pos)
 {
 	if (pos == 0 || is_at_end(tokens, pos - 1)) {

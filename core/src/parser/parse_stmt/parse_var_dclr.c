@@ -28,20 +28,20 @@ VarDeclStmt* parse_var_decl(TokenBuffer* tokens, size_t* pos,
 		}
 	} else if (mutability == IMMUTABLE) {
 		if (out_error) {
-			*out_error = (Error){
-				.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
-				.message = "Immutable variables must be initialized.",
-			};
+			*out_error =
+				(Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+						.message = "Immutable variables must be initialized.",
+						.line = name.line};
 		}
 		return NULL;
 	}
 
 	if (!match_token(tokens, pos, 1, TOKEN_SEMICOLON)) {
 		if (out_error) {
-			*out_error = (Error){
-				.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
-				.message = "Expected ';' after variable declaration.",
-			};
+			*out_error =
+				(Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+						.message = "Expected ';' after variable declaration.",
+						.line = peek_token_full(tokens, *pos).line};
 		}
 
 		free_expr(initializer);

@@ -11,20 +11,20 @@ void sync_parse(TokenBuffer* tokens, size_t* pos, Error* out_error)
 {
 	consume_token(tokens, pos); // consume error token
 
-	if (out_error) {
-		*out_error = (Error){.type = ERROR_NONE, .message = ""};
-	}
-
 	while (!is_at_end(tokens, *pos)) {
 		enum TokenType next_token = peek_token(tokens, *pos);
 
 		switch (next_token) {
 			case TOKEN_FN:
+			case TOKEN_SEMICOLON:
 			case TOKEN_MUTANT:
 			case TOKEN_IMMUTANT:
 			case TOKEN_IF:
 			case TOKEN_WHILE:
 			case TOKEN_RETURN: {
+				if (out_error) {
+					*out_error = (Error){.type = ERROR_NONE, .message = ""};
+				}
 
 				// reset error
 				return; // Found a statement start, exit synchronization

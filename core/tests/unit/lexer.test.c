@@ -8,9 +8,8 @@
 
 #include "assert_error.h"
 #include "error.h"
-#include "utils.h"
-
 #include "resolve.h"
+#include "utils.h"
 
 /** fn advance moves position forward by one */
 void test_advance_moves_position_forward(void)
@@ -316,7 +315,7 @@ void test_scan_tokens_should_scan_all_but_return_errors(void)
 	init_token_buffer(&token_buffer);
 
 	ErrorBuffer error_buffer;
-	init_error_buffer(&error_buffer);
+	ErrorBuffer_init(&error_buffer);
 	scan_tokens(line, &line_nr, &token_buffer, &pos, &error_buffer);
 
 	TEST_ASSERT_EQUAL_INT(5, token_buffer.count);

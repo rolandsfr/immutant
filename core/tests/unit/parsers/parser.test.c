@@ -1,5 +1,6 @@
 #include "parser.h"
 
+#include "array.h"
 #include "ast_make_expr.h"
 #include "ast_make_stmt.h"
 #include "ast_stmt.h"
@@ -37,7 +38,8 @@ void test_parse_var_decl_should_error_if_no_semicolon_after_initializer()
 	TokenBuffer tokens;
 	init_token_buffer(&tokens);
 	size_t pos = 0;
-	Error error = {-1};
+	ErrorBuffer errors;
+	ErrorBuffer_init(&errors);
 
 	parse_dclr_StubWithCallback(mock_dclr_and_throw);
 
@@ -48,9 +50,10 @@ void test_parse_var_decl_should_error_if_no_semicolon_after_initializer()
 	add_token(&tokens, create_token(TOKEN_IF, "if", 2,
 									1)); // to be re-started from
 
-	Stmts stmts = parse(&tokens, &error);
+	Stmts stmts = parse(&tokens, &errors);
 
 	TEST_ASSERT_EQUAL_INT(1, stmts.count);
-	TEST_ASSERT_EQUAL_INT(ERROR_NONE, error.type);
+	TEST_ASSERT_EQUAL_INT(1, errors.len);
+	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNEXPECTED_TOKEN, errors.data[0].type);
 	TEST_ASSERT_LITERAL_NUMBER_EXPR(stmts.expr_stmts[0]->expression, "42");
 }

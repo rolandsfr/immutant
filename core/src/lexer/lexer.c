@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "array.h"
 #include "error.h"
 #include "resolve.h"
 
@@ -351,7 +352,7 @@ void scan_tokens(char* line, size_t* line_nr, TokenBuffer* token_buffer,
 			scan_next_token(line, current_pos, line_nr, &token, &error);
 
 		if (error.type != ERROR_NONE && out_errors != NULL) {
-			add_error(out_errors, error);
+			ErrorBuffer_push(out_errors, error);
 		}
 
 		if (!token_produced)
