@@ -4,6 +4,7 @@
 
 #include "ast_expr.h"
 #include "ast_stmt.h"
+#include "env.h"
 #include "error.h"
 #include "error_codes.h"
 #include "error_report.h"
@@ -30,6 +31,8 @@ void add_value(Values* arr, Value v)
 	}
 	arr->items[arr->count++] = v;
 }
+
+Env* global_env;
 
 Values interpret_source(char* source, size_t length, size_t* line_nr)
 {
@@ -62,10 +65,17 @@ Values interpret_source(char* source, size_t length, size_t* line_nr)
 		return results;
 	}
 
+	if (!global_env) {
+		global_env = env_new(NULL);
+	}
+
 	for (size_t i = 0; i < stmts.len; i++) {
 		Error runtime_error = {-1};
-		ExprStmt* expr_stmt = stmts.data[i];
-		Value value = eval_expr(expr_stmt->expression, &runtime_error);
+		Stmt* stmt = stmts.data[i];
+		Value value;
+
+		eval(stmt, &runtime_error, &value,
+			 global_env); // TODO: for now define eveything in global env
 
 		if (runtime_error.type != ERROR_NONE) {
 			printf("Runtime error at line %zu: %s\n", *line_nr,

@@ -3,7 +3,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "error.h"
-#include "eval.h"
+#include "eval_expr.h"
 #include "eval_singature.h"
 #include "make_values.h"
 #include "require_t.h"
@@ -11,7 +11,7 @@
 
 DEF_EVAL_EXPR(eval_unary, UnaryExpr)
 {
-	Value operand_value = eval_expr(expr->operand, err);
+	Value operand_value = eval_expr(expr->operand, err, env);
 
 	if (err && err->type != ERROR_NONE) {
 		return make_null();

@@ -5,9 +5,12 @@
 
 #include "assert_value.h"
 #include "ast_expr.h"
+#include "env.h"
 #include "error.h"
 #include "eval.h"
+#include "eval_expr.h"
 #include "eval_unary.h"
+#include "eval_var.h"
 #include "is_equal.h"
 #include "lexer.h"
 #include "make_values.h"
@@ -29,7 +32,7 @@ void test_eval_binary_should_concat_strings_on_plus_token(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&concat_expr, &err);
+	Value result = eval_binary(&concat_expr, &err, NULL);
 
 	TEST_ASSERT_STRING_VALUE(result, "from the outside world");
 }
@@ -48,7 +51,7 @@ void test_eval_binary_should_error_on_plus_token_with_mismatched_types(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&invalid_expr, &err);
+	Value result = eval_binary(&invalid_expr, &err, NULL);
 
 	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_UNEXPECTED_TYPE);
 }
@@ -67,7 +70,7 @@ void test_eval_binary_should_add_numbers_on_plus_token(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&add_expr, &err);
+	Value result = eval_binary(&add_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 42.5);
 }
@@ -86,7 +89,7 @@ void test_eval_binary_should_subtract_numbers_on_minus_token(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&sub_expr, &err);
+	Value result = eval_binary(&sub_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, -158.5);
 }
@@ -104,7 +107,7 @@ void test_eval_binary_should_multiply_numbers_on_star_token(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&mul_expr, &err);
+	Value result = eval_binary(&mul_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 42);
 }
@@ -123,7 +126,7 @@ void test_eval_binary_should_divide_numbers_on_slash_token(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&div_expr, &err);
+	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 42);
 }
@@ -143,7 +146,7 @@ void test_eval_binary_should_return_floating_point_result_on_division_according_
 
 	Error err = {-1};
 
-	Value result = eval_binary(&div_expr, &err);
+	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 3.33333333333333);
 }
@@ -162,7 +165,7 @@ void test_eval_binary_should_error_on_divide_by_zero(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&div_expr, &err);
+	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_DIVIDE_BY_ZERO);
 }
@@ -180,7 +183,7 @@ void test_eval_binary_should_return_0_on_0_divided_by_number(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&div_expr, &err);
+	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 0);
 }
@@ -203,7 +206,7 @@ void test_eval_binary_should_eval_unary_inside_binary_expression(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&binary_expr, &err);
+	Value result = eval_binary(&binary_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 2);
 }
@@ -223,15 +226,15 @@ void test_eval_binary_should_compare_numbers_non_stricly(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&comp_expr, &err);
+	Value result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 
 	comp_expr.operator = TOKEN_GREATER;
-	result = eval_binary(&comp_expr, &err);
+	result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 0);
 
 	comp_expr.operator = TOKEN_LESS_EQUAL;
-	result = eval_binary(&comp_expr, &err);
+	result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }
 
@@ -250,11 +253,11 @@ void test_eval_binary_should_compare_numbers_stricly(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&comp_expr, &err);
+	Value result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 
 	comp_expr.operator = TOKEN_LESS_EQUAL;
-	result = eval_binary(&comp_expr, &err);
+	result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }
 
@@ -275,7 +278,7 @@ void test_eval_binary_should_immediately_return_false_on_inequal_types_for_equal
 
 	Error err = {-1};
 
-	Value result = eval_binary(&eq_expr, &err);
+	Value result = eval_binary(&eq_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 0);
 }
 
@@ -294,7 +297,7 @@ void test_eval_binary_should_compare_equal_numbers_on_equality_operator(void)
 
 	Error err = {-1};
 
-	Value result = eval_binary(&eq_expr, &err);
+	Value result = eval_binary(&eq_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }
 
@@ -314,6 +317,6 @@ void test_eval_binary_should_compare_unequal_strings_on_inequality_operator(
 
 	Error err = {-1};
 
-	Value result = eval_binary(&eq_expr, &err);
+	Value result = eval_binary(&eq_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }

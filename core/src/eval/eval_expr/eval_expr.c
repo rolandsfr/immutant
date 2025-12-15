@@ -1,4 +1,4 @@
-#include "eval.h"
+#include "eval_expr.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +11,10 @@
 #include "make_values.h"
 #include "value_t.h"
 
-Value eval_expr(Expr* expr, Error* err)
+#include "env/env.h"
+#include "eval_vars/eval_var.h"
+
+Value eval_expr(Expr* expr, Error* err, Env* env)
 {
 	switch (expr->type) {
 		case EXPR_LITERAL_NUMBER: {
@@ -30,14 +33,16 @@ Value eval_expr(Expr* expr, Error* err)
 		}
 
 		case EXPR_UNARY:
-			return eval_unary((UnaryExpr*)expr, err);
+			return eval_unary((UnaryExpr*)expr, err, env);
 
 		case EXPR_BINARY:
-			return eval_binary((BinaryExpr*)expr, err);
-
-			// case EXPR_VARIABLE:
-			// 	return eval_variable((VariableExpr*)expr, err);
-
+			return eval_binary((BinaryExpr*)expr, err, env);
+		case EXPR_VARIABLE: {
+			VariableExpr* var_expr = (VariableExpr*)expr;
+			Value value;
+			eval_var_expr(env, var_expr, &value, err);
+			return value;
+		}
 			// case EXPR_CALL:
 			// 	return eval_call((CallExpr*)expr, err);
 	}

@@ -9,12 +9,15 @@
 #include "ast_expr.h"
 #include "ast_make_expr.h"
 #include "ast_make_stmt.h"
+#include "env.h"
 #include "error.h"
 #include "error_codes.h"
 #include "error_report.h"
 #include "eval.h"
 #include "eval_binary.h"
+#include "eval_expr.h"
 #include "eval_unary.h"
+#include "eval_var.h"
 #include "is_equal.h"
 #include "lexer.h"
 #include "make_values.h"
@@ -80,4 +83,13 @@ void test_large_number_addition()
 	size_t line_nr = 0;
 	Values result = interpret_source("93499 + 14439.5;", 15, &line_nr);
 	TEST_ASSERT_NUMBER_VALUE(result.items[0], 107938.5);
+}
+
+void test_interpret_var_usage()
+{
+	size_t line_nr = 0;
+	interpret_source("immutant a = 10;", 15, &line_nr);
+	interpret_source("immutant b = 5;", 14, &line_nr);
+	Values result = interpret_source("a + b;", 21, &line_nr);
+	TEST_ASSERT_NUMBER_VALUE(result.items[0], 15);
 }

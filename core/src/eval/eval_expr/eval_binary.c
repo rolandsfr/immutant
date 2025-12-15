@@ -6,7 +6,7 @@
 
 #include "ast_expr.h"
 #include "error.h"
-#include "eval.h"
+#include "eval_expr.h"
 #include "eval_singature.h"
 #include "is_equal.h"
 #include "lexer.h"
@@ -17,12 +17,12 @@
 
 DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 {
-	Value left_value = eval_expr(expr->left, err);
+	Value left_value = eval_expr(expr->left, err, env);
 	if (err->type != ERROR_NONE) {
 		return make_null();
 	}
 
-	Value right_value = eval_expr(expr->right, err);
+	Value right_value = eval_expr(expr->right, err, env);
 	if (err->type != ERROR_NONE) {
 		return make_null();
 	}

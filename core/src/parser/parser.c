@@ -26,7 +26,7 @@ Stmts parse(TokenBuffer* tokens, ErrorBuffer* out_errors)
 			continue;
 		}
 
-		Stmts_push(&stmts, (ExprStmt*)stmt);
+		Stmts_push(&stmts, stmt);
 	}
 
 	return stmts;

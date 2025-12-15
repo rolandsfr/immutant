@@ -28,6 +28,10 @@ DEF_PARSE_FN(parse_primary)
 		return (Expr*)make_boolean_expr(0);
 	}
 
+	if (match_token(tokens, pos, 1, TOKEN_IDENTIFIER)) {
+		return (Expr*)make_variable_expr(prev_token(tokens, *pos).lexeme);
+	}
+
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_PAREN)) {
 		Expr* expr = parse_equality(tokens, pos, out_error);
 		if (out_error && out_error->type != ERROR_NONE) {

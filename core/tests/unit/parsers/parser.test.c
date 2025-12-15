@@ -55,5 +55,6 @@ void test_parse_var_decl_should_error_if_no_semicolon_after_initializer()
 	TEST_ASSERT_EQUAL_INT(1, stmts.len);
 	TEST_ASSERT_EQUAL_INT(1, errors.len);
 	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNEXPECTED_TOKEN, errors.data[0].type);
-	TEST_ASSERT_LITERAL_NUMBER_EXPR(stmts.data[0]->expression, "42");
+	ExprStmt* expr_stmt = (ExprStmt*)(stmts.data[0]);
+	TEST_ASSERT_LITERAL_NUMBER_EXPR(expr_stmt->expression, "42");
 }

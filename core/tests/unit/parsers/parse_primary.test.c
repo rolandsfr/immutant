@@ -123,3 +123,25 @@ void test_parse_primary_should_detect_unexpected_token(void)
 
 	free_token_buffer(&tokens);
 }
+
+void test_parse_primary_should_parse_identifier_as_variable_expression(void)
+{
+	TokenBuffer tokens;
+	Error error;
+
+	Expr* res = init_test_parse(&tokens, 1,
+								(SampleToken[]){
+									{
+										TOKEN_IDENTIFIER,
+										"myVar",
+										5,
+									},
+								},
+								&error, parse_primary);
+
+	TEST_ASSERT_NOT_NULL(res);
+	TEST_ASSERT_EQUAL_INT(EXPR_VARIABLE, res->type);
+	TEST_ASSERT_EQUAL_STRING("myVar", ((VariableExpr*)res)->name);
+
+	free_token_buffer(&tokens);
+}
