@@ -25,6 +25,8 @@ void env_define(Env* env, const char* name, Value value,
 
 Value* env_get(Env* env, const char* name);
 
+EnvEntry env_get_entry(Env* env, const char* name);
+
 int env_set(Env* env, const char* name, Value value);
 
 void env_free(Env* env);

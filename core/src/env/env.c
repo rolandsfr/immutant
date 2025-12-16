@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "ast_stmt.h"
+#include "env.h"
 #include "value_t.h"
 
 Env* env_new(Env* parent)
@@ -44,6 +45,21 @@ Value* env_get(Env* env, const char* name)
 		}
 	}
 	return NULL; // not found
+}
+
+EnvEntry env_get_entry(Env* env, const char* name)
+{
+    for (Env* e = env; e != NULL; e = e->parent) {
+        for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
+            if (strcmp(entry->name, name) == 0) {
+                return *entry;
+            }
+        }
+    }
+
+    return (EnvEntry){
+        NULL
+    }; 
 }
 
 int env_set(Env* env, const char* name, Value value)
