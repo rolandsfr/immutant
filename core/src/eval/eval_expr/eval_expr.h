@@ -1,8 +1,8 @@
-
 #pragma once
 
+#include "value_t.h"
+
 typedef struct Expr Expr;
-typedef struct Value Value;
 typedef struct Error Error;
 typedef struct Env Env;
 

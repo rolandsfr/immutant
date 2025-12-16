@@ -51,7 +51,7 @@ void tearDown(void) { /* nothing to tear down */ }
 void test_env_define_and_get(void)
 {
 	Env* env = env_new(NULL);
-	env_define(env, "a", &v1, MUTABLE);
+	env_define(env, "a", v1, MUTABLE); // pass by value
 
 	Value* result = env_get(env, "a");
 	TEST_ASSERT_NOT_NULL(result);
@@ -74,8 +74,8 @@ void test_env_set_updates_existing_variable(void)
 {
 	Env* env = env_new(NULL);
 
-	env_define(env, "x", &v1, MUTABLE);
-	int ok = env_set(env, "x", &v2);
+	env_define(env, "x", v1, MUTABLE);
+	int ok = env_set(env, "x", v2); // pass by value
 	TEST_ASSERT_TRUE(ok);
 
 	Value* updated = env_get(env, "x");
@@ -89,7 +89,7 @@ void test_env_set_undefined_variable_fails(void)
 {
 	Env* env = env_new(NULL);
 
-	int ok = env_set(env, "x", &v1);
+	int ok = env_set(env, "x", v1); // pass by value
 	TEST_ASSERT_FALSE(ok);
 
 	env_free(env);
@@ -100,7 +100,7 @@ void test_env_lookup_parent_scope(void)
 	Env* global = env_new(NULL);
 	Env* local = env_new(global);
 
-	env_define(global, "g", &v1, MUTABLE);
+	env_define(global, "g", v1, MUTABLE); // pass by value
 
 	Value* result = env_get(local, "g");
 	TEST_ASSERT_NOT_NULL(result);
@@ -115,8 +115,8 @@ void test_env_shadowing(void)
 	Env* global = env_new(NULL);
 	Env* local = env_new(global);
 
-	env_define(global, "x", &v1, MUTABLE);
-	env_define(local, "x", &v2, MUTABLE);
+	env_define(global, "x", v1, MUTABLE);
+	env_define(local, "x", v2, MUTABLE);
 
 	Value* result_local = env_get(local, "x");
 	Value* result_global = env_get(global, "x");
@@ -136,10 +136,10 @@ void test_env_set_updates_nearest_scope(void)
 	Env* global = env_new(NULL);
 	Env* local = env_new(global);
 
-	env_define(global, "x", &v1, MUTABLE);
-	env_define(local, "y", &v2, MUTABLE);
+	env_define(global, "x", v1, MUTABLE);
+	env_define(local, "y", v2, MUTABLE);
 
-	int ok = env_set(local, "x", &v3);
+	int ok = env_set(local, "x", v3); // pass by value
 	TEST_ASSERT_TRUE(ok);
 
 	Value* result_global = env_get(global, "x");

@@ -3,6 +3,7 @@
 #include "assert_value.h"
 #include "ast_expr.h"
 #include "env.h"
+#include "eval_asgn.h"
 #include "eval_binary.h"
 #include "eval_expr.h"
 #include "eval_unary.h"

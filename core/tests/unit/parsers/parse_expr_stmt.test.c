@@ -2,8 +2,6 @@
 
 #include "unity.h"
 
-#include "Mockparse_expr.h"
-#include "Mockresolve.h"
 #include "assert_value.h"
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
@@ -11,8 +9,12 @@
 #include "ast_stmt.h"
 #include "error.h"
 #include "lexer.h"
+#include "Mockparse_asgn.h"
 #include "parser_helpers.h"
 #include "test_expr.h"
+
+#include "Mockparse_expr.h"
+#include "Mockresolve.h"
 
 void test_parse_expr_stmt_should_fail_if_missing_semicolon_after_statement_expr(
 	void)

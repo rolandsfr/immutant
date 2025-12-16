@@ -7,6 +7,7 @@
 #include "ast_make_expr.h"
 #include "env.h"
 #include "error.h"
+#include "eval_asgn.h"
 #include "eval.h"
 #include "eval_binary.h"
 #include "eval_expr.h"

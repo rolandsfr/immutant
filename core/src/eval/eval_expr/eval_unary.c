@@ -3,6 +3,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "error.h"
+#include "eval_asgn.h"
 #include "eval_expr.h"
 #include "eval_singature.h"
 #include "make_values.h"

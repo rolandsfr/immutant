@@ -23,13 +23,12 @@ Env* env_new(Env* parent)
 	return env;
 }
 
-void env_define(Env* env, const char* name, Value* value,
+void env_define(Env* env, const char* name, Value value,
 				enum MutabilityType mutability)
 {
 	EnvEntry* entry = malloc(sizeof(EnvEntry));
 	entry->name = strdup(name);
-	entry->value = malloc(sizeof(Value));
-	*(entry->value) = *value; // copy Value struct
+	entry->value = value; // store directly
 	entry->mutability = mutability;
 	entry->next = env->entries;
 	env->entries = entry;
@@ -40,14 +39,14 @@ Value* env_get(Env* env, const char* name)
 	for (Env* e = env; e != NULL; e = e->parent) {
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
 			if (strcmp(entry->name, name) == 0) {
-				return entry->value;
+				return &entry->value;
 			}
 		}
 	}
 	return NULL; // not found
 }
 
-int env_set(Env* env, const char* name, Value* value)
+int env_set(Env* env, const char* name, Value value)
 {
 	for (Env* e = env; e != NULL; e = e->parent) {
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {

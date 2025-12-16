@@ -8,6 +8,7 @@
 #include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
+#include "parse_asgn.h"
 #include "parse_comparison.h"
 #include "parse_eq.h"
 #include "parse_factor.h"

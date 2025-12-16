@@ -16,7 +16,7 @@ void eval_var_dclr(Env* env, VarDeclStmt* var_stmt, Error* error)
 		value = eval_expr(var_stmt->initializer, error, env);
 	}
 
-	env_define(env, var_stmt->name, &value, var_stmt->mutability);
+	env_define(env, var_stmt->name, value, var_stmt->mutability);
 }
 
 void eval_var_expr(Env* env, VariableExpr* var_expr, Value* out_value,

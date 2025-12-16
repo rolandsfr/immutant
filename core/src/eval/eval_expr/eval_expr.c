@@ -6,6 +6,7 @@
 #include "ast_cnstrct.h"
 #include "ast_expr.h"
 #include "error.h"
+#include "eval_asgn.h"
 #include "eval_binary.h"
 #include "eval_unary.h"
 #include "make_values.h"
@@ -37,14 +38,18 @@ Value eval_expr(Expr* expr, Error* err, Env* env)
 
 		case EXPR_BINARY:
 			return eval_binary((BinaryExpr*)expr, err, env);
+
 		case EXPR_VARIABLE: {
 			VariableExpr* var_expr = (VariableExpr*)expr;
 			Value value;
 			eval_var_expr(env, var_expr, &value, err);
 			return value;
 		}
-			// case EXPR_CALL:
-			// 	return eval_call((CallExpr*)expr, err);
+
+		case EXPR_ASSIGN: {
+			AssignExpr* assign_expr = (AssignExpr*)expr;
+			return eval_asgn(assign_expr, env, err);
+		}
 	}
 
 	fprintf(stderr, "Internal interpreter error: unknown expression type\n");
