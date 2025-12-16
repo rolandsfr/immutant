@@ -23,6 +23,9 @@
   :which_ceedling: gem
   :ceedling_version: '?'
 
+  :use_test_preprocessor: :all   # options are :none, :mocks, :tests, or :all
+  :use_deep_preprocessor: :none  # options are :none, :mocks, :tests, or :all
+
   :use_decorators: :auto 
   :build_root: tests_build
   :test_file_prefix: ""
@@ -53,7 +56,9 @@
   :plugins:
     - :ignore
     - :callback
+  :when_ptr: :compare_ptr
   :treat_as:
+    Error*: void*
     uint8: HEX8
     uint16: HEX16
     uint32: UINT32

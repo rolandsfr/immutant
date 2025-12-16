@@ -40,6 +40,12 @@ typedef struct BinaryExpr {
 	enum TokenType operator;
 } BinaryExpr;
 
+typedef struct AssignExpr {
+	Expr base;
+	char* name;
+	Expr* value;
+} AssignExpr;
+
 typedef struct CallExpr {
 	Expr base;
 	char* name;

@@ -82,6 +82,15 @@ CallExpr* make_call_expr(const char* name, Expr** args, size_t arg_count)
 	return c;
 }
 
+AssignExpr* make_assign_expr(const char* name, Expr* value)
+{
+	AssignExpr* a = malloc(sizeof(AssignExpr));
+	a->base.type = EXPR_ASSIGN;
+	a->name = strdup(name);
+	a->value = value;
+	return a;
+}
+
 void free_expr(Expr* expr)
 {
 	if (!expr)
