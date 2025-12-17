@@ -7,6 +7,7 @@
 #include "ast_stmt.h"
 #include "error.h"
 #include "eval_binary.h"
+#include "eval_block_stmt.h"
 #include "eval_expr.h"
 #include "eval_unary.h"
 #include "make_values.h"
@@ -24,6 +25,11 @@ void eval(Stmt* stmt, Error* err, Value* out_value, Env* env)
 		}
 		case STMT_VAR_DECL: {
 			eval_var_dclr(env, (VarDeclStmt*)stmt, err);
+			return;
+		}
+		case STMT_BLOCK: {
+			printf("Evaluating block statement\n");
+			eval_block_stmt((BlockStmt*)stmt, err, env, out_value);
 			return;
 		}
 	}

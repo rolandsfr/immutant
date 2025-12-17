@@ -16,6 +16,17 @@ void eval_var_dclr(Env* env, VarDeclStmt* var_stmt, Error* error)
 		value = eval_expr(var_stmt->initializer, error, env);
 	}
 
+	if (env_get(env, var_stmt->name) != NULL) {
+		if (error) {
+			*error = (Error){.type = RUNTIME_VARIABLE_REDEFINITION,
+							 .line = var_stmt->base.line,
+							 .message = ""};
+			snprintf(error->message, sizeof(error->message),
+					 "Variable already defined: '%s'", var_stmt->name);
+		}
+		return;
+	}
+
 	env_define(env, var_stmt->name, value, var_stmt->mutability);
 }
 

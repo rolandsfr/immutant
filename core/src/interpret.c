@@ -78,8 +78,6 @@ Values interpret_source(char* source, size_t length, size_t* line_nr)
 			 global_env); // TODO: for now define eveything in global env
 
 		if (runtime_error.type != ERROR_NONE) {
-			printf("Runtime error at line %zu: %s\n", *line_nr,
-				   runtime_error.message);
 			free_token_buffer(&token_buffer);
 			int hadError = 1;
 			report_error(*line_nr, runtime_error.message, &hadError);
