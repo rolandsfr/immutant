@@ -7,9 +7,7 @@
 #include "ast_expr.h"
 #include "env.h"
 #include "error.h"
-#include "eval.h"
 #include "eval_asgn.h"
-#include "eval_expr.h"
 #include "eval_unary.h"
 #include "eval_var.h"
 #include "is_equal.h"
@@ -18,6 +16,9 @@
 #include "require_t.h"
 #include "resolve.h"
 #include "value_t.h"
+
+#include "Mockeval.h"
+#include "Mockeval_expr.h"
 
 void test_eval_binary_should_concat_strings_on_plus_token(void)
 {
@@ -30,6 +31,9 @@ void test_eval_binary_should_concat_strings_on_plus_token(void)
 							  .operator = TOKEN_PLUS,
 							  .left = (Expr*)&str_left,
 							  .right = (Expr*)&str_right};
+
+	eval_expr_IgnoreAndReturn(make_string("from the "));
+	eval_expr_IgnoreAndReturn(make_string("outside world"));
 
 	Error err = {-1};
 
@@ -52,6 +56,9 @@ void test_eval_binary_should_error_on_plus_token_with_mismatched_types(void)
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(42));
+	eval_expr_IgnoreAndReturn(make_string("is the answer"));
+
 	Value result = eval_binary(&invalid_expr, &err, NULL);
 
 	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_UNEXPECTED_TYPE);
@@ -70,6 +77,9 @@ void test_eval_binary_should_add_numbers_on_plus_token(void)
 						   .right = (Expr*)&num_right};
 
 	Error err = {-1};
+
+	eval_expr_IgnoreAndReturn(make_number(10));
+	eval_expr_IgnoreAndReturn(make_number(32.5));
 
 	Value result = eval_binary(&add_expr, &err, NULL);
 
@@ -90,6 +100,9 @@ void test_eval_binary_should_subtract_numbers_on_minus_token(void)
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(-100));
+	eval_expr_IgnoreAndReturn(make_number(58.5));
+
 	Value result = eval_binary(&sub_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, -158.5);
@@ -107,6 +120,9 @@ void test_eval_binary_should_multiply_numbers_on_star_token(void)
 						   .right = (Expr*)&num_right};
 
 	Error err = {-1};
+
+	eval_expr_IgnoreAndReturn(make_number(6));
+	eval_expr_IgnoreAndReturn(make_number(7));
 
 	Value result = eval_binary(&mul_expr, &err, NULL);
 
@@ -126,6 +142,9 @@ void test_eval_binary_should_divide_numbers_on_slash_token(void)
 						   .right = (Expr*)&num_right};
 
 	Error err = {-1};
+
+	eval_expr_IgnoreAndReturn(make_number(84));
+	eval_expr_IgnoreAndReturn(make_number(2));
 
 	Value result = eval_binary(&div_expr, &err, NULL);
 
@@ -147,6 +166,9 @@ void test_eval_binary_should_return_floating_point_result_on_division_according_
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(10));
+	eval_expr_IgnoreAndReturn(make_number(3));
+
 	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 3.33333333333333);
@@ -166,6 +188,9 @@ void test_eval_binary_should_error_on_divide_by_zero(void)
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(42));
+	eval_expr_IgnoreAndReturn(make_number(0));
+
 	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_RUNTIME_ERROR(&err, RUNTIME_DIVIDE_BY_ZERO);
@@ -182,34 +207,14 @@ void test_eval_binary_should_return_0_on_0_divided_by_number(void)
 						   .left = (Expr*)&num_left,
 						   .right = (Expr*)&num_right};
 
+	eval_expr_IgnoreAndReturn(make_number(0));
+	eval_expr_IgnoreAndReturn(make_number(3.14));
+
 	Error err = {-1};
 
 	Value result = eval_binary(&div_expr, &err, NULL);
 
 	TEST_ASSERT_NUMBER_VALUE(result, 0);
-}
-
-void test_eval_binary_should_eval_unary_inside_binary_expression(void)
-{
-	NumberExpr num_left = {.base = {.type = EXPR_LITERAL_NUMBER}, .value = "5"};
-
-	NumberExpr num_right = {.base = {.type = EXPR_LITERAL_NUMBER},
-							.value = "3"};
-
-	UnaryExpr unary_expr = {.base = {.type = EXPR_UNARY},
-							.operator = TOKEN_MINUS,
-							.operand = (Expr*)&num_right};
-
-	BinaryExpr binary_expr = {.base = {.type = EXPR_BINARY},
-							  .operator = TOKEN_PLUS,
-							  .left = (Expr*)&num_left,
-							  .right = (Expr*)&unary_expr};
-
-	Error err = {-1};
-
-	Value result = eval_binary(&binary_expr, &err, NULL);
-
-	TEST_ASSERT_NUMBER_VALUE(result, 2);
 }
 
 void test_eval_binary_should_compare_numbers_non_stricly(void)
@@ -226,6 +231,9 @@ void test_eval_binary_should_compare_numbers_non_stricly(void)
 							.right = (Expr*)&num_right};
 
 	Error err = {-1};
+
+	eval_expr_IgnoreAndReturn(make_number(10));
+	eval_expr_IgnoreAndReturn(make_number(20));
 
 	Value result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
@@ -254,6 +262,9 @@ void test_eval_binary_should_compare_numbers_stricly(void)
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(10));
+	eval_expr_IgnoreAndReturn(make_number(10));
+
 	Value result = eval_binary(&comp_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 
@@ -262,7 +273,6 @@ void test_eval_binary_should_compare_numbers_stricly(void)
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }
 
-/** tests for equality */
 void test_eval_binary_should_immediately_return_false_on_inequal_types_for_equality_operator(
 	void)
 {
@@ -276,6 +286,9 @@ void test_eval_binary_should_immediately_return_false_on_inequal_types_for_equal
 						  .operator = TOKEN_EQUAL_EQUAL,
 						  .left = (Expr*)&num_left,
 						  .right = (Expr*)&str_right};
+
+	eval_expr_IgnoreAndReturn(make_number(42));
+	eval_expr_IgnoreAndReturn(make_string("42"));
 
 	Error err = {-1};
 
@@ -298,6 +311,9 @@ void test_eval_binary_should_compare_equal_numbers_on_equality_operator(void)
 
 	Error err = {-1};
 
+	eval_expr_IgnoreAndReturn(make_number(3.14));
+	eval_expr_IgnoreAndReturn(make_number(3.14));
+
 	Value result = eval_binary(&eq_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);
 }
@@ -317,6 +333,9 @@ void test_eval_binary_should_compare_unequal_strings_on_inequality_operator(
 						  .right = (Expr*)&str_right};
 
 	Error err = {-1};
+
+	eval_expr_IgnoreAndReturn(make_string("hello"));
+	eval_expr_IgnoreAndReturn(make_string("world"));
 
 	Value result = eval_binary(&eq_expr, &err, NULL);
 	TEST_ASSERT_BOOL_VALUE(result, 1);

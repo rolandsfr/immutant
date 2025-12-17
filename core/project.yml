@@ -56,6 +56,7 @@
   :plugins:
     - :ignore
     - :callback
+    - :expect_any_args
   :when_ptr: :compare_ptr
   :treat_as:
     Error*: void*
