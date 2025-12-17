@@ -17,7 +17,7 @@ CORE_OBJS := $(CORE_SRC:core/src/%.c=$(CORE_BUILD)/%.o)
 LIBCORE := $(BUILD_DIR)/libcore.a
 
 # CLI sources and objects
-CLI_SRC := interpreter/main.c interpreter/runners.c 
+CLI_SRC := $(shell find interpreter -name "*.c")
 CLI_OBJ := $(CLI_SRC:interpreter/%.c=$(CLI_BUILD)/%.o)
 BIN := $(BUILD_DIR)/immutant
 
