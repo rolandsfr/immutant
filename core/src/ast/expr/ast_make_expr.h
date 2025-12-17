@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ast_expr.h"
 #include "lexer.h"
 

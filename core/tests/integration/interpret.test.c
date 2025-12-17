@@ -45,6 +45,8 @@
 #include "test_expr.h"
 #include "value_t.h"
 
+#include "Mockparse_if_stmt.h"
+
 void test_interpret_source()
 {
 	size_t line_nr = 0;

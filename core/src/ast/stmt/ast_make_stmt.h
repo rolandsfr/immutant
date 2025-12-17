@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ast_stmt.h"
 
 #include "../ast_cnstrct.h"

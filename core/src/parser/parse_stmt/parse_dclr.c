@@ -5,6 +5,7 @@
 #include "lexer.h"
 #include "parse_block_stmt.h"
 #include "parse_expr_stmt.h"
+#include "parse_if_stmt.h"
 #include "parse_var_dclr.h"
 #include "parser_helpers.h"
 
@@ -19,6 +20,10 @@ Stmt* parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_BRACE)) {
 		return (Stmt*)parse_block_stmt(tokens, pos, out_error);
+	}
+
+	if (match_token(tokens, pos, 1, TOKEN_IF)) {
+		return (Stmt*)parse_if_stmt(tokens, pos, out_error);
 	}
 
 	return (Stmt*)parse_expr_stmt(tokens, pos, out_error);

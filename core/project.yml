@@ -11,6 +11,8 @@
     - src/lexer
     - src/parser
     - src/resolve
+    - src/ast/stmt
+    - src/ast/expr
   :include:
     - include/**
     - src/**
