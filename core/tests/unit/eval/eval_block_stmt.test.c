@@ -13,6 +13,7 @@
 #include "parse_block_stmt.h"
 
 #include "Mockeval_expr.h"
+#include "Mockeval_if_stmt.h"
 #include "Mockeval_var.h"
 #include "Mockparse_dclr.h"
 #include "Mockparser_helpers.h"

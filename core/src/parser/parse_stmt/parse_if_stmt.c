@@ -21,7 +21,6 @@ IfStmt* parse_if_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 	}
 
 	Expr* condition = parse_expr(tokens, pos, out_error);
-	printf("DEBUG: parse_if_stmt: parsed condition\n");
 
 	if (!condition) {
 		if (out_error) {

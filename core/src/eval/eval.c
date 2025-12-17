@@ -9,6 +9,7 @@
 #include "eval_binary.h"
 #include "eval_block_stmt.h"
 #include "eval_expr.h"
+#include "eval_if_stmt.h"
 #include "eval_unary.h"
 #include "make_values.h"
 #include "value_t.h"
@@ -28,8 +29,11 @@ void eval(Stmt* stmt, Error* err, Value* out_value, Env* env)
 			return;
 		}
 		case STMT_BLOCK: {
-			printf("Evaluating block statement\n");
 			eval_block_stmt((BlockStmt*)stmt, err, env, out_value);
+			return;
+		}
+		case STMT_IF: {
+			eval_if_stmt((IfStmt*)stmt, err, env, out_value);
 			return;
 		}
 	}

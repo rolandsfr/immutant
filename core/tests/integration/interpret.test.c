@@ -18,6 +18,7 @@
 #include "eval_binary.h"
 #include "eval_block_stmt.h"
 #include "eval_expr.h"
+#include "eval_if_stmt.h"
 #include "eval_unary.h"
 #include "eval_var.h"
 #include "is_equal.h"

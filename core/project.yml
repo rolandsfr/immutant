@@ -13,6 +13,7 @@
     - src/resolve
     - src/ast/stmt
     - src/ast/expr
+    - src/eval
   :include:
     - include/**
     - src/**
