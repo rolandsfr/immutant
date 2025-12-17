@@ -8,6 +8,9 @@
 :paths:
   :source:
     - src/**
+    - src/lexer
+    - src/parser
+    - src/resolve
   :include:
     - include/**
     - src/**
