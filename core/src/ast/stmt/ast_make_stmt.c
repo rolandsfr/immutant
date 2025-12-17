@@ -61,6 +61,15 @@ IfStmt* make_if_stmt(Expr* condition, Stmt* then_branch, Stmt* else_branch)
 	return i;
 }
 
+WhileStmt* make_while_stmt(Expr* condition, Stmt* body)
+{
+	WhileStmt* w = malloc(sizeof(WhileStmt));
+	w->base.type = STMT_WHILE;
+	w->condition = condition;
+	w->body = body;
+	return w;
+}
+
 ExprStmt* make_expr_stmt(Expr* expression)
 {
 	ExprStmt* e = malloc(sizeof(ExprStmt));

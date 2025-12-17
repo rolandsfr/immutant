@@ -11,6 +11,7 @@
 #include "eval_expr.h"
 #include "eval_if_stmt.h"
 #include "eval_unary.h"
+#include "eval_while_stmt.h"
 #include "make_values.h"
 #include "value_t.h"
 
@@ -34,6 +35,10 @@ void eval(Stmt* stmt, Error* err, Value* out_value, Env* env)
 		}
 		case STMT_IF: {
 			eval_if_stmt((IfStmt*)stmt, err, env, out_value);
+			return;
+		}
+		case STMT_WHILE: {
+			eval_while_stmt((WhileStmt*)stmt, err, env, out_value);
 			return;
 		}
 	}

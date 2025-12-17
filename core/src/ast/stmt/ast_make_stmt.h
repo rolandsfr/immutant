@@ -18,4 +18,6 @@ IfStmt* make_if_stmt(Expr* condition, Stmt* then_branch, Stmt* else_branch);
 
 ExprStmt* make_expr_stmt(Expr* expression);
 
+WhileStmt* make_while_stmt(Expr* condition, Stmt* body);
+
 void free_expr(Expr* expr);

@@ -7,6 +7,7 @@
 #include "parse_expr_stmt.h"
 #include "parse_if_stmt.h"
 #include "parse_var_dclr.h"
+#include "parse_while_stmt.h"
 #include "parser_helpers.h"
 
 Stmt* parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error)
@@ -24,6 +25,10 @@ Stmt* parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 	if (match_token(tokens, pos, 1, TOKEN_IF)) {
 		return (Stmt*)parse_if_stmt(tokens, pos, out_error);
+	}
+
+	if (match_token(tokens, pos, 1, TOKEN_WHILE)) {
+		return (Stmt*)parse_while_stmt(tokens, pos, out_error);
 	}
 
 	return (Stmt*)parse_expr_stmt(tokens, pos, out_error);

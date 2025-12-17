@@ -15,6 +15,7 @@
 #include "Mockeval_expr.h"
 #include "Mockeval_if_stmt.h"
 #include "Mockeval_var.h"
+#include "Mockeval_while_stmt.h"
 #include "Mockparse_dclr.h"
 #include "Mockparser_helpers.h"
 #include "Mockresolve.h"

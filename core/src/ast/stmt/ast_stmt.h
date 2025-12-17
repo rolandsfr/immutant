@@ -39,6 +39,12 @@ typedef struct IfStmt {
 	Stmt* else_branch; // optional, can be NULL
 } IfStmt;
 
+typedef struct WhileStmt {
+	Stmt base;
+	Expr* condition;
+	Stmt* body;
+} WhileStmt;
+
 typedef struct ExprStmt {
 	Stmt base;
 	Expr* expression;
