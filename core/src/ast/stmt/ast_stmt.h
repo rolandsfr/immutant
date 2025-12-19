@@ -4,9 +4,9 @@
 
 #include "../ast_cnstrct.h"
 
-enum MutabilityType { MUTABLE, IMMUTABLE };
+enum MutabilityType { MUTABILITY_UNSET = -1, MUTABLE, IMMUTABLE };
 
-enum PurityType { PURE, IMPURE };
+enum PurityType { PURITY_UNSET = -1, PURE, IMPURE };
 
 typedef struct VarDeclStmt {
 	Stmt base;

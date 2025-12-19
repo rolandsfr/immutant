@@ -16,7 +16,8 @@
 #include "Mockresolve.h"
 
 void define_mock_function_in_env(Env* env, const char* name, size_t arity,
-								 Value (*mock_function)(ValueBuffer*))
+								 Value (*mock_function)(ValueBuffer*),
+								 PurityType purity)
 {
 	Callable* callable = malloc(sizeof(Callable));
 	callable->arity = arity;
@@ -26,7 +27,7 @@ void define_mock_function_in_env(Env* env, const char* name, size_t arity,
 	func_value.type = VAL_NATIVE;
 	func_value.callable = callable;
 
-	env_define(env, name, func_value, IMMUTABLE);
+	env_define_fn(env, name, func_value, purity);
 }
 
 Value mock_function(ValueBuffer* arguments)
@@ -41,7 +42,7 @@ Value mock_function(ValueBuffer* arguments)
 void test_eval_call_should_invoke_function_with_arguments(void)
 {
 	Env* env = env_new(NULL);
-	define_mock_function_in_env(env, "mockFunc", 1, mock_function);
+	define_mock_function_in_env(env, "mockFunc", 1, mock_function, IMPURE);
 
 	ArgumentsArray args;
 	ArgumentsArray_init(&args);
@@ -92,7 +93,7 @@ void test_eval_call_should_return_error_when_callee_is_not_function(void)
 void test_eval_call_should_return_error_on_incorrect_argument_count(void)
 {
 	Env* env = env_new(NULL);
-	define_mock_function_in_env(env, "mockFunc", 2, mock_function);
+	define_mock_function_in_env(env, "mockFunc", 2, mock_function, IMPURE);
 
 	ArgumentsArray args;
 	ArgumentsArray_init(&args);
@@ -112,6 +113,35 @@ void test_eval_call_should_return_error_on_incorrect_argument_count(void)
 
 	Value result = eval_call(call_expr, &error, env);
 	TEST_ASSERT_EQUAL_INT(RUNTIME_INCORRECT_ARG_COUNT, error.type);
+
+	ArgumentsArray_free(&args);
+}
+
+void test_eval_call_should_return_error_on_impure_argument_mutability(void)
+{
+	Env* env = env_new(NULL);
+	define_mock_function_in_env(env, "impureFunc", 1, mock_function, PURE);
+
+	ArgumentsArray args;
+	ArgumentsArray_init(&args);
+	ArgumentsArray_push(&args, NULL);
+
+	VariableExpr* callee_expr = make_variable_expr("impureFunc");
+
+	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1);
+	Error error = {-1};
+
+	// mock identifier evaluation
+	Value* callee = env_get(env, "impureFunc");
+	eval_expr_ExpectAndReturn((Expr*)callee_expr, &error, env, *callee);
+
+	// mock argument evaluation to return a mutable value
+	Value mutable_arg = make_number(10);
+	mutable_arg.mutability = MUTABLE;
+	eval_expr_ExpectAndReturn(call_expr->args[0], &error, env, mutable_arg);
+
+	Value result = eval_call(call_expr, &error, env);
+	TEST_ASSERT_EQUAL_INT(RUNTIME_IMPURE_ARG_MUTABILITY, error.type);
 
 	ArgumentsArray_free(&args);
 }

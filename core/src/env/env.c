@@ -24,13 +24,31 @@ Env* env_new(Env* parent)
 	return env;
 }
 
-void env_define(Env* env, const char* name, Value value,
-				enum MutabilityType mutability)
+void env_define_var(Env* env, const char* name, Value value,
+					enum MutabilityType mutability)
 {
 	EnvEntry* entry = malloc(sizeof(EnvEntry));
 	entry->name = strdup(name);
-	entry->value = value; // store directly
-	entry->mutability = mutability;
+	entry->value = value;
+	entry->value.mutability = mutability;
+	entry->next = env->entries;
+	env->entries = entry;
+}
+
+// TODO: remove alias after backwards compatibility is no longer needed
+void env_define(Env* env, const char* name, Value value,
+				enum MutabilityType mutability)
+{
+	env_define_var(env, name, value, mutability);
+}
+
+void env_define_fn(Env* env, const char* name, Value value,
+				   enum PurityType purity)
+{
+	EnvEntry* entry = malloc(sizeof(EnvEntry));
+	entry->name = strdup(name);
+	entry->value = value;
+	entry->value.purity = purity;
 	entry->next = env->entries;
 	env->entries = entry;
 }
@@ -49,17 +67,15 @@ Value* env_get(Env* env, const char* name)
 
 EnvEntry env_get_entry(Env* env, const char* name)
 {
-    for (Env* e = env; e != NULL; e = e->parent) {
-        for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
-            if (strcmp(entry->name, name) == 0) {
-                return *entry;
-            }
-        }
-    }
+	for (Env* e = env; e != NULL; e = e->parent) {
+		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
+			if (strcmp(entry->name, name) == 0) {
+				return *entry;
+			}
+		}
+	}
 
-    return (EnvEntry){
-        NULL
-    }; 
+	return (EnvEntry){NULL};
 }
 
 int env_set(Env* env, const char* name, Value value)

@@ -25,11 +25,13 @@ typedef struct Value {
 		char* string;
 		struct Callable* callable;
 	};
+
+	enum MutabilityType mutability;
+	enum PurityType purity;
 } Value;
 
 typedef struct Callable {
 	Value (*call)(ValueBuffer* arguments);
-	PurityType purity;
 	size_t arity;
 } Callable;
 

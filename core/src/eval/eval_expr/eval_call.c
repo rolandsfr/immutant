@@ -36,12 +36,29 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 
 	Callable* callable_val = callee.callable;
 
+	// print purity of fnction being called
+
 	for (size_t i = 0; i < expr->arg_count; i++) {
 		Value arg_value = eval_expr(expr->args[i], err, env);
 		if (err && err->type != ERROR_NONE) {
 			ValueBuffer_free(&args_buffer);
 			return make_null();
 		}
+
+		if (callee.purity == PURE) {
+			if (arg_value.mutability == MUTABLE) {
+				if (err) {
+					*err = (Error){
+						.type = RUNTIME_IMPURE_ARG_MUTABILITY,
+						.line = expr->base.line,
+						.message =
+							"Cannot pass mutable argument to impure function"};
+				}
+				ValueBuffer_free(&args_buffer);
+				return make_null();
+			}
+		}
+
 		ValueBuffer_push(&args_buffer, arg_value);
 	}
 

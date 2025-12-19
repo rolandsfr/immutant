@@ -10,7 +10,8 @@ typedef struct EnvEntry {
 	char* name;
 	Value value;
 	struct EnvEntry* next; // for chaining
-	enum MutabilityType mutability;
+						   // enum MutabilityType mutability;
+						   // enum PurityType purity;
 } EnvEntry;
 
 typedef struct Env {
@@ -22,6 +23,12 @@ Env* env_new(Env* parent);
 
 void env_define(Env* env, const char* name, Value value,
 				enum MutabilityType mutability);
+
+void env_define_var(Env* env, const char* name, Value value,
+					enum MutabilityType mutability);
+
+void env_define_fn(Env* env, const char* name, Value value,
+				   enum PurityType purity);
 
 Value* env_get(Env* env, const char* name);
 

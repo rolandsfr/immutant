@@ -19,7 +19,7 @@ Value eval_asgn(AssignExpr* expr, Env* env, Error* out_error)
 
 	EnvEntry env_entry = env_get_entry(env, expr->name);
 
-    if(env_entry.name == NULL) { 
+	if (env_entry.name == NULL) {
 
 		if (out_error) {
 			*out_error = (Error){.type = RUNTIME_UNDEFINED_VARIABLE,
@@ -29,24 +29,28 @@ Value eval_asgn(AssignExpr* expr, Env* env, Error* out_error)
 					 "Undefined variable: '%s'", expr->name);
 		}
 		return (Value){0};
-    }
+	}
 
-    switch(env_entry.mutability) {
-        case MUTABLE:
-            env_set(env, expr->name, val);
-            break;
-        case IMMUTABLE:
-            if (out_error) {
-                *out_error = (Error){.type = RUNTIME_ASSIGN_TO_CONSTANT,
-                                     .line = expr->base.line,
-                                     .message = ""};
-                snprintf(out_error->message, sizeof(out_error->message),
-                         "Cannot assign to constant variable: '%s'", expr->name);
-            }
-            return (Value){0};
-            break;
-    }
-
+	switch (env_entry.value.mutability) {
+		case MUTABILITY_UNSET:
+			fprintf(stderr, "Error: Variable '%s' has unset mutability.\n",
+					expr->name);
+			return (Value){0};
+		case MUTABLE:
+			env_set(env, expr->name, val);
+			break;
+		case IMMUTABLE:
+			if (out_error) {
+				*out_error = (Error){.type = RUNTIME_ASSIGN_TO_CONSTANT,
+									 .line = expr->base.line,
+									 .message = ""};
+				snprintf(out_error->message, sizeof(out_error->message),
+						 "Cannot assign to constant variable: '%s'",
+						 expr->name);
+			}
+			return (Value){0};
+			break;
+	}
 
 	return val;
 }

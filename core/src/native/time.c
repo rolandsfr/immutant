@@ -1,5 +1,6 @@
 #include <sys/time.h>
 
+#include "ast_stmt.h"
 #include "env.h"
 #include "make_values.h"
 #include "parser_singnature.h"
@@ -29,5 +30,5 @@ void define_native_time(Env* env)
 	time_value.type = VAL_NATIVE;
 	time_value.callable = time_callable;
 
-	env_define(env, "time", time_value, IMMUTABLE);
+	env_define_fn(env, "time", time_value, PURE);
 }
