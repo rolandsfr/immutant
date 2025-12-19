@@ -29,12 +29,14 @@
 #include "parse_and.h"
 #include "parse_asgn.h"
 #include "parse_block_stmt.h"
+#include "parse_call.h"
 #include "parse_comparison.h"
 #include "parse_dclr.h"
 #include "parse_eq.h"
 #include "parse_expr.h"
 #include "parse_expr_stmt.h"
 #include "parse_factor.h"
+#include "parse_if_stmt.h"
 #include "parse_lassoc.h"
 #include "parse_or.h"
 #include "parse_primary.h"
@@ -50,8 +52,6 @@
 #include "sync_parse.h"
 #include "test_expr.h"
 #include "value_t.h"
-
-#include "Mockparse_if_stmt.h"
 
 void test_interpret_source()
 {

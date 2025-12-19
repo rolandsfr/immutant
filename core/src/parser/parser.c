@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "parse_dclr.h"
 #include "parse_expr_stmt.h"
+#include "parser_helpers.h"
 #include "sync_parse.h"
 
 Stmts parse(TokenBuffer* tokens, ErrorBuffer* out_errors)

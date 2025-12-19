@@ -11,7 +11,9 @@
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_asgn.h"
+#include "parse_call.h"
 #include "parse_comparison.h"
+#include "parse_expr.h"
 #include "parse_factor.h"
 #include "parse_lassoc.h"
 #include "parse_term.h"

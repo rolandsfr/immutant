@@ -1,3 +1,5 @@
+#pragma once
+
 #include "error_report.h"
 #include "lexer.h"
 #include "parser_singnature.h"

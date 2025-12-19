@@ -13,6 +13,7 @@
 #include "test_expr.h"
 
 #include "Mockparse_asgn.h"
+#include "Mockparse_call.h"
 #include "Mockparse_expr.h"
 #include "Mockresolve.h"
 

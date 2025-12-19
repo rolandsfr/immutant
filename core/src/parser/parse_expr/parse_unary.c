@@ -6,8 +6,8 @@
 #include "ast_make_expr.h"
 #include "error.h"
 #include "lexer.h"
+#include "parse_call.h"
 #include "parse_lassoc.h"
-#include "parse_primary.h"
 #include "parser_helpers.h"
 #include "parser_singnature.h"
 
@@ -24,5 +24,5 @@ DEF_PARSE_FN(parse_unary)
 		return (Expr*)make_unary_expr(operator_token, right);
 	}
 
-	return parse_primary(tokens, pos, out_error);
+	return parse_call(tokens, pos, out_error);
 }
