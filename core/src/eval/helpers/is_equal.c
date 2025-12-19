@@ -15,6 +15,9 @@ int is_equal(Value left, Value right)
 			return (strcmp(left.string, right.string) == 0);
 		case VAL_BOOL:
 			return left.boolean == right.boolean;
+		case VAL_NATIVE:
+		case VAL_FN:
+			return left.callable == right.callable;
 		default:
 			return 0;
 	}
