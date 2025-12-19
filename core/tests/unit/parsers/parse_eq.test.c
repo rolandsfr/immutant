@@ -21,6 +21,8 @@
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
 
+#include "Mockparse_or.h"
+
 void test_parse_eq_should_parse_equality_expression(void)
 {
 	TokenBuffer tokens;

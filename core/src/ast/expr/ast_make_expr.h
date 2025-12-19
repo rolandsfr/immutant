@@ -24,4 +24,7 @@ UnaryExpr* make_unary_expr(enum TokenType operator, Expr * operand);
 
 CallExpr* make_call_expr(const char* name, Expr** args, size_t arg_count);
 
+LogicalExpr* make_logical_expr(Expr* left, enum TokenType operator,
+							   Expr * right);
+
 void free_expr(Expr* expr);

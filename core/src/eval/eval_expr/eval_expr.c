@@ -8,6 +8,7 @@
 #include "error.h"
 #include "eval_asgn.h"
 #include "eval_binary.h"
+#include "eval_logic.h"
 #include "eval_unary.h"
 #include "make_values.h"
 #include "value_t.h"
@@ -38,6 +39,9 @@ Value eval_expr(Expr* expr, Error* err, Env* env)
 
 		case EXPR_BINARY:
 			return eval_binary((BinaryExpr*)expr, err, env);
+
+		case EXPR_LOGICAL:
+			return eval_logic((LogicalExpr*)expr, err, env);
 
 		case EXPR_VARIABLE: {
 			VariableExpr* var_expr = (VariableExpr*)expr;

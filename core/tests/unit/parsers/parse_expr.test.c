@@ -9,11 +9,13 @@
 #include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
+#include "parse_and.h"
 #include "parse_asgn.h"
 #include "parse_comparison.h"
 #include "parse_eq.h"
 #include "parse_factor.h"
 #include "parse_lassoc.h"
+#include "parse_or.h"
 #include "parse_primary.h"
 #include "parse_term.h"
 #include "parse_unary.h"

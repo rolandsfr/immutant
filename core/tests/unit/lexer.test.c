@@ -190,6 +190,40 @@ void test_scan_next_token_should_detect_multichar_operators_with_single_char(
 	}
 }
 
+// void test_scan_next_token_should_resolve_logical_or(void)
+// {
+// 	char* line = "||";
+// 	size_t pos = 0;
+// 	size_t line_nr = 0;
+// 	Token token;
+
+// 	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
+
+// 	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+// 	if (token_produced) {
+// 		TEST_ASSERT_EQUAL_STRING("||", token.lexeme);
+// 		TEST_ASSERT_EQUAL_INT(TOKEN_OR, token.type);
+// 	}
+// }
+
+void test_scan_next_token_should_resolve_logical_and(void)
+{
+	char* line = "&&";
+	size_t pos = 0;
+	size_t line_nr = 0;
+	Token token;
+
+	int token_produced = scan_next_token(line, &pos, &line_nr, &token, NULL);
+
+	TEST_ASSERT_EQUAL_INT(1, token_produced);
+
+	if (token_produced) {
+		TEST_ASSERT_EQUAL_STRING("&&", token.lexeme);
+		TEST_ASSERT_EQUAL_INT(TOKEN_AND, token.type);
+	}
+}
+
 void test_scan_next_token_should_resolve_strings(void)
 {
 	char* line = "\"sunny day\"";

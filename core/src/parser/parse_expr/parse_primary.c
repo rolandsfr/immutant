@@ -5,8 +5,8 @@
 #include "error.h"
 #include "error_report.h"
 #include "lexer.h"
-#include "parse_eq.h"
 #include "parse_lassoc.h"
+#include "parse_or.h"
 #include "parser_helpers.h"
 #include "parser_singnature.h"
 
@@ -33,7 +33,7 @@ DEF_PARSE_FN(parse_primary)
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_PAREN)) {
-		Expr* expr = parse_equality(tokens, pos, out_error);
+		Expr* expr = parse_or(tokens, pos, out_error);
 		if (out_error && out_error->type != ERROR_NONE) {
 			return NULL;
 		}

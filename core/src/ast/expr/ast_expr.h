@@ -52,3 +52,10 @@ typedef struct CallExpr {
 	Expr** args;
 	size_t arg_count;
 } CallExpr;
+
+typedef struct LogicalExpr {
+	Expr base;
+	Expr* left;
+	Expr* right;
+	enum TokenType operator;
+} LogicalExpr;

@@ -12,7 +12,6 @@
 #include "lexer.h" // TODO: remove after decoupled
 #include "parse_asgn.h"
 #include "parse_comparison.h"
-#include "parse_eq.h"
 #include "parse_factor.h"
 #include "parse_lassoc.h"
 #include "parse_term.h"
@@ -21,6 +20,8 @@
 #include "parser_singnature.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
+
+#include "Mockparse_or.h"
 
 void test_parse_primary_should_parse_literal_values(void)
 {
@@ -57,10 +58,23 @@ void test_parse_primary_should_parse_boolean_values(void)
 	free_token_buffer(&tokens);
 }
 
+Expr* mock_parse_or(TokenBuffer* tokens, size_t* pos, Error* out_error,
+					int num_calls)
+{
+	while (!check_token(tokens, *pos, TOKEN_RIGHT_PAREN) &&
+		   !is_at_end(tokens, *pos)) {
+		consume_token(tokens, pos);
+	}
+	return (Expr*)make_binary_expr((Expr*)make_number_expr("8"), TOKEN_PLUS,
+								   (Expr*)make_number_expr("9"));
+}
+
 void test_parse_primary_should_parse_parenthesized_expression(void)
 {
 	TokenBuffer tokens;
 	Error error;
+
+	parse_or_StubWithCallback(mock_parse_or);
 
 	// Expr* res = parse_primary(&tokens, &pos, &error);
 	Expr* res = init_test_parse(&tokens, 5,
@@ -94,6 +108,7 @@ void test_parse_primary_should_detect_missing_closing_parenthesis(void)
 {
 	TokenBuffer tokens;
 	Error error;
+	parse_or_StubWithCallback(mock_parse_or);
 
 	Expr* res = init_test_parse(&tokens, 3,
 								(SampleToken[]){

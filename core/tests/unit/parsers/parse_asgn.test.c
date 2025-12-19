@@ -10,7 +10,7 @@
 #include "resolve.h"
 #include "test_expr.h"
 
-#include "Mockparse_eq.h"
+#include "Mockparse_or.h"
 
 Expr* mock_parse_equality_correct_asgn(TokenBuffer* tokens, size_t* pos,
 									   Error* out_error, int num_calls)
@@ -67,7 +67,7 @@ void test_parse_asgn_simple_assignment(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "42", 1, 3));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 3));
 
-	parse_equality_StubWithCallback(mock_parse_equality_correct_asgn);
+	parse_or_StubWithCallback(mock_parse_equality_correct_asgn);
 
 	size_t pos = 0;
 	Error error = {-1};
@@ -93,7 +93,7 @@ void test_parse_asgn_invalid_assignment_target(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "10", 1, 3));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 4));
 
-	parse_equality_StubWithCallback(mock_parse_equality_invalid_asgn_target);
+	parse_or_StubWithCallback(mock_parse_equality_invalid_asgn_target);
 
 	size_t pos = 0;
 	Error error = {-1};
@@ -118,7 +118,7 @@ void test_parse_asgn_should_return_asgn_target_expr_on_multiple_calls(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "100", 1, 5));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 6));
 
-	parse_equality_StubWithCallback(mock_parse_several_asgn_exprs);
+	parse_or_StubWithCallback(mock_parse_several_asgn_exprs);
 
 	size_t pos = 0;
 	Error error = {-1};

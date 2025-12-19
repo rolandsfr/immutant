@@ -246,7 +246,18 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 			*token = create_multi_char_token(line, current_pos, *line_nr,
 											 TOKEN_LESS, TOKEN_LESS_EQUAL, '=');
 			break;
-
+		case '|': {
+			if (match_next(line, current_pos, "|")) {
+				*token = create_token(TOKEN_OR, "||", 2, *line_nr);
+				break;
+			}
+		}
+		case '&': {
+			if (match_next(line, current_pos, "&")) {
+				*token = create_token(TOKEN_AND, "&&", 2, *line_nr);
+				break;
+			}
+		}
 		case '/': {
 			// strip out comments
 			if (match_next(line, current_pos, "/")) {

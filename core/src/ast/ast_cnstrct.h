@@ -18,6 +18,7 @@ typedef enum {
 	EXPR_ASSIGN,
 	EXPR_UNARY,
 	EXPR_BINARY,
+	EXPR_LOGICAL,
 	EXPR_CALL,
 } ExpressionType;
 

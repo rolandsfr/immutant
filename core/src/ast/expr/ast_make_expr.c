@@ -91,6 +91,16 @@ AssignExpr* make_assign_expr(const char* name, Expr* value)
 	return a;
 }
 
+LogicalExpr* make_logical_expr(Expr* left, enum TokenType operator, Expr* right)
+{
+	LogicalExpr* l = malloc(sizeof(LogicalExpr));
+	l->base.type = EXPR_LOGICAL;
+	l->left = left;
+	l->operator = operator;
+	l->right = right;
+	return l;
+}
+
 void free_expr(Expr* expr)
 {
 	if (!expr)
@@ -125,6 +135,20 @@ void free_expr(Expr* expr)
 			free_expr(b->left);
 			free_expr(b->right);
 			free(b);
+			break;
+		}
+		case EXPR_LOGICAL: {
+			LogicalExpr* l = (LogicalExpr*)expr;
+			free_expr(l->left);
+			free_expr(l->right);
+			free(l);
+			break;
+		}
+		case EXPR_ASSIGN: {
+			AssignExpr* a = (AssignExpr*)expr;
+			free(a->name);
+			free_expr(a->value);
+			free(a);
 			break;
 		}
 		case EXPR_CALL: {
