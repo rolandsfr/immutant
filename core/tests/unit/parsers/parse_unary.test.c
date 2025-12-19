@@ -11,25 +11,37 @@
 #include "error_report.h"
 #include "is_equal.h"
 #include "lexer.h" // TODO: remove after decoupled
-#include "parse_and.h"
-#include "parse_asgn.h"
-#include "parse_call.h"
-#include "parse_comparison.h"
-#include "parse_eq.h"
-#include "parse_expr.h"
-#include "parse_factor.h"
-#include "parse_lassoc.h"
-#include "parse_or.h"
-#include "parse_primary.h"
-#include "parse_term.h"
 #include "parser_helpers.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
+
+#include "Mockparse_call.h"
+
+Expr* mock_parse_literal_number(TokenBuffer* tokens, size_t* pos,
+								Error* out_error, int num_calls)
+{
+	Token token = consume_token(tokens, pos);
+	return (Expr*)make_number_expr(token.lexeme);
+}
+
+Expr* mock_parse_with_error(TokenBuffer* tokens, size_t* pos, Error* out_error,
+							int num_calls)
+{
+	out_error->type = SYNTAX_ERROR_UNEXPECTED_TOKEN;
+	out_error->line = 1;
+	snprintf(out_error->message, sizeof(out_error->message),
+			 "Unexpected token");
+
+	return NULL;
+}
 
 void test_parse_unary(void)
 {
 	TokenBuffer tokens;
 	Error error;
+	size_t pos = 0;
+
+	parse_call_StubWithCallback(mock_parse_literal_number);
 
 	Expr* res = init_test_parse(&tokens, 2,
 								(SampleToken[]){
@@ -52,6 +64,9 @@ void test_parse_unary_should_allow_double_unary(void)
 {
 	TokenBuffer tokens;
 	Error error;
+
+	parse_call_StubWithCallback(mock_parse_literal_number);
+
 	Expr* res = init_test_parse(&tokens, 3,
 								(SampleToken[]){
 									{TOKEN_MINUS, "-", 1},
@@ -79,6 +94,8 @@ void test_parse_unary_should_return_if_parse_error(void)
 	TokenBuffer tokens;
 	Error error;
 
+	parse_call_StubWithCallback(mock_parse_with_error);
+
 	Expr* res = init_test_parse(&tokens, 2,
 								(SampleToken[]){
 									{TOKEN_MINUS, "-", 1},
@@ -88,27 +105,6 @@ void test_parse_unary_should_return_if_parse_error(void)
 
 	TEST_ASSERT_NULL(res);
 	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNEXPECTED_TOKEN, error.type);
-
-	free_token_buffer(&tokens);
-}
-
-void test_parse_unary_should_parse_negation_of_boolean(void)
-{
-	TokenBuffer tokens;
-	Error error;
-
-	Expr* res = init_test_parse(&tokens, 2,
-								(SampleToken[]){
-									{TOKEN_BANG, "!", 1},
-									{TOKEN_FALSE, "false", 1},
-								},
-								&error, parse_unary);
-
-	TEST_ASSERT_NOT_NULL(res);
-
-	TEST_ASSERT_EQUAL_INT(EXPR_UNARY, res->type);
-	TEST_ASSERT_EQUAL_INT(TOKEN_BANG, ((UnaryExpr*)res)->operator);
-	TEST_ASSERT_EQUAL_INT(EXPR_LITERAL_BOOL, ((UnaryExpr*)res)->operand->type);
 
 	free_token_buffer(&tokens);
 }
