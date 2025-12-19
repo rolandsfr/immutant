@@ -8,6 +8,7 @@
 #include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
+#include "parse_and.h"
 #include "parse_asgn.h"
 #include "parse_call.h"
 #include "parse_comparison.h"
@@ -15,6 +16,7 @@
 #include "parse_expr.h"
 #include "parse_factor.h"
 #include "parse_lassoc.h"
+#include "parse_or.h"
 #include "parse_primary.h"
 #include "parse_term.h"
 #include "parse_unary.h"
@@ -22,8 +24,6 @@
 #include "parser_singnature.h"
 #include "resolve.h" // TODO: remove after decoupled
 #include "test_expr.h"
-
-#include "Mockparse_or.h"
 
 void test_parse_eq_should_parse_equality_expression(void)
 {
