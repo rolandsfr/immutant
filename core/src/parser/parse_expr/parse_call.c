@@ -57,32 +57,7 @@ DEF_PARSE_FN(parse_call)
 			}
 
 			// parser should not restrict to only variable names as callees
-			switch (expr->type) {
-				case EXPR_LITERAL_STRING: {
-					return (Expr*)make_call_expr(((StringExpr*)expr)->value,
-												 arguments.data, arguments.len);
-				}
-				case EXPR_LITERAL_NUMBER: {
-					return (Expr*)make_call_expr(((NumberExpr*)expr)->value,
-												 arguments.data, arguments.len);
-				}
-				case EXPR_LITERAL_BOOL: {
-					return (Expr*)make_call_expr(
-						((BooleanExpr*)expr)->value ? "true" : "false",
-						arguments.data, arguments.len);
-				}
-				case EXPR_VARIABLE: {
-					return (Expr*)make_call_expr(((VariableExpr*)expr)->name,
-												 arguments.data, arguments.len);
-				}
-					printf("Mock parse callee at pos: %zu\n", *pos);
-				default: {
-					fprintf(stderr,
-							"Internal parser error: invalid callee type in "
-							"call exoression. Expected literal expression.\n");
-					exit(1);
-				}
-			}
+			return (Expr*)make_call_expr(expr, arguments.data, arguments.len);
 		}
 
 		return expr;

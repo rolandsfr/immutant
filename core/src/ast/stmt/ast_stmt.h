@@ -6,6 +6,8 @@
 
 enum MutabilityType { MUTABLE, IMMUTABLE };
 
+enum PurityType { PURE, IMPURE };
+
 typedef struct VarDeclStmt {
 	Stmt base;
 	char* name;

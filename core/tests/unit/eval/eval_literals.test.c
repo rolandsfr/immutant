@@ -5,6 +5,7 @@
 #include "env.h"
 #include "eval_asgn.h"
 #include "eval_binary.h"
+#include "eval_call.h"
 #include "eval_expr.h"
 #include "eval_logic.h"
 #include "eval_unary.h"

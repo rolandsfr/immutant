@@ -73,7 +73,7 @@ void test_parse_call_parses_function_call_with_arguments()
 	TEST_ASSERT_EQUAL_INT(call_expr->arg_count, 2);
 
 	// assert names of callee and arguments
-	VariableExpr* callee = ((VariableExpr*)call_expr);
+	VariableExpr* callee = (VariableExpr*)call_expr->callee;
 	TEST_ASSERT_EQUAL_STRING("funcName", callee->name);
 
 	VariableExpr* arg1 = (VariableExpr*)call_expr->args[0];
@@ -135,7 +135,7 @@ void test_parse_call_handles_no_arguments()
 	TEST_ASSERT_EQUAL_INT(call_expr->arg_count, 0);
 
 	// assert name of callee
-	VariableExpr* callee = ((VariableExpr*)call_expr);
+	VariableExpr* callee = (VariableExpr*)call_expr->callee;
 	TEST_ASSERT_EQUAL_STRING("funcName", callee->name);
 }
 

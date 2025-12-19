@@ -2,7 +2,20 @@
 
 #include <stdio.h>
 
-typedef enum ValueType { VAL_NUMBER, VAL_BOOL, VAL_STRING, VAL_NULL } ValueType;
+#include "array.h"
+#include "ast_stmt.h"
+
+typedef enum PurityType PurityType;
+typedef struct ValueBuffer ValueBuffer;
+
+typedef enum ValueType {
+	VAL_NUMBER,
+	VAL_BOOL,
+	VAL_STRING,
+	VAL_NULL,
+	VAL_FN,
+	VAL_NATIVE
+} ValueType;
 
 typedef struct Value {
 	ValueType type;
@@ -10,5 +23,14 @@ typedef struct Value {
 		long double number;
 		int boolean;
 		char* string;
+		struct Callable* callable;
 	};
 } Value;
+
+typedef struct Callable {
+	Value (*call)(ValueBuffer* arguments);
+	PurityType purity;
+	size_t arity;
+} Callable;
+
+ARR_DEFINE(Value, ValueBuffer)

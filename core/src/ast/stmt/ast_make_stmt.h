@@ -21,6 +21,4 @@ ExprStmt* make_expr_stmt(Expr* expression);
 
 WhileStmt* make_while_stmt(Expr* condition, Stmt* body);
 
-CallExpr* make_call_expr(const char* name, Expr** args, size_t arg_count);
-
 void free_expr(Expr* expr);

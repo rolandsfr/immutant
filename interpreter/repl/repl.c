@@ -10,8 +10,18 @@
 #include "str_val.h"
 #include "types.h"
 
+#include "env/env.h"
+#include "native/define_natives.h"
+
+extern Env* global_env;
+
 void repl()
 {
+	if (!global_env) {
+		global_env = env_new(NULL);
+	}
+	define_natives(global_env);
+
 	char code_line[256];
 	size_t line_nr = 1;
 

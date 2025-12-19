@@ -24,6 +24,10 @@ const char* str_val(Value value)
 		}
 		case VAL_BOOL:
 			return value.boolean ? "true" : "false";
+		case VAL_NATIVE:
+			return "<native fn>";
+		case VAL_FN:
+			return "<fn>";
 		default:
 			return NULL;
 	}

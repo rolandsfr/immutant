@@ -17,6 +17,7 @@
 #include "eval_asgn.h"
 #include "eval_binary.h"
 #include "eval_block_stmt.h"
+#include "eval_call.h"
 #include "eval_expr.h"
 #include "eval_if_stmt.h"
 #include "eval_logic.h"

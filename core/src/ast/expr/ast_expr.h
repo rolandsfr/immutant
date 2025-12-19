@@ -48,7 +48,7 @@ typedef struct AssignExpr {
 
 typedef struct CallExpr {
 	Expr base;
-	char* name; // callee name (as identifier)
+	Expr* callee;
 	Expr** args;
 	size_t arg_count;
 } CallExpr;

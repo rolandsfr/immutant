@@ -72,11 +72,11 @@ UnaryExpr* make_unary_expr(enum TokenType operator, Expr* operand)
 	return u;
 }
 
-CallExpr* make_call_expr(const char* name, Expr** args, size_t arg_count)
+CallExpr* make_call_expr(Expr* callee, Expr** args, size_t arg_count)
 {
 	CallExpr* c = malloc(sizeof(CallExpr));
 	c->base.type = EXPR_CALL;
-	c->name = strdup(name);
+	c->callee = callee;
 	c->args = args;
 	c->arg_count = arg_count;
 	return c;
@@ -157,7 +157,7 @@ void free_expr(Expr* expr)
 				free_expr(c->args[i]);
 			}
 			free(c->args);
-			free(c->name);
+			free_expr(c->callee);
 			free(c);
 			break;
 		}
