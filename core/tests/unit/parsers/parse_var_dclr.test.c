@@ -32,7 +32,7 @@ void test_parse_var_decl()
 
 	parse_expr_StubWithCallback(parse_expr_stub_cb);
 
-	add_token(&tokens, create_token(TOKEN_MUTANT, "mutant", 6, 1));
+	add_token(&tokens, create_token(TOKEN_MUTANT, "mut", 6, 1));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "x", 1, 1));
 	add_token(&tokens, create_token(TOKEN_EQUAL, "=", 1, 1));
 	add_token(&tokens, create_token(TOKEN_NUMBER, "42", 2, 1));
@@ -50,7 +50,7 @@ void test_parse_var_decl_should_error_if_no_name()
 	size_t pos = 1; // starting at x, because function expects pos after keyword
 	Error error = {-1};
 
-	add_token(&tokens, create_token(TOKEN_MUTANT, "mutant", 6, 1));
+	add_token(&tokens, create_token(TOKEN_MUTANT, "mut", 6, 1));
 	add_token(&tokens, create_token(TOKEN_EQUAL, "=", 1, 1));
 	add_token(&tokens, create_token(TOKEN_NUMBER, "42", 2, 1));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 1));
@@ -70,7 +70,7 @@ void test_parse_var_decl_should_error_if_no_semicolon_after_initializer()
 
 	parse_expr_StubWithCallback(parse_expr_stub_cb);
 
-	add_token(&tokens, create_token(TOKEN_MUTANT, "mutant", 6, 1));
+	add_token(&tokens, create_token(TOKEN_MUTANT, "mut", 6, 1));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "x", 1, 1));
 	add_token(&tokens, create_token(TOKEN_EQUAL, "=", 1, 1));
 	add_token(&tokens, create_token(TOKEN_NUMBER, "42", 2, 1));
@@ -90,7 +90,7 @@ void test_parse_var_decl_without_initializer()
 	size_t pos = 1; // starting at x, because function expects pos after keyword
 	Error error = {-1};
 
-	add_token(&tokens, create_token(TOKEN_MUTANT, "mutant", 6, 1));
+	add_token(&tokens, create_token(TOKEN_MUTANT, "mut", 6, 1));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "y", 1, 1));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 1));
 
@@ -106,7 +106,7 @@ void test_parse_var_decl_should_throw_if_imut_have_no_initializer()
 	size_t pos = 1; // starting at x, because function expects pos after keyword
 	Error error = {-1};
 
-	add_token(&tokens, create_token(TOKEN_IMMUTANT, "immutable", 9, 1));
+	add_token(&tokens, create_token(TOKEN_IMMUTANT, "imut", 9, 1));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "z", 1, 1));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 1));
 

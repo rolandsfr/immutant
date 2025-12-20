@@ -1,7 +1,8 @@
-mutant a = 0;
+mut a = 0;
 
 while(a < 11) {
-    print(a);
+    imut val = a;
+    print(val);
     a = a + 1;
 }
 

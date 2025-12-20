@@ -101,8 +101,8 @@ void test_large_number_addition()
 void test_interpret_var_usage()
 {
 	size_t line_nr = 0;
-	interpret_source("immutant a = 10;", 15, &line_nr);
-	interpret_source("immutant b = 5;", 14, &line_nr);
+	interpret_source("imut a = 10;", 15, &line_nr);
+	interpret_source("mut b = 5;", 14, &line_nr);
 	Values result = interpret_source("a + b;", 21, &line_nr);
 	TEST_ASSERT_NUMBER_VALUE(result.items[0], 15);
 }

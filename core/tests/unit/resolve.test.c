@@ -113,9 +113,9 @@ void test_is_number_candidate_should_not_allow_chars_starting_whith_leading_dot(
 
 void test_should_resolve_keywords(void)
 {
-	char* line = "immutant";
+	char* line = "imut";
 	size_t pos = 0;
-	size_t len = 8;
+	size_t len = 4;
 	enum TokenType token_out;
 
 	int is_keyword_resolved = resolve_keyword(line, pos, len, &token_out);

@@ -115,13 +115,13 @@ int resolve_keyword(char* line, size_t pos, size_t len,
 			} else if (len == 6 && strcmp(lexeme, "impure") == 0) {
 				*token_out = TOKEN_IMPURE;
 				return 1;
-			} else if (len == 8 && strcmp(lexeme, "immutant") == 0) {
+			} else if (len == 4 && strcmp(lexeme, "imut") == 0) {
 				*token_out = TOKEN_IMMUTANT;
 				return 1;
 			}
 			break;
 		case 'm':
-			if (len == 6 && strcmp(lexeme, "mutant") == 0) {
+			if (len == 3 && strcmp(lexeme, "mut") == 0) {
 				*token_out = TOKEN_MUTANT;
 				return 1;
 			}
