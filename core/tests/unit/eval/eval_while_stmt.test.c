@@ -17,7 +17,7 @@ void test_eval_while_stmt_executes_then_branch_when_condition_is_true()
 	stmt.body = &body;
 
 	Env env;
-	Error err;
+	Error err = {-1};
 	Value out_value;
 
 	Value condition_true = {.type = VAL_BOOL, .boolean = 1};
