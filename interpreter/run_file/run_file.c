@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "define_natives.h"
 #include "error.h"
 #include "eval.h"
 #include "interpret.h"
@@ -18,6 +19,7 @@
 
 void run_file(const char* script_name)
 {
+
 	int fd = open(script_name, O_RDONLY);
 
 	if (fd == -1) {
@@ -60,6 +62,7 @@ void run_file(const char* script_name)
 	}
 
 	Env* global_env = env_new(NULL);
+	define_natives(global_env);
 
 	for (size_t i = 0; i < stmts.len; i++) {
 		Error runtime_error = {-1};

@@ -30,15 +30,36 @@ Value eval_asgn(AssignExpr* expr, Env* env, Error* out_error)
 		}
 		return (Value){0};
 	}
+	// printf("value type to assign: %d\n", val.type);
+	// printf("variable '%s' mutability: %d\n", expr->name,
+	// 	   env_entry.value.mutability);
 
 	switch (env_entry.value.mutability) {
-		case MUTABILITY_UNSET:
-			fprintf(stderr, "Error: Variable '%s' has unset mutability.\n",
-					expr->name);
-			return (Value){0};
-		case MUTABLE:
+		case MUTABILITY_UNSET: {
+			if (out_error) {
+				*out_error = (Error){.type = RUNTIME_UNDEFINED_VARIABLE,
+									 .line = expr->base.line,
+									 .message = ""};
+				snprintf(out_error->message, sizeof(out_error->message),
+						 "Variable '%s' has unset mutability", expr->name);
+			}
+		}
+
+		case MUTABLE: {
+
+			// preverve original var mutability...
+			// because literal make functions set MUTABILITY_UNSET, need to make
+			// additional effort to preserve mutability here
+
+			enum MutabilityType mut =
+				env_get_entry(env, expr->name).value.mutability;
+
 			env_set(env, expr->name, val);
+			Value* val = env_get(env, expr->name);
+			val->mutability = mut;
+
 			break;
+		}
 		case IMMUTABLE:
 			if (out_error) {
 				*out_error = (Error){.type = RUNTIME_ASSIGN_TO_CONSTANT,

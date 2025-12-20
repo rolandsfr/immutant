@@ -1,10 +1,8 @@
 mutant a = 0;
 
-while(a < 10) {
-    if(a == 0) {
-        a = a + 1;
-    } else {
-       # 
-    }
+while(a < 11) {
+    immutant val = a;
+    print(val);
+    a = a + 1;
 }
 
