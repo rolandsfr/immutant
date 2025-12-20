@@ -2,7 +2,6 @@
 
 #include "unity.h"
 
-#include "Mockparse_expr.h"
 #include "ast_cnstrct.h"
 #include "ast_make_expr.h"
 #include "ast_make_stmt.h"
@@ -13,11 +12,13 @@
 #include "resolve.h"
 #include "test_assert_stmt.h"
 
+#include "Mockparse_expr.h"
+
 Expr* parse_expr_stub_cb(TokenBuffer* tokens, size_t* pos, Error* out_error,
 						 int num_calls)
 {
 	// Create a dummy expression to return
-	Expr* expr = (Expr*)make_number_expr("42");
+	Expr* expr = (Expr*)make_number_expr("42", 1);
 	*pos += 1; // Advance position to simulate consumption of token
 	return expr;
 }

@@ -74,7 +74,7 @@ void run_file(const char* script_name)
 		if (runtime_error.type != ERROR_NONE) {
 			free_token_buffer(&token_buffer);
 			int hadError = 1;
-			report_error(line_nr, runtime_error.message, &hadError);
+			report_error(runtime_error.line, runtime_error.message, &hadError);
 			continue;
 		}
 	}

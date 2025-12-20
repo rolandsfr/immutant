@@ -17,7 +17,7 @@
 void test_eval_unary_should_not_work_with_strings(void)
 {
 	UnaryExpr* unary_expr =
-		make_unary_expr(TOKEN_MINUS, (Expr*)make_string_expr("hello"));
+		make_unary_expr(TOKEN_MINUS, (Expr*)make_string_expr("hello", 1), 1);
 	Error err = {-1};
 
 	eval_expr_IgnoreAndReturn(make_string("hello"));
@@ -30,7 +30,7 @@ void test_eval_unary_should_not_work_with_strings(void)
 void test_eval_unary_should_negate_number(void)
 {
 	UnaryExpr* expr =
-		make_unary_expr(TOKEN_MINUS, (Expr*)make_number_expr("10"));
+		make_unary_expr(TOKEN_MINUS, (Expr*)make_number_expr("10", 1), 1);
 	Error err = {-1};
 
 	eval_expr_IgnoreAndReturn(make_number(10));
@@ -42,7 +42,8 @@ void test_eval_unary_should_negate_number(void)
 
 void test_eval_unary_should_negate_boolean(void)
 {
-	UnaryExpr* expr = make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(1));
+	UnaryExpr* expr =
+		make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(1, 1), 1);
 	Error err = {-1};
 
 	eval_expr_IgnoreAndReturn(make_bool(1));
@@ -54,7 +55,8 @@ void test_eval_unary_should_negate_boolean(void)
 
 void test_eval_unary_should_negate_boolean_false(void)
 {
-	UnaryExpr* expr = make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(0));
+	UnaryExpr* expr =
+		make_unary_expr(TOKEN_BANG, (Expr*)make_boolean_expr(0, 1), 1);
 	Error err = {-1};
 	eval_expr_IgnoreAndReturn(make_bool(0));
 	Value result = eval_unary(expr, &err, NULL);

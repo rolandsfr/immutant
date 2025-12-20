@@ -22,8 +22,8 @@ void test_eval_asgn_should_assign_variable_value(void)
 
 	// Create AssignExpr for 'x = 42'
 
-	Expr* value_expr = (Expr*)make_number_expr("42");
-	AssignExpr* assign_expr = make_assign_expr("x", value_expr);
+	Expr* value_expr = (Expr*)make_number_expr("42", 1);
+	AssignExpr* assign_expr = make_assign_expr("x", value_expr, 1);
 
 	Error error = {-1};
 	eval_expr_ExpectAndReturn(value_expr, &error, env, make_number(42));
@@ -38,8 +38,8 @@ void test_eval_asgn_should_return_error_for_undefined_variable(void)
 	Env* env = env_new(NULL);
 
 	// Create AssignExpr for 'y = 100'
-	Expr* value_expr = (Expr*)make_number_expr("100");
-	AssignExpr* assign_expr = make_assign_expr("y", value_expr);
+	Expr* value_expr = (Expr*)make_number_expr("100", 1);
+	AssignExpr* assign_expr = make_assign_expr("y", value_expr, 1);
 
 	Error error = {-1};
 	eval_expr_ExpectAndReturn(value_expr, &error, env, make_number(100));

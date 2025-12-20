@@ -13,23 +13,26 @@
 DEF_PARSE_FN(parse_primary)
 {
 	if (match_token(tokens, pos, 1, TOKEN_STRING)) {
-		return (Expr*)make_string_expr(prev_token(tokens, *pos).lexeme);
+		return (Expr*)make_string_expr(prev_token(tokens, *pos).lexeme,
+									   prev_token(tokens, *pos).line);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_NUMBER)) {
-		return (Expr*)make_number_expr(prev_token(tokens, *pos).lexeme);
+		return (Expr*)make_number_expr(prev_token(tokens, *pos).lexeme,
+									   prev_token(tokens, *pos).line);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_TRUE)) {
-		return (Expr*)make_boolean_expr(1);
+		return (Expr*)make_boolean_expr(1, prev_token(tokens, *pos).line);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_FALSE)) {
-		return (Expr*)make_boolean_expr(0);
+		return (Expr*)make_boolean_expr(0, prev_token(tokens, *pos).line);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_IDENTIFIER)) {
-		return (Expr*)make_variable_expr(prev_token(tokens, *pos).lexeme);
+		return (Expr*)make_variable_expr(prev_token(tokens, *pos).lexeme,
+										 prev_token(tokens, *pos).line);
 	}
 
 	if (match_token(tokens, pos, 1, TOKEN_LEFT_PAREN)) {

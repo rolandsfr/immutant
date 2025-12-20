@@ -19,7 +19,7 @@ Expr* mock_parse_expr(TokenBuffer* tokens, size_t* pos, Error* out_error,
 					  int ignore)
 {
 	(*pos)++;
-	return (Expr*)make_boolean_expr(1);
+	return (Expr*)make_boolean_expr(1, 1);
 }
 
 Stmt* mock_parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error,
@@ -34,9 +34,9 @@ Stmt* mock_parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error,
 	(*pos)++;
 
 	if (num_calls == 0) { // first block (then branch)
-		return (Stmt*)make_expr_stmt((Expr*)make_number_expr("42"));
+		return (Stmt*)make_expr_stmt((Expr*)make_number_expr("42", 1));
 	} else { // second block (else branch)
-		return (Stmt*)make_expr_stmt((Expr*)make_number_expr("0"));
+		return (Stmt*)make_expr_stmt((Expr*)make_number_expr("0", 1));
 	}
 }
 

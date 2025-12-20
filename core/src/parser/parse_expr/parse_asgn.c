@@ -41,7 +41,7 @@ DEF_PARSE_FN(parse_asgn)
 			return NULL;
 		}
 
-		return (Expr*)make_assign_expr(target.lexeme, val_expr);
+		return (Expr*)make_assign_expr(target.lexeme, val_expr, target.line);
 	}
 
 	return expr;

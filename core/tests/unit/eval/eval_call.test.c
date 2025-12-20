@@ -48,9 +48,8 @@ void test_eval_call_should_invoke_function_with_arguments(void)
 	ArgumentsArray_init(&args);
 	ArgumentsArray_push(&args, NULL);
 
-	VariableExpr* callee_expr = make_variable_expr("mockFunc");
-
-	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1);
+	VariableExpr* callee_expr = make_variable_expr("mockFunc", 1);
+	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1, 1);
 	Error error = {-1};
 
 	// mock identifier evaluation
@@ -74,9 +73,8 @@ void test_eval_call_should_return_error_when_callee_is_not_function(void)
 	ArgumentsArray_init(&args);
 	ArgumentsArray_push(&args, NULL);
 
-	VariableExpr* callee_expr = make_variable_expr("notAFunction");
-
-	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1);
+	VariableExpr* callee_expr = make_variable_expr("notAFunction", 1);
+	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1, 1);
 	Error error = {-1};
 
 	// mock identifier evaluation to return a non-function value
@@ -99,9 +97,8 @@ void test_eval_call_should_return_error_on_incorrect_argument_count(void)
 	ArgumentsArray_init(&args);
 	ArgumentsArray_push(&args, NULL); // only 1 argument instead of 2
 
-	VariableExpr* callee_expr = make_variable_expr("mockFunc");
-
-	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1);
+	VariableExpr* callee_expr = make_variable_expr("mockFunc", 1);
+	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1, 1);
 	Error error = {-1};
 
 	// mock identifier evaluation
@@ -126,9 +123,8 @@ void test_eval_call_should_return_error_on_impure_argument_mutability(void)
 	ArgumentsArray_init(&args);
 	ArgumentsArray_push(&args, NULL);
 
-	VariableExpr* callee_expr = make_variable_expr("impureFunc");
-
-	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1);
+	VariableExpr* callee_expr = make_variable_expr("impureFunc", 1);
+	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1, 1);
 	Error error = {-1};
 
 	// mock identifier evaluation

@@ -20,7 +20,7 @@ Expr* mock_parse_callee(TokenBuffer* tokens, size_t* pos, Error* out_error,
 			   !is_at_end(tokens, *pos)) {
 			(*pos)++;
 		}
-		return (Expr*)make_variable_expr("funcName");
+		return (Expr*)make_variable_expr("funcName", 1);
 	} else {
 		return NULL;
 	}
@@ -30,11 +30,11 @@ Expr* mock_parse_argument(TokenBuffer* tokens, size_t* pos, Error* out_error,
 						  int num_calls)
 {
 	if (num_calls == 0) {
-		Expr* arg1 = (Expr*)make_variable_expr("arg1");
+		Expr* arg1 = (Expr*)make_variable_expr("arg1", 1);
 		(*pos)++; // consume arg1
 		return arg1;
 	} else if (num_calls == 1) {
-		Expr* arg2 = (Expr*)make_variable_expr("arg2");
+		Expr* arg2 = (Expr*)make_variable_expr("arg2", 1);
 		(*pos)++; // consume arg2
 		return arg2;
 	} else {

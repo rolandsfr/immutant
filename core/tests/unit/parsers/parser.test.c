@@ -28,7 +28,7 @@ Stmt* mock_dclr_and_throw(TokenBuffer* tokens, size_t* pos, Error* out_error,
 		return NULL;
 	}
 
-	Expr* expr = (Expr*)make_number_expr("42");
+	Expr* expr = (Expr*)make_number_expr("42", 1);
 	*pos += 1;
 	return (Stmt*)make_expr_stmt(expr);
 }

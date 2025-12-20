@@ -19,7 +19,7 @@ static DEF_PARSE_FN(dummy_parse)
 {
 	Token t = tokens->tokens[*pos];
 	(*pos)++;
-	return (Expr*)make_variable_expr(t.lexeme);
+	return (Expr*)make_variable_expr(t.lexeme, t.line);
 }
 
 void test_parse_lassoc_should_parse_left_associativity_expression(void)
@@ -37,9 +37,9 @@ void test_parse_lassoc_should_parse_left_associativity_expression(void)
 	size_t pos = 0;
 	Error error = {-1};
 
-	Expr* first = (Expr*)make_variable_expr("a");
-	Expr* second = (Expr*)make_variable_expr("b");
-	Expr* third = (Expr*)make_variable_expr("c");
+	Expr* first = (Expr*)make_variable_expr("a", 1);
+	Expr* second = (Expr*)make_variable_expr("b", 1);
+	Expr* third = (Expr*)make_variable_expr("c", 1);
 
 	const enum TokenType operators[] = {
 		TOKEN_EQUAL_EQUAL,

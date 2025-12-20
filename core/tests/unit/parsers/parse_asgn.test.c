@@ -17,10 +17,10 @@ Expr* mock_parse_equality_correct_asgn(TokenBuffer* tokens, size_t* pos,
 {
 	if (num_calls == 0) {
 		*pos = 1;
-		return (Expr*)make_variable_expr("x");
+		return (Expr*)make_variable_expr("x", 1);
 	} else if (num_calls == 1) {
 		*pos = 3;
-		return (Expr*)make_number_expr("42");
+		return (Expr*)make_number_expr("42", 1);
 	} else {
 		return NULL;
 	}
@@ -31,10 +31,10 @@ Expr* mock_parse_equality_invalid_asgn_target(TokenBuffer* tokens, size_t* pos,
 {
 	if (num_calls == 0) {
 		*pos = 1;
-		return (Expr*)make_number_expr("5");
+		return (Expr*)make_number_expr("5", 1);
 	} else if (num_calls == 1) {
 		*pos = 3;
-		return (Expr*)make_variable_expr("b");
+		return (Expr*)make_variable_expr("b", 1);
 	} else {
 		return NULL;
 	}
@@ -45,13 +45,13 @@ Expr* mock_parse_several_asgn_exprs(TokenBuffer* tokens, size_t* pos,
 {
 	if (num_calls == 0) {
 		*pos = 1;
-		return (Expr*)make_variable_expr("a");
+		return (Expr*)make_variable_expr("a", 1);
 	} else if (num_calls == 1) {
 		*pos = 3;
-		return (Expr*)make_variable_expr("b");
+		return (Expr*)make_variable_expr("b", 1);
 	} else if (num_calls == 2) {
 		*pos = 5;
-		return (Expr*)make_number_expr("100");
+		return (Expr*)make_number_expr("100", 1);
 	} else {
 		return NULL;
 	}

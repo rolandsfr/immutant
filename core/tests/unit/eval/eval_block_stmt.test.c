@@ -31,8 +31,8 @@ void test_eval_block_stmt_creates_new_scope(void)
 	global_env = env_new(NULL);
 
 	Stmt* stmts[1];
-	stmts[0] =
-		(Stmt*)make_var_decl_stmt("x", (Expr*)make_number_expr("1"), MUTABLE);
+	stmts[0] = (Stmt*)make_var_decl_stmt("x", (Expr*)make_number_expr("1", 1),
+										 MUTABLE);
 
 	BlockStmt* block = make_block_stmt(stmts, 1);
 

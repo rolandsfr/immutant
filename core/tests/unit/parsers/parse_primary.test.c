@@ -67,8 +67,8 @@ Expr* mock_parse_or(TokenBuffer* tokens, size_t* pos, Error* out_error,
 		   !is_at_end(tokens, *pos)) {
 		consume_token(tokens, pos);
 	}
-	return (Expr*)make_binary_expr((Expr*)make_number_expr("8"), TOKEN_PLUS,
-								   (Expr*)make_number_expr("9"));
+	return (Expr*)make_binary_expr((Expr*)make_number_expr("8", 1), TOKEN_PLUS,
+								   (Expr*)make_number_expr("9", 1), 1);
 }
 
 void test_parse_primary_should_parse_parenthesized_expression(void)

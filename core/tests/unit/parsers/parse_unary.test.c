@@ -21,7 +21,7 @@ Expr* mock_parse_literal_number(TokenBuffer* tokens, size_t* pos,
 								Error* out_error, int num_calls)
 {
 	Token token = consume_token(tokens, pos);
-	return (Expr*)make_number_expr(token.lexeme);
+	return (Expr*)make_number_expr(token.lexeme, token.line);
 }
 
 Expr* mock_parse_with_error(TokenBuffer* tokens, size_t* pos, Error* out_error,

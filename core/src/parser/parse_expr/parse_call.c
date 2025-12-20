@@ -57,7 +57,8 @@ DEF_PARSE_FN(parse_call)
 			}
 
 			// parser should not restrict to only variable names as callees
-			return (Expr*)make_call_expr(expr, arguments.data, arguments.len);
+			return (Expr*)make_call_expr(expr, arguments.data, arguments.len,
+										 paren.line);
 		}
 
 		return expr;

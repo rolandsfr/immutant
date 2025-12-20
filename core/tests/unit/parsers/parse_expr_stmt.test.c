@@ -29,8 +29,9 @@ void test_parse_expr_stmt_should_fail_if_missing_semicolon_after_statement_expr(
 	add_token(&tokens, create_token(TOKEN_PLUS, "+", 1, 2));
 	add_token(&tokens, create_token(TOKEN_NUMBER, "3", 1, 3));
 
-	BinaryExpr* binary_expr = make_binary_expr(
-		(Expr*)make_number_expr("5"), TOKEN_PLUS, (Expr*)make_number_expr("3"));
+	BinaryExpr* binary_expr =
+		make_binary_expr((Expr*)make_number_expr("5", 1), TOKEN_PLUS,
+						 (Expr*)make_number_expr("3", 1), 1);
 
 	parse_expr_ExpectAndReturn(&tokens, &pos, &error, (Expr*)binary_expr);
 
@@ -54,7 +55,7 @@ void test_parse_expr_stmt_should_parse_expression_statement_with_semicolon(void)
 	add_token(&tokens, create_token(TOKEN_NUMBER, "10", 2, 1));
 	add_token(&tokens, create_token(TOKEN_SEMICOLON, ";", 1, 2));
 
-	NumberExpr* number_expr = make_number_expr("10");
+	NumberExpr* number_expr = make_number_expr("10", 1);
 
 	parse_expr_ExpectAndReturn(&tokens, &pos, &error, (Expr*)number_expr);
 	pos++;

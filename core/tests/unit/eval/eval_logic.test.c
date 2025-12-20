@@ -17,8 +17,8 @@ void test_eval_logic_and_checks_full_binary_expr(void)
 
 	LogicalExpr expr;
 	expr.operator = TOKEN_AND;
-	expr.left = (Expr*)make_boolean_expr(1);
-	expr.right = (Expr*)make_boolean_expr(0);
+	expr.left = (Expr*)make_boolean_expr(1, 1);
+	expr.right = (Expr*)make_boolean_expr(0, 1);
 
 	// The right side should be evaluated
 	eval_expr_ExpectAndReturn(expr.left, &err, env, make_bool(1));
@@ -40,8 +40,8 @@ void test_eval_logic_and_yield_true_value(void)
 
 	LogicalExpr expr;
 	expr.operator = TOKEN_AND;
-	expr.left = (Expr*)make_boolean_expr(1);
-	expr.right = (Expr*)make_boolean_expr(1);
+	expr.left = (Expr*)make_boolean_expr(1, 1);
+	expr.right = (Expr*)make_boolean_expr(1, 1);
 
 	// The right side should be evaluated
 	eval_expr_ExpectAndReturn(expr.left, &err, env, make_bool(1));
@@ -64,8 +64,8 @@ void test_eval_logic_or_checks_full_binary(void)
 
 	LogicalExpr expr;
 	expr.operator = TOKEN_OR;
-	expr.left = (Expr*)make_boolean_expr(0);
-	expr.right = (Expr*)make_boolean_expr(0);
+	expr.left = (Expr*)make_boolean_expr(0, 1);
+	expr.right = (Expr*)make_boolean_expr(0, 1);
 
 	// The right side should be evaluated
 	eval_expr_ExpectAndReturn(expr.left, &err, env, make_bool(0));
@@ -88,8 +88,8 @@ void test_eval_logic_or_yields_true(void)
 
 	LogicalExpr expr;
 	expr.operator = TOKEN_OR;
-	expr.left = (Expr*)make_boolean_expr(1);
-	expr.right = (Expr*)make_boolean_expr(0);
+	expr.left = (Expr*)make_boolean_expr(1, 1);
+	expr.right = (Expr*)make_boolean_expr(0, 1);
 
 	// The right side should be evaluated
 	eval_expr_ExpectAndReturn(expr.left, &err, env, make_bool(1));

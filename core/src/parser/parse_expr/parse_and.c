@@ -19,7 +19,8 @@ DEF_PARSE_FN(parse_and)
 			return NULL;
 		}
 
-		expr = (Expr*)make_logical_expr(expr, operator.type, right);
+		expr =
+			(Expr*)make_logical_expr(expr, operator.type, right, operator.line);
 	}
 
 	return expr;

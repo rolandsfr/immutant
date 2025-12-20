@@ -8,9 +8,9 @@
 #include "parser_helpers.h"
 #include "parser_singnature.h"
 
-Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
-				   const enum TokenType* operators, size_t operator_count,
-				   Error* out_error)
+Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos,
+				   ParseFn* next_precedence_fn, const enum TokenType* operators,
+				   size_t operator_count, Error* out_error)
 {
 	Expr* expr = next_precedence_fn(tokens, pos, out_error);
 
@@ -29,7 +29,8 @@ Expr* parse_lassoc(TokenBuffer* tokens, size_t* pos, ParseFn next_precedence_fn,
 		// creates nested binary expressions for left-associative chains
 		// left and right are sub-expressions that can be further binary
 		// expressions or literals/variables
-		expr = (Expr*)make_binary_expr(expr, operator.type, right);
+		expr =
+			(Expr*)make_binary_expr(expr, operator.type, right, operator.line);
 	}
 
 	return expr;

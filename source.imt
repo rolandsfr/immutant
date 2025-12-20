@@ -1,8 +1,7 @@
 mutant a = 0;
 
 while(a < 11) {
-    immutant val = a;
-    print(val);
+    print(a);
     a = a + 1;
 }
 
