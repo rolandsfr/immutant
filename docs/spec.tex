@@ -3,7 +3,11 @@
 \usepackage{formatting}
 \usepackage{tabularx}
 \usepackage{cite}  % optional, improves formatting
-
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{placeins}
 
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
@@ -84,27 +88,80 @@ Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mai
 
 Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteiksmes, tīras un netīras funkcijas, kontroles plūsma un cikli.
 
+\subsubsection{Valodas nolūks}
+Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakņu efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. 
+
+
 % TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
+
+\subsubsection{Pārskats}
 
 Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām porgrammatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz leksera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apokopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Visbeidzot, septītajā nodaļā tiek izvirzītas idejas turpmākai valodas attīstībai, un izskatīts kopsavilkums par paveikto darbu.
 
 
 \newpage
-\chapter{Valodas specifikācija}
+\chapter{Vispārējs apraksts}
 
-Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas attiecīgam interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgramāta valodas lietošanā.
-Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstīstīšanas nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
-Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
-Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
+\section{Esošā stāvokļa apraksts}
+Uz doto brīdi eksistē vairākas programmēšanas valodas, kas piedāvā dažādus līmeņus datu nemainības atbalstam. Piemēram, funkcionālās programmēšanas valodas kā Haskell un Clojure ir veidotas ap datu nemainības principiem, nodrošinot spēcīgu atbalstu nemutabliem datiem un tīrām funkcijām \cite{haskell, clojure}. No otras puses, imperatīvās valodas kā Python un JavaScript piedāvā iespējas strādāt ar nemutabliem datiem, bet tās nav tik stingras kā funkcionālajās valodās \cite{python, javascript}.
 
-\subsubsection{Valodas nolūks}
-Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakņu efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. Lai nodrošinātu šos mērķus, valoda Immutant piedāvā šādas galvenās iezīmes:
+\section{Pasūtītājs}
+Sistēma tiek izstrādāta pēc autora iniciatīvas, kvalifikācijas darba ietvaros. 
+
+\section{Produkta perspektīva}
+Jaunā programmēšanas valoda Immutant ir paredzēta kā patstāvīgs produkts, kas var tikt izmantots kā rīks dažādiem programmēšanas projektiem. Tā nav atkarīga no jebkuras konkrētas platformas vai sistēmas.
+
+\section{Produkta funkcijas}
+Valoda Immutant piedāvā šādas galvenās funkcijas:
+
 \begin{itemize}
   \item \textbf{Datu nemainība:} Valoda Immutant ievieš stingru datu nemainības semantiku, kas nozīmē, ka pēc datu inicializācijas to vērtības nevar mainīt. Tas palīdz samazināt blakusefektu risku un padara programmas uzvedību paredzamu.
   \item \textbf{Vienkārša sintakse:} Valodas sintakse ir veidota tā, lai tā būtu viegli saprotama un lietojama, padarot to pievilcīgu gan iesācējiem, gan pieredzējušiem programmētājiem.
   \item \textbf{Dinamiskā tipizācija:} Valoda Immutant izmanto dinamisko tipizāciju, kas ļauj programmētājiem strādāt ar dažādiem datu tipiem bez nepieciešamības deklarēt to tipus pirms lietošanas.
   \item \textbf{Funkcionālā programmēšana:} Valoda atbalsta daļu no funkcionālās programmēšanas paradigmām, nodrošinot izpildlaikā verificējamas tīras funkcijas, kas palīdz samazināt blakusefektu risku.
 \end{itemize}
+
+\section{Darījumprasības}
+
+Programmatūrai ir izveidotas šādas darījumprasības:
+
+\begin{itemize}
+  \item Valodas sintakse un semantika jābūt viegli saprotamai un lietojamai, lai veicinātu plašu pieņemšanu starp programmētājiem.
+  \item Intepretatoram ir jāatbalsta gan interarktīvās vides režīmu, gan skriptu izpildi no datnēm.
+\end{itemize}
+
+\section{Sistēmas lietotāji}
+Sistēmas galvenie lietotāji ir programmētāji, kas vēlas izmantot datu nemainības priekšrocības savos projektos. Tie var būt gan iesācēji, kas mācās programmēšanu, gan pieredzējuši izstrādātāji, kas meklē jaunu rīku saviem projektiem. Spēkā ir pieņēmums, ka lietotājam ir pamata izpratne par programmēšanas konceptiem un terminoloģiju un tas ir iepazinies ar programmēšanas valodu Immutant dokumentāciju.
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_lvl_0.jpg}  
+    \vspace{0.5cm}  
+    \caption{0. līmeņa datu plūsmas diagramma}           % optional
+    \label{fig:dfd_lvl_0}                  
+\end{figure}
+
+\section{Vispārējie ierobežojumi}
+Interpretators ticis izstrādāts Mac OS platformai, tāpēc tiek pieņemts, ka lietotājam darbojas šajā operētājsistēmā. Tomēr interpretatora kods ir rakstīts tā, lai to būtu viegli pārnest uz citām platformas ar minimālām izmaiņām. 
+
+
+\section{Pieņēmumi un atkarības}
+
+\begin{itemize}
+  \item Pirmkoda datnes, kas tiek padotas izpildei interpretatoram nav aizsargātas pret lasīšanu. 
+  \item Pirmkods ir rakstīts atbilstoši valodas Immutant gramatikai un sintaksei.
+\end{itemize}
+
+\newpage
+
+
+\chapter{Valodas specifikācija}
+
+% Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas attiecīgam interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgramāta valodas lietošanā.
+% Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
+% Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
+% Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
+
 
 \section{Datu tipi}
 
@@ -587,11 +644,110 @@ Neviens vēl nav uzrakstījis nevainojamu programmu no pirmās reizes, tāpēc k
 
 % TODO: minēt ka ir regulāra valoda.
 % TODO: pie arhitektūras apraksta minēti lookahead daudzumu šai valodai
-\chapter{Interpretatora arhitektūra}
+\chapter{Programmatūras Prasību specifikācija}
 \label{chap:arch}
 
 Šeit būs info par lekseri, parsētāju un tree walker.
 
+\section{Funkcionālās prasības}
+
+Interpretatora programmatūru iedala 5 moduļos, katrs no tiem atbild par savu funkcionalitāti. Skenēšanas, parsēšanas un izvērtēšanas moduļi veido pašu pamatu interpretēšanai, taču ir nepieciešami arī citi moduļi, lai nodrošinātu pilnvērtīgu programmu - lietotāja saskarnes modulis un interpretatora kodola modulis.
+
+\renewcommand{\arraystretch}{2}
+\begin{table}[h]
+\centering
+\begin{tabular}{p{5.5cm} p{7cm} c}
+\toprule
+\rowcolor{gray!60}
+Modulis & Funkcija & Identifikators \\
+\midrule
+
+\multirow{2}{*}{Lietotāja saskarnes modulis}
+    & Pirmkoda interpretēšana no datnes & CLI-1 \\
+\cmidrule(lr){2-3}
+    & REPL režīma palaišana & CLI-2 \\
+\midrule
+
+\multirow{1}{*}{Interpretatora kodola modulis}
+    & Interpretēšanas piespiedu apstādināšana & CORE-1 \\
+
+\midrule
+
+\multirow{3}{*}{Skenēšanas modulis}
+    & Literālo vērtību parsēšana & LEX-1 \\
+\cmidrule(lr){2-3}
+    & Burtciparu ne-virkņu vērtību novērtēšana  & LEX-2 \\
+\cmidrule(lr){2-3}
+    & Rakstzīmju pārveidošana uz leksēmu zīmogiem & LEX-3 \\
+  
+\midrule
+
+\multirow{2}{*}{Parsēšanas modulis}
+    & Leksēmu parsēšana uz AST kokiem & PARSE-1 \\
+\cmidrule(lr){2-3}
+    & Parsētāja sinhronizēšana pēc notikušās parsēšanas kļūdas  & PARSE-2 \\
+  
+\midrule
+
+\multirow{3}{*}{Izvērtēšanas modulis}
+    & AST mezgla izvērtēšana & EVAL-1 \\
+\cmidrule(lr){2-3}
+    & Izteiksmes AST koka izvērtēšana & EVAL-2 \\
+\cmidrule(lr){2-3}
+    & Priekšraksta AST koka izvērtēšana & EVAL-3 \\
+  
+\midrule
+\end{tabular}
+\caption{Funkciju sadalījums pa moduļiem}
+\end{table}
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_lvl_1.jpg}  
+    \vspace{0.5cm}  
+    \caption{1. līmeņa datu plūsmas diagramma}           % optional
+    \label{fig:dfd_lvl_1}                  
+\end{figure}
+
+
+\FloatBarrier
+
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_lvl_1.jpg}  
+    \vspace{0.5cm}  
+    \caption{1. līmeņa datu plūsmas diagramma}           % optional
+    \label{fig:dfd_lvl_1}                  
+\end{figure}
+
+\FloatBarrier
+
+\renewcommand{\arraystretch}{1.3}  % increase row height
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{ 
+    >{\raggedright\arraybackslash}c  % Error Identifier
+    >{\raggedright\arraybackslash}X  % Description
+}
+\toprule
+\rowcolor{gray!20}
+Paziņojuma identifikators & Paziņojuma apraksts \\
+\midrule
+SYNTAX\_ERR-1 & Ja skeneris sagaida virknes beigu simbolu, bet to neatrod, parāda paziņojumu: ``Unterminated string literal''. \\
+\midrule
+SYNTAX\_ERR-2 & Ja skaitlis neatbilst valodas specifikācijai, parāda paziņojumu: ``Invalid number''. \\
+SYNTAX\_ERR-3 & Ja skeneris neatpazīst leksēmas tipu, t.i., tā neeksistē valodas alfabētā, parāda paziņojumu: ``Invalid token: \texttt{<lexeme>}''. \texttt{<lexeme>} tiek aizstāts ar neatpazītās leksēmas vērtību. \\
+SYNTAX\_ERR-4 & Ja parsētājs neatrod atverošo iekavu nosacījuma izteiksmei, parāda paziņojumu: ``Expected '(' after \texttt{condition\_source}``. \texttt{<condition\_source>} ir nosacījuma izteiksmes lietotājs - \texttt{if} vai \texttt{while} priekšraksti. \\
+SYNTAX\_ERR-5 & Ja izteiksme ir grupēta iekavās vai ir daļa no nosacījuma un pēc tās neseko aizverošā iekava, parāda paziņojumu: ``Expected ')' after expression``. \\
+SYNTAX\_ERR-6 & Ja priekšraksta beigās nav atrodamas semikola zīmes, parāda paziņojumu: ``Expected ';' after \texttt{<expr\_type>}''. `<expr\_type>` ir vai nu \texttt{expression statement} vai \texttt{variable declaration} atkarībā no priekšraksta. \\
+SYNTAX\_ERR-7 & Ja priekšraksts ir bijis atverošais pirmkoda bloks, bet aizverošā figūriekava netika atrasta, tad parāda paziņojumu: ``Expected '\}' after block statement`` \\
+\bottomrule
+\bottomrule
+\end{tabularx}
+\caption{List of errors with descriptions}
+\end{table}
 
 \bibliographystyle{plain}
 \bibliography{references}   

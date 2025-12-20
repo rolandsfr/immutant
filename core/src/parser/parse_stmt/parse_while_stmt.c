@@ -36,7 +36,7 @@ WhileStmt* parse_while_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		if (out_error) {
 			*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
 								 .line = peek_token_full(tokens, *pos).line,
-								 .message = "Expected ')' after if condition"};
+								 .message = "Expected ')' after expression"};
 		}
 		return NULL;
 	}
