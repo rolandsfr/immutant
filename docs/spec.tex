@@ -72,9 +72,12 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \begin{itemize}
   \item \textbf{AST} - Abstraktās sintakses koks - koka datu struktūra.
   \item \textbf{mutabilitāte} - Datu īpašība, kas ļauj mainīt to vērtību pēc sākotnējās inicializācijas. Programmēšanas valodas kontekstā tā izpaužas kā interpretatora uzvedība caur valodas semantiku, kas ļauj mainīt datu vērtības izpildes laikā \cite{immutability}.
-  \item \textbf{mutabls} - mutabilitātes īpašība, kas ļauj mainīt datu vērtību pēc sākotnējās inicializācijas. 
+\item \textbf{mutabls} - mutabilitātes īpašība, kas ļauj mainīt datu vērtību pēc sākotnējās inicializācijas. 
   \item \textbf{nemutabls} - mutabilitātes īpašība, kas ļauj mainīt datu vērtību pēc sākotnējās inicializācijas.
 \item \textbf{Immutant} - Jauna pašizveidota interpretējama programmēšanas valoda ar datu nemainības semantiku, kas apskatīta šajā darbā.
+
+  \item \textbf{lvalue} - Angļu valodā "left value" jeb saīsināti lvalue - izteiksme, kas apzīmē atmiņas vietu, kurā var glabāt vērtību.
+  \item \textbf{REPL} - Angļu valodā "Read-Eval-Print Loop" - interaktīva vide, kas ļauj lietotājam ievadīt kodu, to izpildīt un redzēt rezultātu tūlītēji.
 \end{itemize}
 
 \newpage
@@ -121,7 +124,6 @@ Valoda Immutant piedāvā šādas galvenās funkcijas:
   \item \textbf{Vienkārša sintakse:} Valodas sintakse ir veidota tā, lai tā būtu viegli saprotama un lietojama, padarot to pievilcīgu gan iesācējiem, gan pieredzējušiem programmētājiem.
   \item \textbf{Dinamiskā tipizācija:} Valoda Immutant izmanto dinamisko tipizāciju, kas ļauj programmētājiem strādāt ar dažādiem datu tipiem bez nepieciešamības deklarēt to tipus pirms lietošanas.
   \item \textbf{Funkcionālā programmēšana:} Valoda atbalsta daļu no funkcionālās programmēšanas paradigmām, nodrošinot izpildlaikā verificējamas tīras funkcijas, kas palīdz samazināt blakusefektu risku.
-  \item \textbf{lvalue: } Angļu valodā "left value" jeb saīsināti lvalue - izteiksme, kas apzīmē atmiņas vietu, kurā var glabāt vērtību.
 \end{itemize}
 
 \section{Darījumprasības}
@@ -668,7 +670,7 @@ Modulis & Funkcija & Identifikators \\
 \multirow{2}{*}{Lietotāja saskarnes modulis}
     & Pirmkoda interpretēšana no datnes & CLI-1 \\
 \cmidrule(lr){2-3}
-    & REPL režīma palaišana & CLI-2 \\
+    & REPL režīms & CLI-2 \\
 \midrule
 
 \multirow{1}{*}{Interpretatora kodola modulis}
@@ -776,6 +778,8 @@ RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklar
 RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atškirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
 \midrule
 RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to impure function``.                                                                                  \\
+\midrule
+MISC\_ERR-1 & Ja doto failu neizdodas nolasīt, parāda paziņojumu: ``Error: Could not open file``.                                                                                              \\
 \bottomrule
 \caption{Kļūdu paziņojumu apraksts}
 \end{longtable}
@@ -1087,7 +1091,6 @@ Kļūdu paziņojumi: & Funkcijas daļa, kas dara unikālu darbu, neveido neviena
 \end{longtable}
 
 
-\nocite{crafting-interpreters}
 
 \section{Interepretatora kodola modulis}
 
@@ -1128,8 +1131,73 @@ Kļūdu paziņojumi: & - \\
 \caption{Funkcijas CORE-1 apraksts}
 \end{longtable}
 
+\section{Lietotāja saskarnes modulis}
+
+Lietotāja saskarnes modulis ir atbildīgs par mijiedarbību starp lietotāju un interpretatoru. Tas nodrošina veidu, kā lietotājs var ievadīt pirmkodu un saņemt rezultātus vai kļūdu ziņojumus.
+
+\begin{center}
+\includegraphics[scale=0.6]{assets/dataflow/dfd_cli.jpg}  
+\captionof{figure}{Lietotāja saskarnes moduļa 2.līmeņa DPD}
+\label{fig:dfd_cli}
+\end{center}
+\vspace{0.5cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & CLI-1 & \\
+\midrule
+Nosaukums: & Pirmkoda interpretēšana no datnes & \\
+\midrule
+Mērķis: & Palaist interpretatoru ar pirmkodu no datnes & \\
+\midrule
+Ievaddati: & Datnes ceļš& \\
+\midrule
+Apstrāde: & Funkcija atver failu un nodot tās saturu interpretatora kodolam. Tas savukārt secīgi noskenē visas rindiņas un tikai tad nodot izveidotās leksēmas nākamajam interpretēšanas solim.  & \\
+\midrule
+Izvaddati: & Interpretēšanas rezultāts, kļūdas, ja tādas radījušās & \\
+\midrule
+Kļūdu paziņojumi: & MISC\_ERR-1 \\
+
+\bottomrule
+\caption{Funkcijas CLI-1 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & CLI-2 & \\
+\midrule
+Nosaukums: & REPL režīms & \\
+\midrule
+Mērķis: & Nodrošināt interaktīvu pirmkoda interpretēšanas vidi & \\
+\midrule
+Ievaddati: & Viens vai vairāki (vienā blokā) pirmkoda priekšraksti & \\
+\midrule
+Apstrāde: & Ja ievadītā pirmkoda rindiņa ir izvērtējama viena pati, tad uzreiz nodod kontroli kodolam, kas veic skenēšanu, parsēšanu un izvērtēšanu tūlītēji. Tomēr, ja ievadītā rindiņa atver priekšrakstu bloku, funkcija uzkrāj pirmkodu buferī līdz lietotājs neaizver bloku. Gadījumā ar \texttt{if} priekšrakstu, funkcija pieprasa lietotājam turpināt ievadīt vēl pimrkodu un sagaida \texttt{else} bloku pirms sākas interpretēšana, jo \texttt{if} un \texttt{else} kalpo kā viens loģisks bloks. Ja priekšraksts \texttt{if} tiek aizvērts un seko tukša rindiņa, funkcija to uztver kā \texttt{if} priekšrakstu bez noklusējuma izpildes, tāpēc beidz pieprasīt ievaddatus un izvērtē priekšrakstu, ja vien tas neatrodas citā blokā, kura aizvēršana arī ir jāsagaida.  & \\
+\midrule
+Izvaddati: & Interpretēšanas rezultāts, kļūdas, ja tādas radījušās & \\
+\midrule
+Kļūdu paziņojumi: & - \\
+
+\bottomrule
+\caption{Funkcijas CLI-2 apraksts}
+\end{longtable}
+
+\nocite{crafting-interpreters}
 \bibliographystyle{plain}
 \bibliography{references}   
-
 
 \end{document}
