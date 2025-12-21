@@ -9,6 +9,7 @@
 \usepackage[table]{xcolor}
 \usepackage{placeins}
 \usepackage{longtable}
+\usepackage{caption}
 
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
@@ -120,6 +121,7 @@ Valoda Immutant piedāvā šādas galvenās funkcijas:
   \item \textbf{Vienkārša sintakse:} Valodas sintakse ir veidota tā, lai tā būtu viegli saprotama un lietojama, padarot to pievilcīgu gan iesācējiem, gan pieredzējušiem programmētājiem.
   \item \textbf{Dinamiskā tipizācija:} Valoda Immutant izmanto dinamisko tipizāciju, kas ļauj programmētājiem strādāt ar dažādiem datu tipiem bez nepieciešamības deklarēt to tipus pirms lietošanas.
   \item \textbf{Funkcionālā programmēšana:} Valoda atbalsta daļu no funkcionālās programmēšanas paradigmām, nodrošinot izpildlaikā verificējamas tīras funkcijas, kas palīdz samazināt blakusefektu risku.
+  \item \textbf{lvalue: } Angļu valodā "left value" jeb saīsināti lvalue - izteiksme, kas apzīmē atmiņas vietu, kurā var glabāt vērtību.
 \end{itemize}
 
 \section{Darījumprasības}
@@ -675,11 +677,11 @@ Modulis & Funkcija & Identifikators \\
 \midrule
 
 \multirow{3}{*}{Skenēšanas modulis}
-    & Literālo vērtību parsēšana & LEX-1 \\
+    & Rakstzīmju pārveidošana uz leksēmu zīmogiem & LEX-1 \\
 \cmidrule(lr){2-3}
-    & Burtciparu ne-virkņu vērtību novērtēšana  & LEX-2 \\
+    & Burtciparu ne-virkņu vērtību skenēšana  & LEX-2 \\
 \cmidrule(lr){2-3}
-    & Rakstzīmju pārveidošana uz leksēmu zīmogiem & LEX-3 \\
+    & Literālo vērtību skenēšana & LEX-3 \\
   
 \midrule
 
@@ -710,9 +712,7 @@ Modulis & Funkcija & Identifikators \\
     \label{fig:dfd_lvl_1}                  
 \end{figure}
 
-
 \FloatBarrier
-
 
 \begin{figure}[h]   
     \centering
@@ -726,7 +726,6 @@ Modulis & Funkcija & Identifikators \\
 
 \renewcommand{\arraystretch}{1.3}  % increase row height
 
-\centering
 \begin{longtable}{%
     >{\raggedright\arraybackslash}c
     >{\raggedright\arraybackslash}p{0.75\textwidth}
@@ -777,10 +776,119 @@ RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklar
 RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atškirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
 \midrule
 RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to impure function``.                                                                                  \\
-
 \bottomrule
 \caption{Kļūdu paziņojumu apraksts}
 \end{longtable}
+
+\section{Skenēšanas modulis}
+
+Skenēšanas modulis ir atbildīgs par pirmkoda pārvēršanu leksēmās. Skenēšanas modulis izmanto leksisko analīzi, lai identificētu un kategorizētu pirmkoda elementus, piemēram, atslēgvārdus, operatorus, literālas vērtības un identifikatorus.
+
+
+\FloatBarrier
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_lexer.jpg}  
+    \vspace{0.3cm}  
+    \caption{Skenēšanas moduļa 2.līmeņa DPD}
+    \label{fig:dfd_lexer}                  
+\end{figure}
+
+\FloatBarrier
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & LEX-1 & \\
+\midrule
+Nosaukums: & Rakstzīmju pārveidošana uz leksēmu zīmogiem & \\
+\midrule
+Mērķis: & Pārvērst pirmkodu leksēmās & \\
+\midrule
+Ievaddati: & Lietotāja pirmkods & \\
+\midrule
+Apstrāde: &
+Skeneris dotajā secībā iziet cauri katram simbolam un pārvērš to atbilstošā leksēmā, veicot nepieciešamās papildfunkcijas pilnu leksēmu vērtību nolasīšanai, ja leksēma nesastāv tikai no vienas rakstzīmes. & \\
+\midrule
+Izvaddati: & Leksēmas un skenēšanas kļūdas, ja tādas radušās procesā. & \\
+\midrule
+\multirow{1}{*}{Kļūdu paziņojumi:} & SYNTAX\_ERR-1\\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-2 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-3 \\
+
+\bottomrule
+\caption{Funkcijas LEX-1 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & LEX-2 & \\
+\midrule
+Nosaukums: & Literālo vērtību skenēšana & \\
+\midrule
+Mērķis: & Noskaidrot pilnas leksēmu vērtības kā literālus & \\
+\midrule
+Ievaddati: & Lietotāja pirmkods, leksēmas vērtības sākuma simbols, kas indicē, ka leksēma varētu būt noteikta tipa vērtība & \\
+\midrule
+Apstrāde: & Tiek noskaidrots vai leksēma var būt skaitlis vai virkne. Ja tas ir skaitlis, tad skeneris iteratīvi nolasa ciparu aiz ciparu, ļaujot vienam punkta simbolam atrasties šajā skaitlī, kas apzīmētu decimāldaļu. Virknes gadījuma skeneris noalasa visus simbolus sākot at atverošo un beidzot ar aizverošo pēdiņas simbolu. & \\
+\midrule
+Izvaddati: & Leksēmas pilna vērtība un skenēšanas kļūdas, ja tādas radušās procesā. & \\
+\midrule
+\multirow{1}{*}{Kļūdu paziņojumi:} & SYNTAX\_ERR-1\\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-2 \\
+
+\bottomrule
+\caption{Funkcijas LEX-2 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & LEX-3 & \\
+\midrule
+Nosaukums: & Burtciparu ne-virkņu vērtību skenēšana & \\
+\midrule
+Mērķis: & Noskaidrot vai dotā vērtība ir valodā rezervēts atslēgvārds vai lietotāja definēts identifikators & \\
+\midrule
+Ievaddati: & Lietotāja pirmkods, leksēmas vērtības sākuma simbols, kas indicē, ka leksēmai jābūt burtciparu ne-virknes vērtībai & \\
+\midrule
+Apstrāde: & Funkcija pārbauda, vai dotā vērtība neatbilst precīzi kādam no valodā rezervētiem atslēgvārdiem. Pretējā gadījumā tiek atgriezta informācija, ka leksēma ir lietotāja definēts identifikators. & \\
+\midrule
+Izvaddati: & Burtciparu ne-virkņu datu tips un vērtība & \\
+\midrule
+Kļūdu paziņojumi: & - \\
+
+\bottomrule
+\caption{Funkcijas LEX-3 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+
 
 \bibliographystyle{plain}
 \bibliography{references}   
