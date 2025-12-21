@@ -693,7 +693,7 @@ Modulis & Funkcija & Identifikators \\
 \midrule
 
 \multirow{3}{*}{Izvērtēšanas modulis}
-    & AST mezgla izvērtēšana & EVAL-1 \\
+    & AST koka izvērtēšana & EVAL-1 \\
 \cmidrule(lr){2-3}
     & Izteiksmes AST koka izvērtēšana & EVAL-2 \\
 \cmidrule(lr){2-3}
@@ -888,7 +888,6 @@ Kļūdu paziņojumi: & - \\
 \end{longtable}
 \vspace{0.8cm}
 
-\newpage
 \section{Parsēšanas modulis}
 
 Parsēšanas modulis ir atbildīgs par leksēmu pārvēršanu abstraktā sintakses kokā (AST). Parsēšanas modulis izmanto sintaktisko analīzi, lai identificētu un strukturētu pirmkoda elementus, piemēram, izteiksmes, apgalvojumus un priekšrakstus.
@@ -973,7 +972,138 @@ Kļūdu paziņojumi: & - \\
 \caption{Funkcijas PARSE-2 apraksts}
 \end{longtable}
 
+\newpage
+\section{Izvērtēšanas modulis}
 
+Izvērtēšanas modulis ir atbildīgs par AST koku izvērtēšanu un programmas izpildi. Šis modulis ir pēdējais solis interpretācijas procesā, kur AST koks tiek pārvērsts par faktiskām darbībām un rezultātiem, kas atspoguļo lietotāja rakstītā pirmkoda ieceres.
+
+\FloatBarrier
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_eval.jpg}  
+    \vspace{0.3cm}  
+    \caption{Izvērtēšanas moduļa 2.līmeņa DPD}
+    \label{fig:dfd_eval}                  
+\end{figure}
+
+\FloatBarrier
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & EVAL-1 & \\
+\midrule
+Nosaukums: & AST koka izvērtēšana & \\
+\midrule
+Mērķis: & Izvērtēt AST koku un veikt darbības, kas atbilst lietotāja rakstītā pirmkoda loģikai un semantikai. & \\
+\midrule
+Ievaddati: & pirmkods noparsēts AST kokos & \\
+\midrule
+Apstrāde: & Funkcija novērtē, vai dotais AST koks atbilst priekšrakstam vai izteiksmei, un nodot kontroli atbilstošai apstrādes funkcijai.  & \\
+\midrule
+Izvaddati: & Izpildīts priekšraksta efekts, pēdējā izvērtētā vērtība no priekšraksta saturošām izteiksmēm & \\
+\midrule
+\multirow{1}{*}{Kļūdu paziņojumi:} & RUNTIME\_ERR-1\\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-2 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-3 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-4 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-5 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-6 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-7 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-8 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-9 \\
+
+\bottomrule
+\caption{Funkcijas EVAL-1 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & EVAL-2 & \\
+\midrule
+Nosaukums: & Izteiksmes AST izvērtēšana & \\
+\midrule
+Mērķis: & Izvērtēt izteiksmes AST & \\
+\midrule
+Ievaddati: & Izteiksme AST formātā & \\
+\midrule
+Apstrāde: & Funkcija nosaka izteiksmes veidu un atbilstoši tam palaiž dotās izteiksmes izvērtēšanas algoritmu. & \\
+\midrule
+Izvaddati: & Izteiksmes vērtība, izpildīts efekts, ja tāds ir, piemēram, vērtības piešķiršana mainīgam & \\
+\midrule
+\multirow{1}{*}{Kļūdu paziņojumi:} & RUNTIME\_ERR-1\\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-2 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-3 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-4 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-5 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-6 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-7 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-8 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-9 \\
+
+\bottomrule
+\caption{Funkcijas EVAL-2 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & EVAL-3 & \\
+\midrule
+Nosaukums: & Priekšraksta AST izvērtēšana & \\
+\midrule
+Mērķis: & Izvērtēt priekšraksta AST & \\
+\midrule
+Ievaddati: & Priekšraksta AST koka izvērtēšana & \\
+\midrule
+Apstrāde: & Funkcija nosaka priekšraksta veidu un palaiž tam atbilstošu izvērtēšanas algoritmu. Tā kā priekšraksti sastāv no izteiksmēm, tas izmanto funkciju EVAL-2, lai sekmīgi izvērtētu visu priekšrakstu. & \\
+\midrule
+Izvaddati: & Izpildīts priekšraksta efekts, pēdējā izvērtētā vērtība no priekšraksta saturošām izteiksmēm & \\
+\midrule
+Kļūdu paziņojumi: & Funkcijas daļa, kas dara unikālu darbu, neveido nevienas kļūdas, tomēr iekšēji tā arī izmanto izteiksmju izvērtēšanu, tāpēc ši funkcijas realitātē rada visus paziņojumus no funckijas EVAL-2 \\
+\caption{Funkcijas EVAL-3 apraksts}
+\end{longtable}
+
+
+\nocite{crafting-interpreters}
 \bibliographystyle{plain}
 \bibliography{references}   
 
