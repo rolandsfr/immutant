@@ -11,6 +11,9 @@
 \usepackage{longtable}
 \usepackage{caption}
 
+\hfuzz=100pt  % ignores overfull hboxes less than 100pt
+\vfuzz=100pt  % ignores overfull vboxes less than 100pt
+
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 
@@ -40,9 +43,9 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 
 \selectlanguage{latvian} 
 \begin{abstract}
-    Mūsdienās liela daļa no vispārīga pielietojuma programmēšanas valodām, satur sematiku, kas paredz, ka datu mainība ir ierasta lieta, tomēr šim pastāv būtisks trūkums, kas ir datu neparedzamība.
+    Mūsdienās liela daļa no vispārīga pielietojuma programmēšanas valodām, satur semantiku, kas paredz, ka datu mainība ir ierasta lieta, tomēr šim pastāv būtisks trūkums, kas ir datu neparedzamība.
     Lai spriešanu par programmas stāvokli padarītu paredzamu, šī darba ietvaros tiek izstrādāta programmēšanas valoda, kuras gramatika un sintakse ierosina noteikta datu nemainību.
-    Šis darbs satur valodas specifikāciju un interpretatora arhitektūras dokumentāciju lekserim, parsētājam un abstraktā sintakses koka pārstaigāšanas algoritmam.
+    Šis darbs satur valodas specifikāciju un interpretatora arhitektūras dokumentāciju skenerim, parsētājam un abstraktā sintakses koka pārstaigāšanas algoritmam.
     Rezultātā, izmantojot valodu C, tiek izveidota augsta līmeņa, intepretējama, dinamiski tipizēta valoda ar atomāriem datu tipiem.
 
     \begin{flushleft}
@@ -53,7 +56,7 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \selectlanguage{english} 
 \begin{abstract}
     Most modern general-purpose programming languages use grammar and syntax that suggests mutable data being an ordinary matter, which in reality complicates reasoning about program state.
-    To make such reasoning predictable, this work explores the design and delelopment of a programming language with explicit syntax and semantics of immutable data. 
+    To make such reasoning predictable, this work explores the design and development of a programming language with explicit syntax and semantics of immutable data. 
     This work contains specification for such language and documentation of the architecture for the lexer, parser and AST-walker of the underlying interpreter.
     As a result, a high-level, interpreted, dynamically typed programming language with only atomic data types is created. The language is implemented in C.
 
@@ -88,20 +91,20 @@ Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrī
 
 No otras puses, mainīgiem datiem pastāv īpašība būt neparedzamiem. Kamēr mazas sistēmas spēj tikt galā ar nelielu daudzumu mainīgo, tad lielajās sistēma tas var kļūt par acīmredzamu problēmu. Atmiņa datoram ir viena, tomēr atsaukties uz to var no dažādām vietām dažādos laika brīžos, kas padara spriešanu par datu stāvokli daudz sarežģītāk.  
 
-Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to tik vienkāršu. Lai gūtu vairāk kontroles pār ipriekš minēto uzvedību, valodas no C saimes, Java, JavaScript un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas, nemainīsies. Līdz ar to, \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
+Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to tik vienkāršu. Lai gūtu vairāk kontroles pār iepriekš minēto uzvedību, valodas no C saimes, Java, JavaScript un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas, nemainīsies. Līdz ar to, \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
 Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
 
-Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvoklu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteiksmes, tīras un netīras funkcijas, kontroles plūsma un cikli.
+Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvokļu maiņu. Tas arī nozīmē, ka galvenā ideja kalpo far faktoru valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteiksmes, tīras un netīras funkcijas, kontroles plūsma un cikli.
 
 \subsubsection{Valodas nolūks}
-Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakņu efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. 
+Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakus efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. 
 
 
 % TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
 
 \subsubsection{Pārskats}
 
-Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām porgrammatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz leksera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apokopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Visbeidzot, septītajā nodaļā tiek izvirzītas idejas turpmākai valodas attīstībai, un izskatīts kopsavilkums par paveikto darbu.
+Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām programmatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz skenera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apkopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Visbeidzot, septītajā nodaļā tiek izvirzītas idejas turpmākai valodas attīstībai, un izskatīts kopsavilkums par paveikto darbu.
 
 
 \newpage
@@ -162,10 +165,10 @@ Interpretators ticis izstrādāts Mac OS platformai, tāpēc tiek pieņemts, ka 
 
 \chapter{Valodas specifikācija}
 
-% Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas attiecīgam interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgramāta valodas lietošanā.
-% Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
-% Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
-% Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
+Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgrāmata valodas lietošanā.
+Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
+Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
+Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
 
 
 \section{Datu tipi}
@@ -174,26 +177,26 @@ Programmēšanas valodas pamatu veidu datu tipi un ar to saistītie mehānismi. 
 
 \subsection{Primitīvie datu tipi}
 
-Pirmatnējā Immutant valodas versijas tipu sistēma ietver tikai primitīvos datu tipus, t.i., pamata datu tipi, kas vēlāk var veidod citus tipus, piemēram, masīvus, objektus u.c.  Salikti datu tipi netiek iekļauti valodas versijā, kas tiek aprakstīta šajā dokumentā, lai saglabātu interpretatora vienkāršību un vairāk koncentrētos uz datu nemainības semantikas īstenošanu.
+Pirmatnējā Immutant valodas versijas tipu sistēma ietver tikai primitīvos datu tipus, t.i., pamata datu tipi, kas vēlāk var veidot citus tipus, piemēram, masīvus, objektus u.c.  Salikti datu tipi netiek iekļauti valodas versijā, kas tiek aprakstīta šajā dokumentā, lai saglabātu interpretatora vienkāršību un vairāk koncentrētos uz datu nemainības semantikas īstenošanu.
 
 \subsubsection{Virknes}
 Virkne ir jebkurš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
-Tās var saturēt jebkādus simbolus, tostarp specsimbolus, kā \texttt{@,\^\space,\&} u.c. Proti, vikrnēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
-Piemērs dažādām viknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
+Tās var saturēt jebkādus simbolus, tostarp spec-simbolus, kā \texttt{@,\^\space,\&} u.c. Proti, virknēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
+Piemērs dažādām virknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
 
 \begin{verbatim}
 "", "someString", "garumzīmes īāē", " ", ,"\""
 \end{verbatim}
 
-Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš vikrnes. Lai neuztvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur specsimbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
+Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš virknes. Lai neuztvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur spec-simbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
 
 Piemērs tādai virknei:
 
 \begin{verbatim}
-"They call themselves \"the wolves\""
+"They call themselves \"the wolves\""k
 \end{verbatim}
 
-Rezultātā atkārtots dubultpēdiņu simbols netiek uztvers kā virknes beigu indenkators, bet gan kā daļa no virknes vērtības, un tiek panākts sekojošs teksts:
+Rezultātā atkārtots dubultpēdiņu simbols netiek uztvers kā virknes beigu indekators, bet gan kā daļa no virknes vērtības, un tiek panākts sekojošs teksts:
 
 \begin{verbatim}
 They call themselves "the wolves"
@@ -213,7 +216,7 @@ There is something mysterious about the "\" character.
 
 \subsubsection{Skaitļi}
 
-Skaitlis ir jebkura vērtība no Reālo skaitļu kopas. Ir svarīgi uzsvērt, ka irracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam irracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
+Skaitlis ir jebkura vērtība no Reālo skaitļu kopas. Ir svarīgi uzsvērt, ka iracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam iracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
 
 Piemērs skaitliskām vērtībām seko zemāk:
 
@@ -221,7 +224,7 @@ Piemērs skaitliskām vērtībām seko zemāk:
 102, -9, -0.3, 421.5632, PI
 \end{verbatim}
 
-Dotajā piemērā \texttt{PI} ir viena no valodā eksistējošām konstatēm, kas satur aproksimētu matemātiskās konstantes $\pi$ vērtību (\texttt{\char`~3.1415926535}).
+Dotajā piemērā \texttt{PI} ir viena no valodā eksistējošām konstantēm, kas satur aproksimētu matemātiskās konstantes $\pi$ vērtību (\texttt{\char`~3.1415926535}).
 
 Valodas gramatika atļauj izmantot vadošo punktu priekšā skaitlim, kas apzīmē decimāldaļu skailim nulle. Piemēram, decimālskaitlis \texttt{.34} ir identisks ar \texttt{0.34}.
 
@@ -277,13 +280,13 @@ Valodā immutant ir divu veidu mainīgie: \textbf{mutable} un \textbf{immutable}
 
 Mutabls, atvasināts no angļu valodas vārda \texttt{mutable}, ir tāds mainīgais, kura vērtību ir iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{mutant}.
 
-Jebkurš mainīgais, kas deklarēts ar \texttt{mutable}, var tikt piešķirts jaunu vērtība jebkurā programmas izpildes brīdī pēc tā inicializācijas. Tas ļauj programmētājiem veidot dinamiskākas programmas, kurās dati var mainīties atkarībā no programmas loģikas un lietotāja ievades. Proti, to ir ieteicams darīt tikai gaījumos, kad risinājumi ar nemutabliem mainīgajiem ir pārāk sarežģīti vai neefektīvi.
+Jebkurš mainīgais, kas deklarēts ar \texttt{mutable}, var tikt piešķirts jaunu vērtība jebkurā programmas izpildes brīdī pēc tā inicializācijas. Tas ļauj programmētājiem veidot dinamiskākas programmas, kurās dati var mainīties atkarībā no programmas loģikas un lietotāja ievades. Proti, to ir ieteicams darīt tikai gadījumos, kad risinājumi ar nemutabliem mainīgajiem ir pārāk sarežģīti vai neefektīvi.
 
 \subsubsection{Mutabilitāte \texttt{immutable}}
 
 Nemutabls, atvasināts no angļu valodas vārda \texttt{immutable}, ir tāds mainīgais, kura vērtību nav iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{immutant}. Šeit ir pamanāma acīmredzama vārdu spēle, jo \texttt{immutant} ir neoloģisms angļu valodā, kas apvieno vārdus \texttt{immutable} un \texttt{mutant} radot jaunu vārdu, kas apzīmē mainīgo, kas nav maināms. Tas atbilst nemutabilitātes semantikai, kas izmantota funkcionālajā programmēšanā, un tādēļ arī sekojošs nosaukums izvēlēts šai programmēšanas valodā.
 
-Nemutablus mainīgos nedrīkskt re-inicializēt, tas nozīmē, ka sekojoša programma izmetīs kļūdu \texttt{ImmutableVariableModificationException}:
+Nemutablus mainīgos nedrīkst re-inicializēt, tas nozīmē, ka sekojoša programma izmetīs kļūdu \texttt{ImmutableVariableModificationException}:
 \begin{verbatim}
 immutant x = 10;
 x = 20; // Izmests izņēmums: ImmutableVariableModificationException
@@ -301,16 +304,16 @@ impure fn modify(value) {
 modify(num); // Izmests izņēmums: ImmutableVariableModificationException
 \end{verbatim}
 
-Turpretim, tīras funkcijas (skat. nodaļu ~\ref{section:functions}) var pieņemt gan mutablus, gan nemutablus mainīgos kā argumentus, jo tīras funkcijas pēc definicījas neietekmē ārējo stāvokli un nemaina dotās vērtības (nenotiek blakus efekti).
+Turpretim, tīras funkcijas (skat. nodaļu ~\ref{section:functions}) var pieņemt gan mutablus, gan nemutablus mainīgos kā argumentus, jo tīras funkcijas pēc definīcijas neietekmē ārējo stāvokli un nemaina dotās vērtības (nenotiek blakus efekti).
 
 Tā kā valodā Immutant netiek definēti sarežģītāki datu tipi, piemēram, masīvi vai objekti, tad nav nepieciešams apskatīt mutabilitātes īpašības attiecībā uz šādiem datu tipiem. 
 
 \subsection{Datu tipa konversija}
 \label{section:datatype-conversion}
 
-Pastāv gadījumi, kad parādās nepieciešamība konvertēt viena datu tipa vērtību uz cita datu tipa vērtību. Piemēram, ja kādu aritmētisku operatoru, piemēram, saskaitīšanu, pielieto virknei un skaitlim. Tad ir nepieciešams konvertēt vienu no operandiem uz otra datu tipu, lai veiktu šo operāciju, šajā gadījumā virkne jāparveido uz skaitli vai skaitlis par virni. 
+Pastāv gadījumi, kad parādās nepieciešamība konvertēt viena datu tipa vērtību uz cita datu tipa vērtību. Piemēram, ja kādu aritmētisku operatoru, piemēram, saskaitīšanu, pielieto virknei un skaitlim. Tad ir nepieciešams konvertēt vienu no operandiem uz otra datu tipu, lai veiktu šo operāciju, šajā gadījumā virkne jāpārveido uz skaitli vai skaitlis par virkni. 
 
-Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā sabiedzrībā rada jokus, par to kā Javascript "5" + 3 ir "53", nevis 8.
+Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā sabiedrībā rada jokus, par to kā Javascript "5" + 3 ir "53", nevis 8.
 
 Tā kā programmēšanas valodas Immutant galvenais mērķis ir palīdzēt programmētājiem rakstīt paredzamāku kodu, datu tipu konversija tiek atbalstīta tikai tiešā veidā. Tas nozīmē, ka saskaitot virkni un skaitli, nav jāpiedomā vai rezultātā radīsies virkne vai skaitlis, jo zināms, ka neviennozīmīgu operāciju izpilde izmetīs izpildlaika kļūdu \texttt{ImplicitionConversionException}.
 
@@ -321,7 +324,7 @@ No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu 
   Pārvēršanas loģika - doto vērtību pārvērš par virkni, izmantojot tās bāzes reprezentāciju. Piemēram, skaitlis \texttt{42} tiek pārvērsts par virkni \texttt{"42"}, bet patiesuma vērtība tiek pārvērsta par virkni \texttt{"true"} vai \texttt{"false"} attiecīgi. 
   \item \texttt{toNumber(value)} - Atgriež vērtības skaitlisko reprezentāciju. Ja virkne satur derīgu skaitlisko vērtību, tad tā tiek pārvērsta par atbilstošu skaitli. Piemēram, virkne \texttt{"123.45"} tiek pārvērsta par skaitli \texttt{123.45}. Ja virkne nesatur derīgu skaitlisko vērtību, tiek izmests izņēmums \texttt{InvalidTypeConversionException}. patiesa vērtība \texttt{true} tiek pārvērsta par skaitli \texttt{1}, bet \texttt{false} par skaitli \texttt{0}. 
   
-  Virkne ir uzskatāma par derīgu skaitlisko vērtību, ja tā satur tikai skaitli vai decimālskaitli. Ja skailim apkārt ir tukšuma simboli, tie tiek ignorēti. Piemēram, virknes \texttt{"  42  "} un \texttt{"-3.14"} ir derīgas skaitliskās vērtības, bet virknes \texttt{"123abc"} un \texttt{"hello"} nav derīgas.
+  Virkne ir uzskatāma par derīgu skaitlisko vērtību, ja tā satur tikai skaitli vai decimālskaitli. Ja skaitlim apkārt ir tukšuma simboli, tie tiek ignorēti. Piemēram, virknes \texttt{"  42  "} un \texttt{"-3.14"} ir derīgas skaitliskās vērtības, bet virknes \texttt{"123abc"} un \texttt{"hello"} nav derīgas.
   \item \texttt{toBoolean(value)} - Pārveido dotā operanda vērtību par patiesuma vērtību. Vērtības \texttt{0}, \texttt{"0"}, \texttt{\char`"\char`"} (tukša virkne) un \texttt{false} tiek pārvērstas par aplamu vērtību \texttt{false}. Visas pārējās vērtības tiek pārvērstas par patiesu vērtību \texttt{true}.
   \item \texttt{typeOf(value)} - Atgriež dotā operanda datu tipu kā virkni. Pieņem jebkura datu tipa vērtību kā argumentu, un atgriež vienu no šādām virkņu vērtībām: \texttt{\char`"number"}, \texttt{\char`"string"}, \texttt{"boolean"}.
 \end{itemize}
@@ -358,7 +361,7 @@ fn doMagic() {
 doMagic();
 \end{verbatim}
 
-Kā var redzēt, localVar eksistē visā \texttt{doMagic} funckijas redzeslokā, tai skaitā arī nosacījuma \texttt{if} ķermenī. Šajā konkrētajā gadījumā \texttt{anotherLocalVar} ir pieejams tikai \texttt{if} ķermenī.
+Kā var redzēt, localVar eksistē visā \texttt{doMagic} funkcijas redzeslokā, tai skaitā arī nosacījuma \texttt{if} ķermenī. Šajā konkrētajā gadījumā \texttt{anotherLocalVar} ir pieejams tikai \texttt{if} ķermenī.
 
 Mainīgie, kurus mēģina izmantot ārpus to deklarācijas redzesloka, izraisa izņēmumu \texttt{UndeclaredVariableException}. Pēc savas būtības tā ir nedeklarēto mainīgo izmantošana. Skatīt piemēru zemāk.
 
@@ -381,7 +384,7 @@ immutant globalVar = 10;
 
 \subsubsection{Izteiksmes}
 
-Izteiksmes ir konstrukcija, kas atgriež kādu vērtību. Piemēram, funckijas izsaukums ir izteiksme, kas rezultātā atgriež izpildītas funkcijas vērtību. Pie tam, arī aritmētiska vai loģiska operācija ir izteiksmes konstrukcijas, jo atgriež skaitlisku vai patiesuma vērtību attiecīgi.
+Izteiksmes ir konstrukcija, kas atgriež kādu vērtību. Piemēram, funkcijas izsaukums ir izteiksme, kas rezultātā atgriež izpildītas funkcijas vērtību. Pie tam, arī aritmētiska vai loģiska operācija ir izteiksmes konstrukcijas, jo atgriež skaitlisku vai patiesuma vērtību attiecīgi.
 
 \subsection{Apgalvojumi}
 
@@ -391,7 +394,7 @@ Funkcijas definīcija ir apgalvojums, jo tā arī veic darbību - reģistrē fun
 
 \subsubsection{Operatori}
 
-Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemmēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
+Operatorus iedala unāros un bināros. Unārs operators tiek pielietots tikai vienam operandam, kur tai pat laikā bināri operatori ir pielietoti 2 operandiem. Piemēram, negācijas operators, kas apvērš patiesuma vērtību ir pielietots vienam operatoram, bet saskaitīšanas operators ir pielietots diviem skaitļiem, producējot to summu.
 
 Vērts precizēt, ka gadījumā, ja operators ir binārs, tad tas tiek rakstīts abiem operandiem starpā. Turpmāk tekstā kreisas operands tiek definēts kā šāda bināra operatora operands, kas atrodas pa kreisi no operatora, un labais kas attiecīgi ir pa labi no tā. Piemēram, izteiksmē \texttt{23 + 45} skaitlis \texttt{23} ir kreisas operands, \texttt{45} ir labais operands, un \texttt{+} ir binārais summas operators. \\
 
@@ -432,7 +435,7 @@ Katram operatoram ir noteikta sava prioritāte, tas ir, kārtība, kādā apakš
 Zemāk ir uzskaitīti operatori to prioritātes secībā, no augstākās uz zemāko. Operatori ar vienādu prioritāti tiek minēti kopīgi vienā saraksta apakšpunktā.
 
 \begin{itemize}
-  \item \texttt{!} (unārs nēgācijas operators)
+  \item \texttt{!} (unārs negācijas operators)
   \item \texttt{*}, \texttt{/}, \texttt{\%} (aritmētiskie reizināšanas, dalīšanas un modula operatori)
   \item \texttt{+}, \texttt{-} (aritmētiskie saskaitīšanas un atņemšanas operatori)
   \item \texttt{>}, \texttt{<}, \texttt{>=}, \texttt{<=} (aritmētiskie salīdzināšanas operatori)
@@ -480,17 +483,17 @@ Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek pieš�
 
 \subsection{Saīsinātā izvērtēšana}
 
-Interpretatora optimizācijas nolūkos, valoas specifikācijā ietilpst arī saīsinātās izvērtēšanas mehānisms, kas ļauj izvairīties no nevajadzīgu apakšizteiksmju izvērtēšanu, loģiskajās izteiksmēs ar disjunkciju \cite{short-circuit-logic}.
+Interpretatora optimizācijas nolūkos, valodas specifikācijā ietilpst arī saīsinātās izvērtēšanas mehānisms, kas ļauj izvairīties no nevajadzīgu apakšizteiksmju izvērtēšanu, loģiskajās izteiksmēs ar disjunkciju \cite{short-circuit-logic}.
 
 Pēc definīcijas, loģiskā izteiksme ar disjunkciju ir patiesa, ja vismaz viens no tās operandiem ir patiess.
 Tā kā valodā Immutant izteiksmes tiek izvērtētas no kreisās puses uz labo, tad ir pietiekami izvērtēt tikai kreiso operandu, ja tas ir patiess.
 
-Piemēram, izteiksme \texttt{true || (someFunction() + 5 > 10)} izvērtējas kā patiesa, pie tam interpretators noignorēs (neizvērtēs) labo operandu.
+Piemēram, izteiksmi \texttt{true || (someFunction() + 5 > 10)} izvērtē kā patiesu, pie tam interpretators ignorēs (neizvērtēs) labo operandu.
 
 \section{Funkcijas}
 \label{section:functions}
 
-Funkcijas ir pilnībā vai daļēji izoltēts program-kods, kas var tikt izsaukts un izmantots ar dažādiem parametriem, dažādās vietās un dažādos laika brīžos. Funkcijas pašas par sevi ir daļa no programkoda, tomēr, lai tās varētu tikt izpildītas, ir nepieciešams tās izsaukt. 
+Funkcijas ir pilnībā vai daļēji izolēts program-kods, kas var tikt izsaukts un izmantots ar dažādiem parametriem, dažādās vietās un dažādos laika brīžos. Funkcijas pašas par sevi ir daļa no programmas koda, tomēr, lai tās varētu tikt izpildītas, ir nepieciešams tās izsaukt. 
 
 Funkcijas definē sekojošā formā:
 \begin{verbatim}
@@ -499,7 +502,7 @@ Funkcijas definē sekojošā formā:
 }
 \end{verbatim}
 
-<purity> apzīmē funckcijas īpašību mainīt datus ārpus tās lokālā konteksta. Matemātikā "impure" jeb tiešā tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funckiju izmantošana programkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funckijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaino ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli. No otras puses, šī atslēgvārda lietošana nav obligāta, jo valodā Immutant pēc noklusējuma visas funkcijas tiek uzskatītas par tīrām.
+<purity> apzīmē funkcijas īpašību mainīt datus ārpus tās lokālā konteksta. Matemātikā "impure" jeb tiešā tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funkciju izmantošana pirmkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funkcijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaina ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli. No otras puses, šī atslēgvārda lietošana nav obligāta, jo valodā Immutant pēc noklusējuma visas funkcijas tiek uzskatītas par tīrām.
 
 \begin{verbatim}
 fn <identifier>(<parameters>) {
@@ -507,9 +510,9 @@ fn <identifier>(<parameters>) {
 }
 \end{verbatim}
 
-Augstāk redzamajā piemērā funkcija tiek definēta kā tīra, jo nav lietots neviens no tīrības īpašības atslēgvārdiem. Atslēgvārds \texttt{fn} apzīmē, ka pēc tā seko funkcijas definicija. <identifier> satur funckcijas nosaukumu, kas ir unikāls identifikators atmiņā. Uz funckiajs nosaukumu attiecas tie paši noteikumi, kas minēti sadaļā ~\ref{section:vars} par mainīgo identifikatoriem.
+Augstāk redzamajā piemērā funkcija tiek definēta kā tīra, jo nav lietots neviens no tīrības īpašības atslēgvārdiem. Atslēgvārds \texttt{fn} apzīmē, ka pēc tā seko funkcijas definicija. <identifier> satur funkcijas nosaukumu, kas ir unikāls identifikators atmiņā. Uz funkcijas nosaukumu attiecas tie paši noteikumi, kas minēti sadaļā ~\ref{section:vars} par mainīgo identifikatoriem.
 
-Pēc funkcijas nosaukuma seko apaļās iekavas, kas satur parametru sarakstu <parameters>. Parametri ir iekšējā funckijas konteksta mainīgie, kas tiek nodoti funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Parametru saraksts ir komatu atdalītu parametru virkne. Ja funkcijai nav parametru, tad iekavas ir tukšas.
+Pēc funkcijas nosaukuma seko apaļās iekavas, kas satur parametru sarakstu <parameters>. Parametri ir iekšējā funkcijas konteksta mainīgie, kas tiek nodoti funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Parametru saraksts ir komatu atdalītu parametru virkne. Ja funkcijai nav parametru, tad iekavas ir tukšas.
 
 Funkcijas ķermenis <statements> ir ietverts figūriekavās, un satur apgalvojumus un izteiksmes, kas tiek izpildītas, kad funkcija tiek izsaukta. Funkcijas ķermenī ir jābūt vismaz vienam apgalvojumam vai izteiksmei. Ja funkcija ir tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli.
 
@@ -528,7 +531,7 @@ impure fn addGlobal(newNum) {
 }
 \end{verbatim}
 
-Funkcijas izsaukums ir izteiksme, kas satur funckijas nosaukumu, kam seko apaļās iekavas ar argumentu sarakstu. Argumenti ir vērtības, kas tiek nodotas funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Argumentu saraksts ir komatu atdalītu argumentu virkne. Ja funkcijai nav argumentu, tad iekavas ir tukšas. Argumentus padod funckijai secīgi, tādā pašā secībā kā tie ir definēti funkcijas parametru sarakstā. 
+Funkcijas izsaukums ir izteiksme, kas satur funkcijas nosaukumu, kam seko apaļās iekavas ar argumentu sarakstu. Argumenti ir vērtības, kas tiek nodotas funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Argumentu saraksts ir komatu atdalītu argumentu virkne. Ja funkcijai nav argumentu, tad iekavas ir tukšas. Argumentus padod funkcijai secīgi, tādā pašā secībā kā tie ir definēti funkcijas parametru sarakstā. 
 
 Piemērs funkcijas izsaukumiem:
 \begin{verbatim}
@@ -536,7 +539,7 @@ addGlobal(5);
 immutant sum = add(3, 7);
 \end{verbatim}
 
-\subsection{Iebūvētas funckijas}
+\subsection{Iebūvētas funkcijas}
 
 Valodā Immutant ir definētas sekojošas iebūvētas funkcijas:
 \begin{itemize}
