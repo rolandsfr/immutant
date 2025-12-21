@@ -33,7 +33,6 @@ DEF_EVAL_EXPR(eval_logic, LogicalExpr)
 		}
 	} else if (expr->operator == TOKEN_AND) {
 		if (!left.boolean) {
-			printf("Short-circuiting AND expression\n");
 			return make_bool(0);
 		}
 	} else {

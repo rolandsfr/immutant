@@ -8,6 +8,7 @@
 \usepackage{booktabs}
 \usepackage[table]{xcolor}
 \usepackage{placeins}
+\usepackage{longtable}
 
 \title{LATVIJAS UNIVERSITĀTE
 EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
@@ -725,11 +726,10 @@ Modulis & Funkcija & Identifikators \\
 
 \renewcommand{\arraystretch}{1.3}  % increase row height
 
-\begin{table}[h]
 \centering
-\begin{tabularx}{\textwidth}{ 
-    >{\raggedright\arraybackslash}c  % Error Identifier
-    >{\raggedright\arraybackslash}X  % Description
+\begin{longtable}{%
+    >{\raggedright\arraybackslash}c
+    >{\raggedright\arraybackslash}p{0.75\textwidth}
 }
 \toprule
 \rowcolor{gray!20}
@@ -738,16 +738,49 @@ Paziņojuma identifikators & Paziņojuma apraksts \\
 SYNTAX\_ERR-1 & Ja skeneris sagaida virknes beigu simbolu, bet to neatrod, parāda paziņojumu: ``Unterminated string literal''. \\
 \midrule
 SYNTAX\_ERR-2 & Ja skaitlis neatbilst valodas specifikācijai, parāda paziņojumu: ``Invalid number''. \\
+\midrule
 SYNTAX\_ERR-3 & Ja skeneris neatpazīst leksēmas tipu, t.i., tā neeksistē valodas alfabētā, parāda paziņojumu: ``Invalid token: \texttt{<lexeme>}''. \texttt{<lexeme>} tiek aizstāts ar neatpazītās leksēmas vērtību. \\
+\midrule
 SYNTAX\_ERR-4 & Ja parsētājs neatrod atverošo iekavu nosacījuma izteiksmei, parāda paziņojumu: ``Expected '(' after \texttt{condition\_source}``. \texttt{<condition\_source>} ir nosacījuma izteiksmes lietotājs - \texttt{if} vai \texttt{while} priekšraksti. \\
+\midrule
 SYNTAX\_ERR-5 & Ja izteiksme ir grupēta iekavās vai ir daļa no nosacījuma un pēc tās neseko aizverošā iekava, parāda paziņojumu: ``Expected ')' after expression``. \\
+\midrule
 SYNTAX\_ERR-6 & Ja priekšraksta beigās nav atrodamas semikola zīmes, parāda paziņojumu: ``Expected ';' after \texttt{<expr\_type>}''. `<expr\_type>` ir vai nu \texttt{expression statement} vai \texttt{variable declaration} atkarībā no priekšraksta. \\
+\midrule
 SYNTAX\_ERR-7 & Ja priekšraksts ir bijis atverošais pirmkoda bloks, bet aizverošā figūriekava netika atrasta, tad parāda paziņojumu: ``Expected '\}' after block statement`` \\
+\midrule
+SYNTAX\_ERR-8  & Ja funkcijas izsaukumā padotais argumentu saraksts netiek noslēgts ar aizverošo iekavu, tad parāda paziņojumu: ``Expect ')' after arguments.``      \\
+\midrule
+SYNTAX\_ERR-9  & Ja parsētājs neatrod izteiksmi, kur tai būtu jābūt, parāda paziņojumu: ``Expected expression``.                                                     \\
+\midrule
+SYNTAX\_ERR-10 & Ja piesķiršanas operatora kreisas operands nav derīgs, lai izpildītu operāciju (nav lvalue), tad parāda paziņojumu: ``Invalid assignment target.``. \\
+\midrule
+
+RUNTIME\_ERR-1 & Ja dalīšanas operācijai padots dalītājs 0, tad parāda paziņojumu: ``Division by zero is illegal``.                                                                                                                                      \\
+
+\midrule
+
+RUNTIME\_ERR-2 & Ja lietotājs izmanto mainīgo vidē, kur tas nav deklarēts un neeksistē, tad parāda paziņojumu: ``Undefined variable: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizvietots ar attiecīgā mainīgā nosaukumu.              \\
+\midrule
+
+RUNTIME\_ERR-3 & Ja operācijas operandu tipi neatbilst valodas specifikācijai, tad parāda paziņojumu ``Expected a \textless{}t\textgreater value``. \textless{}t\textgreater tiek aizvietots ar atbilstošu datu tipu, ko izvērtēšanas modulis sagaidīja. \\
+\midrule
+
+RUNTIME\_ERR-4 & Ja operatoram + abi operandi nav vienādā tipa un nav ne virknes ne skaitļu tipa, tad parāda paziņojumu: ``Operands to '+' must be both numbers or both strings``.                                                                       \\
+\midrule
+RUNTIME\_ERR-5 & Ja abi dalīšanas operācijas operandi nav skaitļi, izmet paziņojumu: ``Operands to '/' must be numbers``.                                                                                                                                \\
+\midrule
+RUNTIME\_ERR-6 & Ja funkcijas izsaukuma saucējs nav derīga funkcija, tad parāda paziņojumu: ``Callee is not a function``.                                                                                                                                \\
+\midrule
+RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklarēts, parāda paziņojumu: ``Variable already defined: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizstāts ar attiecīgu mainīgā nosaukumu.                      \\
+\midrule
+RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atškirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
+\midrule
+RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to impure function``.                                                                                  \\
+
 \bottomrule
-\bottomrule
-\end{tabularx}
-\caption{List of errors with descriptions}
-\end{table}
+\caption{Kļūdu paziņojumu apraksts}
+\end{longtable}
 
 \bibliographystyle{plain}
 \bibliography{references}   
