@@ -888,6 +888,90 @@ Kļūdu paziņojumi: & - \\
 \end{longtable}
 \vspace{0.8cm}
 
+\newpage
+\section{Parsēšanas modulis}
+
+Parsēšanas modulis ir atbildīgs par leksēmu pārvēršanu abstraktā sintakses kokā (AST). Parsēšanas modulis izmanto sintaktisko analīzi, lai identificētu un strukturētu pirmkoda elementus, piemēram, izteiksmes, apgalvojumus un priekšrakstus.
+
+
+\FloatBarrier
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/dataflow/dfd_parser.jpg}  
+    \vspace{0.3cm}  
+    \caption{Parsēšanas moduļa 2.līmeņa DPD}
+    \label{fig:dfd_parser}                  
+\end{figure}
+
+\FloatBarrier
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & PARSE-1 & \\
+\midrule
+Nosaukums: & Leksēmu parsēšana uz AST kokiem & \\
+\midrule
+Mērķis: & Pārvērst leksēmas abstraktā sintakses kokā (AST), lai pirmkoda izvērtēšana būtu iespējama & \\
+\midrule
+Ievaddati: & Leksēmas no lietotāja pirmkoda & \\
+\midrule
+Apstrāde: & Parsētājs izmanto rekursīvo nolaišanās algoritmu, parsējot leksēmas no gramatikas sākuma produkcijas līdz pat dziļākajai produkcijai, lai nodrošināti viennozīmīgu AST koka uzbūvi, respektējot uzdotās izteiksmju prioritātes. & \\
+\midrule
+Izvaddati: & AST koki un parsēšanas kļūdas, ja tādas radušās procesā. & \\
+\midrule
+\multirow{1}{*}{Kļūdu paziņojumi:} & SYNTAX\_ERR-4\\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-5 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-6 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-7 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-8 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-9 \\
+\cmidrule(lr){2-3}
+& SYNTAX\_ERR-10 \\
+
+\bottomrule
+\caption{Funkcijas PARSE-1 apraksts}
+\end{longtable}
+\vspace{0.8cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & PARSE-2 & \\
+\midrule
+Nosaukums: & Parsētāja sinhronizēšana pēc notikušās parsēšanas kļūdas & \\
+\midrule
+Mērķis: & Parsēšanas kļūdas gadījumā nodot parsētājam informāciju, no kuras leksēmas ir jēgpilni atsākt parsēšanu. Tas tiek darīts, lai lietotājs uzzinātu pēc iespējams vairāk kļūdu, ko ir veicis pirmkoda sintaksē, bet tajpat laikā nodrošināt, ka turpmākā parsēšana nerada viltotus AST vai neloģiskas kļūdas. & \\
+\midrule
+Ievaddati: & Leksēmu masīvs un ziņa par pēdējo apstrādāto leksēmu & \\
+\midrule
+Apstrāde: & Funkcija iet pāri leksēmu masīvam, kamēr neatrod leksēmu, no kuras ir sagaidāms, ka sākas jauns priekšraksts, piemēram, mainīgā deklarācija. & \\
+\midrule
+Izvaddati: & Jauna pozīcija leksēmu masīvā, no kuras ir jēgpilni atsākt parsēšanu & \\
+\midrule
+Kļūdu paziņojumi: & - \\
+
+\bottomrule
+\caption{Funkcijas PARSE-2 apraksts}
+\end{longtable}
 
 
 \bibliographystyle{plain}
