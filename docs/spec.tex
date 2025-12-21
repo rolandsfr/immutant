@@ -1010,23 +1010,7 @@ Apstrāde: & Funkcija novērtē, vai dotais AST koks atbilst priekšrakstam vai 
 \midrule
 Izvaddati: & Izpildīts priekšraksta efekts, pēdējā izvērtētā vērtība no priekšraksta saturošām izteiksmēm & \\
 \midrule
-\multirow{1}{*}{Kļūdu paziņojumi:} & RUNTIME\_ERR-1\\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-2 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-3 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-4 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-5 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-6 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-7 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-8 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-9 \\
+Kļūdu paziņojumi: & - \\
 
 \bottomrule
 \caption{Funkcijas EVAL-1 apraksts}
@@ -1104,6 +1088,46 @@ Kļūdu paziņojumi: & Funkcijas daļa, kas dara unikālu darbu, neveido neviena
 
 
 \nocite{crafting-interpreters}
+
+\section{Interepretatora kodola modulis}
+
+Intepretatora kodols ir atbildīgs par interpretēšanas procesa kontroli un pārvaldību. Tas nodrošina, ka visi 3 interpretēšanas procesa moduļi (skenēšana, parsēšana un izvērtēšana) padot saražotos datus viens otram novērš šo citu moduļu darbību, ja citā interpretēšanas modulī ir notikusi kāda kļūda.
+
+
+\begin{center}
+\includegraphics[scale=0.7]{assets/dataflow/dfd_core.jpg}  
+\captionof{figure}{Intepretatora kodola moduļa 2.līmeņa DPD}
+\label{fig:dfd_core}
+\end{center}
+\vspace{0.5cm}
+
+\renewcommand{\arraystretch}{1.7}
+
+\begin{longtable}{%
+  >{\raggedright\bfseries}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.65\textwidth}
+  c
+}
+\toprule
+\rowcolor{gray!20}
+Identifikators: & CORE-1 & \\
+\midrule
+Nosaukums: & Interpretēšanas piespiedu apstādināšana & \\
+\midrule
+Mērķis: & Neļaut sekojošiem interpretēšanas procesa soļiem turpināties, ja kādā no moduļiem ir notikusi kļūda. Tas ir, nākamie soļi, piemēram, parsēšana vai izvērtēšana, ir bezjēdzīgi, ja dati, kas tiem tiktu padoti nav pilnvērtīgi. & \\
+\midrule
+Ievaddati: & Kļūdas no skenēšanas, parsēšanas vai izvērtēšanas moduļa & \\
+\midrule
+Apstrāde: & Funkcija izseko kļūdas katrā no moduļiem un novērš turpmāko soļu izpldi, ja tādas radušās. & \\
+\midrule
+Izvaddati: & Paziņojums par kļūdu un uz kuras rindiņas tā ir notikusi & \\
+\midrule
+Kļūdu paziņojumi: & - \\
+
+\bottomrule
+\caption{Funkcijas CORE-1 apraksts}
+\end{longtable}
+
 \bibliographystyle{plain}
 \bibliography{references}   
 
