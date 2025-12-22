@@ -100,12 +100,11 @@ Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mai
 Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūstamu programmēšanas valodu, ar datu nemainības semantiku, kas ļauj izstrādāt programmatūru ar minimālu blakus efektu risku, ko rada datu mainība. Valoda ir paredzēta gan iesācējiem programmētājiem, gan pieredzējušiem izstrādātājiem, kas vēlas izmantot datu nemainības priekšrocības savos projektos. 
 
 
-% TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
 
 \subsubsection{Pārskats}
 
-Šī darba pirmajā nodaļā tiks izskatīta programmēšanas valodas specifikācija, kurai pakārtosies interpretators. Savukārt otrā nodaļa būs veltīta interpretatora arhitektūras pārskatam un tā tehniskai specifikācijai, kā arī tehnoloģijām izmantotām programmatūras izstrādei. Trešā un ceturtā nodaļa virzīs uzmanību uz skenera un parsētāja izstrādes detaļām, bet piektā nodaļa būs par rezultējošā AST apstrādi. Tālākajā sestajā nodaļā būs apkopoti rezultāti par jauniegūto valodu un tās interpretatoru, un praktiski demonstrēts valodas pielietojums. Visbeidzot, septītajā nodaļā tiek izvirzītas idejas turpmākai valodas attīstībai, un izskatīts kopsavilkums par paveikto darbu.
-
+% TODO: check if the promoted features are included in the final version and if there is somethign missing or something over-pomised.
+Šī darba pirmajā nodaļā lasītāji tiek iepazīstināti ar produkta potenciālu un tike sniegti īsu vispārēju pārskatu. Savukārt otrā nodaļa izskata programmatūras sadali pa moduļiem un to mijiedarbību. Trešā nodaļa satur iepriekš minēto moduļu funkciju projektējumu. Ceturtā nodaļa sniedz formālu testēšanas plānu un piekto nodaļu veido secinājumi un turpmākie darba virzieni.
 
 \newpage
 \chapter{Vispārējs apraksts}
@@ -114,7 +113,7 @@ Valodas Immutant galvenais mērķis ir nodrošināt vienkāršu, viegli apgūsta
 Uz doto brīdi eksistē vairākas programmēšanas valodas, kas piedāvā dažādus līmeņus datu nemainības atbalstam. Piemēram, funkcionālās programmēšanas valodas kā Haskell un Clojure ir veidotas ap datu nemainības principiem, nodrošinot spēcīgu atbalstu nemutabliem datiem un tīrām funkcijām \cite{haskell, clojure}. No otras puses, imperatīvās valodas kā Python un JavaScript piedāvā iespējas strādāt ar nemutabliem datiem, bet tās nav tik stingras kā funkcionālajās valodās \cite{python, ecma-262}.
 
 \section{Pasūtītājs}
-Sistēma tiek izstrādāta pēc autora iniciatīvas, kvalifikācijas darba ietvaros. 
+Sistēma tiek izstrādāta pēc autora iniciatīvas kvalifikācijas darba ietvaros. 
 
 \section{Produkta perspektīva}
 Jaunā programmēšanas valoda Immutant ir paredzēta kā patstāvīgs produkts, kas var tikt izmantots kā rīks dažādiem programmēšanas projektiem. Tā nav atkarīga no jebkuras konkrētas platformas vai sistēmas.
@@ -168,8 +167,6 @@ Interpretators ticis izstrādāts Mac OS platformai, tāpēc tiek pieņemts, ka 
 Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgrāmata valodas lietošanā.
 Nodaļā izklāstītā informācija netikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
 Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
-Turpretim, lai iepazītos ar tehniskām implementācijas detaļām, skatīt nākamo nodaļu ~\ref{chap:arch}.
-
 
 \section{Datu tipi}
 
