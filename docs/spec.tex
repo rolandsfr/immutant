@@ -1199,6 +1199,68 @@ Kļūdu paziņojumi: & - \\
 \caption{Funkcijas CLI-2 apraksts}
 \end{longtable}
 
+\section{Nefunkcionālās prasības}
+
+\subsection{Veiktspēja}
+Sistēmai ir jāspēj interpretēt pirmkodu ar vidējo ātrumu vismaz 1000 līnijas sekundē standarta mūsdienu datora konfigurācijā.
+
+\subsection{Drošība}
+Sistēma pēc būtības nevar garantēt, ka interpretējamās programmas kods nenodarīs kaitējumu sistēmai. Lietotājam ir jāapzinās šie risk un jāievēro piesardzība, interpretējot nezināmas izcelsmes pirmkodu.
+
+\subsection{Uzturēšana}
+Sistēmas kodam jābūt labi dokumentētam un strukturētam loģiskos moduļos, lai atvieglotu turpmāko uzturēšanu un attīstību. Ir jāveido vienības un integrācijas testi, lai nodrošinātu sistēmas stabilitāti un uzticamību pie veiktām izmaiņām.
+
+\chapter{Programmatūras projektējuma apraksts}
+
+
+\section{Daļējs funkciju projektējums}
+
+\subsection{CLI-1 funkcijas projektējums: Pirmkoda interpretēšana no datnes}
+
+Primkoda datnes ir primārais veids, kā viegli izplatīt lietojumprogrammas. Tas ļauj lietotājiem saglabāt un koplietot savu kodu, kā arī palaist to dažādās vidēs. Šī funkcija nodrošina interpretēšanas palaišanu tieši no primkoda datnes.
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/functions/fun_cli_1.jpg}  
+    \vspace{0.5cm}  
+    \caption{Funkcijas CLI-1 projektējums}
+    \label{fig:fun_cli_1}                  
+\end{figure}
+
+
+\subsection{CLI-2 funkcijas projektējums: REPL režīms}
+
+Dažkārt ir noderīgi ātri pārbaudīt nelielu koda fragmentu un eksperimentēt interaktīvā veidā - tam domāta REPL (Read-Eval-Print Loop) funkcija. Tā ļauj lietotājam ievadīt pirmkoda rindiņu, un uzreiz ieraudzīt rezultātu. 
+
+\begin{figure}[h]   
+    \centering
+    \includegraphics[scale=0.6]{assets/functions/cli_2_repl-fun.jpg}  
+    \vspace{0.5cm}  
+    \caption{Funkcijas CLI-2 projektējums}
+    \label{fig:fun_cli_2}                  
+\end{figure}
+
+\subsection{CORE-1 funkcijas projektējums: Interpretēšanas piespiedu apstādināšana}
+
+
+\subsection{LEX-1 funkcijas projektējums: Rakstzīmju pārveidošana uz leksēmu zīmogiem}
+
+\subsection{LEX-2 funkcijas projektējums: Burtciparu ne-virkņu vērtību skenēšana}
+
+\subsection{LEX-3 funkcijas projektējums: Literālo vērtību skenēšana}
+
+\subsection{PARSE-1 funkcijas projektējums: Leksēmu parsēšana uz AST kokiem}
+
+\subsection{PARSE-2 funkcijas projektējums: Parsētāja sinhronizēšana pēc notikušās parsēšanas kļūdas}
+
+\subsection{EVAL-1 funkcijas projektējums: AST koka izvērtēšana}
+
+\subsection{EVAL-2 funkcijas projektējums: Izteiksmes AST izvērtēšana}
+
+\subsection{EVAL-3 funkcijas projektējums: Priekšraksta AST izvērtēšana}
+
+
+
 \nocite{crafting-interpreters}
 \bibliographystyle{plain}
 \bibliography{references}   
