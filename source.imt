@@ -1,8 +1,13 @@
-mut a = 0;
+mut prev = 0;
+mut curr = 1;
+mut count = 0;
+imut n = 10;
 
-while(a < 11) {
-    imut val = a;
+while (count < n) {
+    imut val = curr;
     print(val);
-    a = a + 1;
+    imut next = prev + curr;
+    prev = curr;   
+    curr = next;   
+    count = count + 1;
 }
-

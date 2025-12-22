@@ -181,7 +181,7 @@ Pirmatnējā Immutant valodas versijas tipu sistēma ietver tikai primitīvos da
 
 \subsubsection{Virknes}
 Virkne ir jebkurš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
-Tās var saturēt jebkādus simbolus, tostarp spec-simbolus, kā \texttt{@,\^\space,\&} u.c. Proti, virknēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mutant} (vairāk par to minēts sadaļā ~\ref{section:vars}).
+Tās var saturēt jebkādus simbolus, tostarp spec-simbolus, kā \texttt{@,\^\space,\&} u.c. Proti, virknēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mut} (vairāk par to minēts sadaļā ~\ref{section:vars}).
 Piemērs dažādām virknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
 
 \begin{verbatim}
@@ -216,7 +216,7 @@ There is something mysterious about the "\" character.
 
 \subsubsection{Skaitļi}
 
-Skaitlis ir jebkura vērtība no Reālo skaitļu kopas. Ir svarīgi uzsvērt, ka iracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam iracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
+Skaitlis ir jebkura vērtība no reālo skaitļu kopas. Ir svarīgi uzsvērt, ka iracionāli skaitļi tiek implementēti pēc IEEE 754 standarta, tāpēc realitātē tie nav līdz galam iracionāli, bet gan ir to aproksimētas vērtības. Daļskaitļu decimālo daļu atdala ar punkta (\char`.) rakstzīmi.
 
 Piemērs skaitliskām vērtībām seko zemāk:
 
@@ -252,9 +252,9 @@ Mainīgos deklarē sekojošā formā:
 \end{verbatim}
 
 
-Mainīgā deklarācija sākas ar vienu no 2 atslēgvārdiem <mutability> - \texttt{mutant} un \texttt{immutant} -, kas nosaka mainīgā mutācijas īpašību. 
+Mainīgā deklarācija sākas ar vienu no 2 atslēgvārdiem <mutability> - \texttt{mut} un \texttt{imut} -, kas nosaka mainīgā mutācijas īpašību. 
 
-Mainīgo deklarāciju nobeidz patvaļīgs identifikators <identifier> jeb mainīgā nosaukums. Identifikators var saturēt burtus, ciparus un pasvītrojuma simbolu (\texttt{\_}), bet nedrīkst sākties ar ciparu. Tāpat, identifikators nedrīkst sakrist ar kādu no valodas atslēgvārdiem, piemēram, \texttt{mutant}, \texttt{immutant}, \texttt{if}, \texttt{else} u.c. (pilnu atslēgvārdu sarakstu skatīt sadaļā ~\ref{section:keywords}).
+Mainīgo deklarāciju nobeidz patvaļīgs identifikators <identifier> jeb mainīgā nosaukums. Identifikators var saturēt burtus, ciparus un pasvītrojuma simbolu (\texttt{\_}), bet nedrīkst sākties ar ciparu. Tāpat, identifikators nedrīkst sakrist ar kādu no valodas atslēgvārdiem, piemēram, \texttt{mut}, \texttt{imut}, \texttt{if}, \texttt{else} u.c. (pilnu atslēgvārdu sarakstu skatīt sadaļā ~\ref{section:keywords}).
 
 Mainīgā inicializācijai ir jāseko vienai no sekojošām formām:
 
@@ -274,28 +274,28 @@ Lai inicializētu mainīgo, t.i. piešķirtu tam vērtību, ir jāizmanto pieš�
 \label{section:var-mutability}
 
 Mainīgo mutabilitāte jeb mainības īpašība nosaka, vai mainīgā vērtību ir iespējams mainīt pēc tā inicializācijas. 
-Valodā immutant ir divu veidu mainīgie: \textbf{mutable} un \textbf{immutable}, tos deklarē izmantojot atslēgvārdus \texttt{mutant} un \texttt{immutant} attiecīgi. Turpmāk šajā darbā tiks izmantoti šo terminu latviešu atvasinājumi, t.i., \textbf{mutabilitāte, mutabls} un \textbf{nemutabilitāte, nemutabls} lai raksturotu datu mainības īpašības.
+Valodā Immutant ir divu veidu mainīgie: \textbf{mutable} un \textbf{immutable}, tos deklarē izmantojot atslēgvārdus \texttt{mut} un \texttt{imut} attiecīgi. Turpmāk šajā darbā tiks izmantoti šo terminu latviešu atvasinājumi, t.i., \textbf{mutabilitāte, mutabls} un \textbf{nemutabilitāte, nemutabls} lai raksturotu datu mainības īpašības.
 
 \subsubsection{Mutabilitāte \texttt{mutable}}
 
-Mutabls, atvasināts no angļu valodas vārda \texttt{mutable}, ir tāds mainīgais, kura vērtību ir iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{mutant}.
+Mutabls, atvasināts no angļu valodas vārda \texttt{mutable}, ir tāds mainīgais, kura vērtību ir iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{mut}.
 
-Jebkurš mainīgais, kas deklarēts ar \texttt{mutable}, var tikt piešķirts jaunu vērtība jebkurā programmas izpildes brīdī pēc tā inicializācijas. Tas ļauj programmētājiem veidot dinamiskākas programmas, kurās dati var mainīties atkarībā no programmas loģikas un lietotāja ievades. Proti, to ir ieteicams darīt tikai gadījumos, kad risinājumi ar nemutabliem mainīgajiem ir pārāk sarežģīti vai neefektīvi.
+Jebkurš mainīgais, kas deklarēts ar \texttt{mut}, var tikt piešķirts jaunu vērtība jebkurā programmas izpildes brīdī pēc tā inicializācijas. Tas ļauj programmētājiem veidot dinamiskākas programmas, kurās dati var mainīties atkarībā no programmas loģikas un lietotāja ievades. Proti, to ir ieteicams darīt tikai gadījumos, kad risinājumi ar nemutabliem mainīgajiem ir pārāk sarežģīti vai neefektīvi.
 
 \subsubsection{Mutabilitāte \texttt{immutable}}
 
-Nemutabls, atvasināts no angļu valodas vārda \texttt{immutable}, ir tāds mainīgais, kura vērtību nav iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{immutant}. Šeit ir pamanāma acīmredzama vārdu spēle, jo \texttt{immutant} ir neoloģisms angļu valodā, kas apvieno vārdus \texttt{immutable} un \texttt{mutant} radot jaunu vārdu, kas apzīmē mainīgo, kas nav maināms. Tas atbilst nemutabilitātes semantikai, kas izmantota funkcionālajā programmēšanā, un tādēļ arī sekojošs nosaukums izvēlēts šai programmēšanas valodā.
+Nemutabls, atvasināts no angļu valodas vārda \texttt{immutable}, ir tāds mainīgais, kura vērtību nav iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{imut}. Atslēgvārds \texttt{imut} ir saīsinājums no \texttt{immutable}, kas apzīmē mainīgo, kas nav maināms. Tas atbilst nemutabilitātes semantikai, kas izmantota funkcionālajā programmēšanā.
 
 Nemutablus mainīgos nedrīkst re-inicializēt, tas nozīmē, ka sekojoša programma izmetīs kļūdu \texttt{ImmutableVariableModificationException}:
 \begin{verbatim}
-immutant x = 10;
+imut x = 10;
 x = 20; // Izmests izņēmums: ImmutableVariableModificationException
 \end{verbatim}
 
-Nemutabli mainīgie nedrīkt arī tik padoti kā argumenti netīrām funkcijām (skat. sadaļu ~\ref{section:functions}), jo tas pārkāpj datu nemainības principu. Pretējā gadījumā netīras funckijas varētu mainīt nemutabla mainīgā vērtību, kas noved pie neparedzamas programmas uzvedības. Šo uzvedību demonstrē šāds piemērs:
+Nemutabli mainīgie nedrīkst arī tik padoti kā argumenti netīrām funkcijām (skat. sadaļu ~\ref{section:functions}), jo tas pārkāpj datu nemainības principu. Pretējā gadījumā netīras funkcijas varētu mainīt nemutabla mainīgā vērtību, kas noved pie neparedzamas programmas uzvedības. Šo uzvedību demonstrē šāds piemērs:
 
 \begin{verbatim}
-immutant num = 5;
+imut num = 5;
 
 impure fn modify(value) {
     value += 10; // Mēģinājums mainīt nemutabla mainīgā vērtību
@@ -337,7 +337,7 @@ Mainīgo redzamība ir tāda īpašība, kas nosaka kurās programmas daļas ir 
 Piemērs globāla mainīgā deklarācijai un tā izmantošanai funkcijā:
 
 \begin{verbatim}
-immutant globalVar = 10;
+imut globalVar = 10;
 
 fn printGlobalVar() {
   print(globalVar);
@@ -353,9 +353,9 @@ Funkcijas un jebkādas citas konstrukcijas ar ķermeni (valodā Immutant tie ar�
 Piemērs lokāla mainīgā deklarācijai un tā izmantošanai funkcijā:
 \begin{verbatim}
 fn doMagic() {
-  immutant localVar = 5;
+  imut localVar = 5;
   if(true) {
-    mutant anotherLocalVar = localVar + 10;
+    mut anotherLocalVar = localVar + 10;
   }
 }
 doMagic();
@@ -367,7 +367,7 @@ Mainīgie, kurus mēģina izmantot ārpus to deklarācijas redzesloka, izraisa i
 
 \begin{verbatim}
 fn setLocalVar() {
-  immutant localVar = 5;
+  imut localVar = 5;
 }
 setLocalVar();
 print(localVar); // Izmests izņēmums: UndeclaredVariableException
@@ -376,7 +376,7 @@ print(localVar); // Izmests izņēmums: UndeclaredVariableException
 Līdzīgi situācija rodas, izmantojot mainīgo pirms tā deklarācijas:
 \begin{verbatim}
 print(globalVar); // Izmests izņēmums: UndeclaredVariableException
-immutant globalVar = 10;
+imut globalVar = 10;
 \end{verbatim}
 
 \section{Operatori un inzteiksmes}
@@ -476,7 +476,7 @@ pure fn add(a, b) {
     return a + b;
 }
 
-immutant sum = add(2, 3) + 4;
+imut sum = add(2, 3) + 4;
 \end{verbatim}
 
 Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek piešķirta vērtība, kas pēc būtības ir  izvērtēts izteiksmes \texttt{add(2, 3) + 4} rezultāts. Tā kā izteiksmes kreisais operands ir funkcijas izsaukums (skat. \ref{section:functions}) \texttt{add(2, 3)}, tad vispirms tiek izvērtēta šī apakšizteiksme, kas rezultātā atgriež skaitli \texttt{5}. Pēc tam tiek izvērtēts labais operands \texttt{4} (tas ir parasts skaitlis, tāpēc šeit netiek padarīts daudz darba), un beigās tiek pielietots saskaitīšanas operators \texttt{+}, kas atgriež summu \texttt{9}. Tātad, mainīgajam \texttt{sum} tiek piešķirta vērtība \texttt{9}.
@@ -525,7 +525,7 @@ pure fn add(a, b) {
 
 Piemērs netīrai funkcijai, kas pieskaita jaunu skaitli globālam mainīgajam:
 \begin{verbatim}
-mutant num = 4;
+mut num = 4;
 impure fn addGlobal(newNum) {
     num += newNum;
 }
@@ -536,7 +536,7 @@ Funkcijas izsaukums ir izteiksme, kas satur funkcijas nosaukumu, kam seko apaļ�
 Piemērs funkcijas izsaukumiem:
 \begin{verbatim}
 addGlobal(5);
-immutant sum = add(3, 7);
+imut sum = add(3, 7);
 \end{verbatim}
 
 \subsection{Iebūvētas funkcijas}
@@ -579,7 +579,7 @@ Pie tam, apgalvojums \texttt{else} nav obligāts, un to var izlaist, ja nav nepi
 
 Piemērs programmai, kas atkarība no skaitļa vērtības izvada atbilstošu ziņojumu:
 \begin{verbatim}
-immutant num = 10;
+imut num = 10;
 
 if (num > 0) {
     print("Number is greather than zero");
@@ -600,18 +600,21 @@ while (<condition>) {
 
 <condition> ir loģiska izteiksme, kas rezultātā atgriež patiesuma vērtību. Ja izteiksmes vērtība ir patiesa, tad tiek izpildīti apgalvojumi <statements> iekš figūriekavām. Pēc apgalvojumu izpildes, nosacījums tiek pārbaudīts vēlreiz, un ja tas joprojām ir patiess, tad apgalvojumi tiek izpildīti vēlreiz. Šis process turpinās, kamēr nosacījums kļūst aplams. Ja nosacījums sākotnēji ir aplams, tad cikla ķermenis netiek izpildīts ne reizi.
 
-Ciklisku darbību var nodeomstrēt ar fibonacci skaitļu virknes ģenerēšanu:
+Ciklisku darbību var nodemonstrēt ar fibonacci skaitļu virknes ģenerēšanu:
 \begin{verbatim}
-immutant n = 10; // Cik fibonacci skaitļus ģenerēt
-immutant prev = 0;
-immutant curr = 1;
-immutant count = 0; 
+// Demonstrē mainīgo izmantošanu ciklā
+mut prev = 0;
+mut curr = 1;
+mut count = 0;
+imut n = 10;
+
 while (count < n) {
-    print(curr);
-    immutant next = prev + curr;
-    prev = curr;
-    curr = next;
-    count += 1;
+    imut val = curr;
+    print(val);
+    imut next = prev + curr;
+    prev = curr;   
+    curr = next;   
+    count = count + 1;
 }
 \end{verbatim}
 
@@ -619,8 +622,8 @@ while (count < n) {
 
 Valodā Immutant ir definēti sekojoši atslēgas vārdi, kas ir rezervēti valodas sintaksei un tiem nevar tikt piešķirta cita nozīme:
 \begin{itemize}
-  \item \texttt{immutant} - tiek lietots, lai deklarētu nemutablus mainīgos
-  \item \texttt{mutant} - tiek lietots, lai deklarētu mutablus mainīgos
+  \item \texttt{imut} - tiek lietots, lai deklarētu nemutablus mainīgos
+  \item \texttt{mut} - tiek lietots, lai deklarētu mutablus mainīgos
   \item \texttt{fn} - tiek lietots, lai definētu funkcijas
   \item \texttt{pure} - tiek lietots, lai definētu tīras funkcijas
   \item \texttt{impure} - tiek lietots, lai definētu netīras funkcijas
