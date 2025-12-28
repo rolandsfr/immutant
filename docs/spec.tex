@@ -1232,33 +1232,53 @@ Primkoda datnes ir primārais veids, kā viegli izplatīt lietojumprogrammas. Ta
 
 Dažkārt ir noderīgi ātri pārbaudīt nelielu koda fragmentu un eksperimentēt interaktīvā veidā - tam domāta REPL (Read-Eval-Print Loop) funkcija. Tā ļauj lietotājam ievadīt pirmkoda rindiņu, un uzreiz ieraudzīt rezultātu. 
 
-\begin{figure}[h]   
-    \centering
-    \includegraphics[scale=0.6]{assets/functions/cli_2_repl-fun.jpg}  
-    \vspace{0.5cm}  
-    \caption{Funkcijas CLI-2 projektējums}
-    \label{fig:fun_cli_2}                  
-\end{figure}
-
-\subsection{CORE-1 funkcijas projektējums: Interpretēšanas piespiedu apstādināšana}
-
+\begin{center}
+  \includegraphics[scale=0.6]{assets/functions/cli_2_repl-fun.jpg}
+  \captionof{figure}{Funkcijas CLI-2 projektējums}
+  \label{fig:fun_cli_2}
+\end{center}
 
 \subsection{LEX-1 funkcijas projektējums: Rakstzīmju pārveidošana uz leksēmu zīmogiem}
 
-\subsection{LEX-2 funkcijas projektējums: Burtciparu ne-virkņu vērtību skenēšana}
+LEX-1 funkcija ir atbildīga par pirmkoda pārvēršanu leksēmās, kas ir interpretēšanas pamatvienības. Tā izskrien cauri katram simbolam pirmkodā un tās sasaita kopā ar meta informāciju - leksēmas tipu, vērtību un atrašanās vietu pirmkodā.
 
-\subsection{LEX-3 funkcijas projektējums: Literālo vērtību skenēšana}
+\begin{center}
+  \includegraphics[scale=0.5]{assets/functions/lex-1-fun.jpg}
+  \captionof{figure}{Funkcijas LEX-1 projektējums}
+  \label{fig:fun_lex_1}
+\end{center}
+
 
 \subsection{PARSE-1 funkcijas projektējums: Leksēmu parsēšana uz AST kokiem}
 
+PARSE-1 funkcija ir atbildīga par leksēmu pārvēršanu abstraktos sintakses kokos. Tā reksursīvi nolaižas cauri gramatikas produkcijām, ievērtojot viennozīmību, un veidojot koku struktūru, kas atspoguļo pirmkoda loģiku un hierarhiju.
+
+\begin{center}
+  \includegraphics[scale=0.7]{assets/functions/fun_parse-1.jpg}
+  \captionof{figure}{Funkcijas PARSE-1 projektējums}
+  \label{fig:fun_parse_1}
+\end{center}
+
+
 \subsection{PARSE-2 funkcijas projektējums: Parsētāja sinhronizēšana pēc notikušās parsēšanas kļūdas}
+
+PARSE-2 funkcija ir izstrādāta, lai nodrošinātu parsētāja stabilitāti un spēju turpināt darbu pēc parsēšanas kļūdas. Tā meklē piemērotu vietu leksēmu secībā, no kuras var atsākt parsēšanu, tādējādi ļaujot lietotājam uzzināt pēc iespējas vairāk kļūdu vienā interpretēšanas reizē.
+
+\begin{center}
+  \includegraphics[scale=0.7]{assets/functions/fun_parse-2.jpg}
+  \captionof{figure}{Funkcijas PARSE-2 projektējums}
+  \label{fig:fun_parse_2}
+\end{center}
 
 \subsection{EVAL-1 funkcijas projektējums: AST koka izvērtēšana}
 
-\subsection{EVAL-2 funkcijas projektējums: Izteiksmes AST izvērtēšana}
+EVAL-1 funkcija ir atbildīga par AST koka izvērtēšanu un, visbeidzot, programmas izpildi. Tā nosaka, vai dotais AST koks atbilst priekšrakstam vai izteiksmei, un nodod kontroli atbilstošai apstrādes funkcijai, lai veiktu nepieciešamās darbības.
 
-\subsection{EVAL-3 funkcijas projektējums: Priekšraksta AST izvērtēšana}
-
+\begin{center}
+  \includegraphics[scale=0.8]{assets/functions/fun_eval-1.jpg}
+  \captionof{figure}{Funkcijas EVAL-1 projektējums}
+  \label{fig:fun_eval_1}
+\end{center}
 
 
 \nocite{crafting-interpreters}
