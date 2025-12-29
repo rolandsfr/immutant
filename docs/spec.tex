@@ -57,7 +57,7 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
 \begin{abstract}
     Most modern general-purpose programming languages use grammar and syntax that suggests mutable data being an ordinary matter, which in reality complicates reasoning about program state.
     To make such reasoning predictable, this work explores the design and development of a programming language with explicit syntax and semantics of immutable data. 
-    This work contains specification for such language and documentation of the architecture for the lexer, parser and AST-walker of the underlying interpreter.
+    This work contains specification for such language and documentation of the architecture for the lexer, parser and AST-walk evaluation of the underlying interpreter.
     As a result, a high-level, interpreted, dynamically typed programming language with only atomic data types is created. The language is implemented in C.
 
     \begin{flushleft}
@@ -92,7 +92,7 @@ Datu mainība un to nepārtraukta plūsma no viena mainīga uz otru ir neapstrī
 No otras puses, mainīgiem datiem pastāv īpašība būt neparedzamiem. Kamēr mazas sistēmas spēj tikt galā ar nelielu daudzumu mainīgo, tad lielajās sistēma tas var kļūt par acīmredzamu problēmu. Atmiņa datoram ir viena, tomēr atsaukties uz to var no dažādām vietām dažādos laika brīžos, kas padara spriešanu par datu stāvokli daudz sarežģītāk.  
 
 Programmētāji izmanto iespēju mainīt datus brīvā veidā, jo  programmēšanas valodas un to abstrakcijas ir padarījušas to tik vienkāršu. Lai gūtu vairāk kontroles pār iepriekš minēto uzvedību, valodas no C saimes, Java, JavaScript un citas valodas satur gramatikas, kas ierobežo mainīgu datu inicializāciju un to turpmāko vērtību maiņu. Kā piemēru var minēt \texttt{const} atslēgvārdu no valodas C, kas fiksē doto mainīgo un liedz pārrakstīt tā vērtību, tomēr tas tikai daļēji attiecas uz atsauces tipa vērtībām. Kaut arī šāda tipa mainīgais vienmēr atsauksies tikai uz vienu konkrētu atmiņas apgabalu, nav noteikts, ka vērtība, kas tajā atrodas, nemainīsies. Līdz ar to, \texttt{const} atslēgvārds negarantē patiesu datu nemainību, bet tikai noslēdz to uz \texttt{readonly} pieeju.
-Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājējvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
+Neskatoties uz dažādiem programmēšanas valodu centieniem ierobežot datu mainību, tādas problēmas kā neparedzamas mainīgo vērtības pavedienu izpildes laikā, mainīgo aizstājvārdu nepārdomāta ieviešana un izmantošana, mainīgo nejauša re-inicializācija u.c. joprojām sastāda lielu daļu programmu.\cite{immutability}
 
 Šis darbs izskata jaunas interpretējamas programmēšanas valodas izveidi, kurai pielietota datu nemainības semantika, cenšoties mazināt programmatūras izstrādes problēmas saistītas ar stāvokļu maiņu. Tas arī nozīmē, ka galvenā valodas ideja ir faktors valodas nosaukuma izvēlei. Savukārt interpretatora sākotnējā versijā, kas šeit ir izskatīta, ietilpst apstrādes loģika sekojošām daļām: primitīvi datu tipi un to glabāšana mainīgos, ar to saistītā datu nemainības semantika, izteiksmes, tīras un netīras funkcijas, kontroles plūsma un cikli.
 
@@ -138,7 +138,7 @@ Programmatūrai ir izveidotas šādas darījumprasības:
 \end{itemize}
 
 \section{Sistēmas lietotāji}
-Sistēmas galvenie lietotāji ir programmētāji, kas vēlas izmantot datu nemainības priekšrocības savos projektos. Tie var būt gan iesācēji, kas mācās programmēšanu, gan pieredzējuši izstrādātāji, kas meklē jaunu rīku saviem projektiem. Spēkā ir pieņēmums, ka lietotājam ir pamata izpratne par programmēšanas konceptiem un terminoloģiju un tas ir iepazinies ar programmēšanas valodu Immutant dokumentāciju.
+Sistēmas galvenie lietotāji ir programmētāji, kas vēlas izmantot datu nemainības priekšrocības savos projektos. Tie var būt gan iesācēji, kas mācās programmēšanu, gan pieredzējuši izstrādātāji, kas meklē jaunu rīku saviem projektiem. Spēkā ir pieņēmums, ka lietotājam ir pamata izpratne par programmēšanas jēdzieniem un terminoloģiju un tas ir iepazinies ar programmēšanas valodu Immutant dokumentāciju.
 
 \begin{figure}[h]   
     \centering
@@ -165,7 +165,7 @@ Interpretators ticis izstrādāts Mac OS platformai, tāpēc tiek pieņemts, ka 
 \chapter{Valodas specifikācija}
 
 Šīs nodaļas nolūks ir formalizēt prasības, kas noteiktas uz valodu, kas interpretatoram ir jāspēj īstenot. Šī nodaļa neizklāsta implementācijas detaļas, bet gan drīzāk kalpo kā lietotāja rokasgrāmata valodas lietošanā.
-Nodaļā izklāstītā informācija ne tikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immuntant programmēšanas valodas interpretatoru.
+Nodaļā izklāstītā informācija ne tikai palīdz lasītājiem iepazīties ar tās uzbūvi valodas lietošanas un attīstības nolūkos, bet arī nosaka prasības, kas tiek attiecīgi nostādītas uz Immutant programmēšanas valodas interpretatoru.
 Nodaļā ir skaidroti valodā definētie datu tipi, mainīgie funkcijas, un programmas vadības mehānismi, datu nemainības semantika, kas attiecas uz noteikta veida vērtībām, kā arī tiek uzskaitīti kļūdu paziņojumi un to attiecīgie skaidrojumi.
 
 \section{Datu tipi}
@@ -177,7 +177,7 @@ Programmēšanas valodas pamatu veidu datu tipi un ar to saistītie mehānismi. 
 Pirmatnējā Immutant valodas versijas tipu sistēma ietver tikai primitīvos datu tipus, t.i., pamata datu tipi, no kuriem potenciāli var veidot citus saliktus tipus, piemēram, masīvus, objektus u.c.  Salikti datu tipi netiek iekļauti valodas versijā, kas tiek aprakstīta šajā dokumentā, lai saglabātu interpretatora vienkāršību un vairāk koncentrētos uz datu nemainības semantikas īstenošanu.
 
 \subsubsection{Virknes}
-Virkne ir jebkurš simbolu kopums, kas ir ietverts starp dubultpēdiņām.
+Virkne ir jebkurš simbolu kopums, kas ir ietverts starp pēdiņām.
 Tās var saturēt jebkādus simbolus, tostarp spec-simbolus, kā \texttt{@,\^\space,\&} u.c. Proti, virknēs nav liegts izmantot speciālos atslēgas vārdus, ko pati valoda ir definējusi, piemēram, \texttt{mut} (vairāk par to minēts sadaļā ~\ref{section:vars}).
 Piemērs dažādām virknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir atļauts uzdot ar virknes tipu.
 
@@ -185,7 +185,7 @@ Piemērs dažādām virknēm seko zemāk. Tāpat, arī tikai vienu rakstzīmi ir
 "", "someString", "garumzīmes īāē", " ", ,"\""
 \end{verbatim}
 
-Izņēmuma gadījums, ir dubultpēdiņu simbola izmantošana iekš virknes. Lai neuztvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur spec-simbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
+Izņēmuma gadījums, ir pēdiņu simbola izmantošana iekš virknes. Lai neuztvertu to kā virknes beigas, tas ir jāekranē ar vadošo simbolu \texttt{\textbackslash}. Realitātē neekranizētas virknes, kas satur spec-simbolus ir pamata sintakses kļūda, ko programmētāji bieži vien pieļauj neuzmanības dēļ. 
 
 Piemērs tādai virknei:
 
@@ -193,7 +193,7 @@ Piemērs tādai virknei:
 "They call themselves \"the wolves\""
 \end{verbatim}
 
-Rezultātā atkārtots dubultpēdiņu simbols netiek uztvers kā virknes beigu indekators, bet gan kā daļa no virknes vērtības, un tiek panākts sekojošs teksts:
+Rezultātā atkārtots pēdiņu simbols netiek uztvers kā virknes beigu indikators, bet gan kā daļa no virknes vērtības, un tiek panākts sekojošs teksts:
 
 \begin{verbatim}
 They call themselves "the wolves"
@@ -223,7 +223,7 @@ Piemērs skaitliskām vērtībām seko zemāk:
 
 Dotajā piemērā \texttt{PI} ir viena no valodā eksistējošām konstantēm, kas satur aproksimētu matemātiskās konstantes $\pi$ vērtību (\texttt{\char`~3.1415926535}).
 
-Valodas gramatika atļauj izmantot vadošo punktu priekšā skaitlim, kas apzīmē decimāldaļu skailim nulle. Piemēram, decimālskaitlis \texttt{.34} ir identisks ar \texttt{0.34}.
+Valodas gramatika atļauj izmantot vadošo punktu priekšā skaitlim, kas apzīmē decimāldaļu skaitlim nulle. Piemēram, decimālskaitlis \texttt{.34} ir identisks ar \texttt{0.34}.
 
 
 \subsubsection{Patiesuma vērtības}
@@ -465,7 +465,7 @@ Pēc tam tiek izvērtēta otra apakšizteiksme
 kas arī atgriež patiesu vērtību. Beigās tiek pielietots disjunkcijas operators \texttt{||}, kas atgriež patiesu vērtību, jo vismaz viens no abiem operandiem (kas īstenībā ir izteiksmes) ir patiess.
 
 \section{Izvērtēšanas kārtība}
-Līdzīgi kā daudzās citās programmēšanas valodās, piemēram Java un Ruby, arī valodā Immutant izteiksmes izvērtēšanas kārtība ir no kreisās uz labo pusi. Tas nozīmē, ka izteiksmes kreisais operands tiek izvērtēts pirms labā operanda. Tas, gan, negarantē ka jebkuras izteiksmes pirmie kreisējie operandi tiks izvērtēti pirmie, jo saliktas izteiksmes ar vairāk par vienu operatoru ņem vērā operatoru prioritātes un asociativitāti.
+Līdzīgi kā daudzās citās programmēšanas valodās, piemēram Java un Ruby, arī valodā Immutant izteiksmes izvērtēšanas kārtība ir no kreisās uz labo pusi. Tas nozīmē, ka izteiksmes kreisais operands tiek izvērtēts pirms labā operanda. 
 
 Zemāk ir dots piemērs, kas ilustrē šo izvērtēšanas kārtību:
 
@@ -474,7 +474,7 @@ pure fn add(a, b) {
     return a + b;
 }
 
-imut sum = add(2, 3) + 4;
+imut sum = add(2, 3) + 4; // sum vērtība ir 9
 \end{verbatim}
 
 Dotajā piemēra mainīgajā (skat. \ref{section:vars}) \texttt{sum} tiek piešķirta vērtība, kas pēc būtības ir  izvērtēts izteiksmes \texttt{add(2, 3) + 4} rezultāts. Tā kā izteiksmes kreisais operands ir funkcijas izsaukums (skat. \ref{section:functions}) \texttt{add(2, 3)}, tad vispirms tiek izvērtēta šī apakšizteiksme, kas rezultātā atgriež skaitli \texttt{5}. Pēc tam tiek izvērtēts labais operands \texttt{4} (tas ir parasts skaitlis, tāpēc šeit netiek padarīts daudz darba), un beigās tiek pielietots saskaitīšanas operators \texttt{+}, kas atgriež summu \texttt{9}. Tātad, mainīgajam \texttt{sum} tiek piešķirta vērtība \texttt{9}.
@@ -581,7 +581,7 @@ Piemērs programmai, kas atkarība no skaitļa vērtības izvada atbilstošu zi�
 imut num = 10;
 
 if (num > 0) {
-    print("Number is greather than zero");
+    print("Number is greater than zero");
 } else if (num < 0) {
     print("Number is less than zero");
 } else {
@@ -761,7 +761,7 @@ MISC\_ERR-1 & Ja doto failu neizdodas nolasīt, parāda paziņojumu: ``Error: Co
 
 \section{Skenēšanas modulis}
 
-Skenēšanas modulis ir atbildīgs par pirmkoda pārvēršanu leksēmās. Skenēšanas modulis izmanto leksisko analīzi, lai identificētu un kategorizētu pirmkoda elementus, piemēram, atslēgvārdus, operatorus, literālas vērtības un identifikatorus.
+Skenēšanas modulis ir atbildīgs par pirmkoda pārvēršanu leksēmās. Skenēšanas modulis izmanto leksisko analīzi, lai identificētu un grupētu pirmkoda elementus, piemēram, atslēgvārdus, operatorus, atomārās vērtības un identifikatorus.
 
 
 \FloatBarrier
@@ -937,7 +937,7 @@ Identifikators: & PARSE-2 & \\
 \midrule
 Nosaukums: & Parsētāja sinhronizēšana pēc notikušās parsēšanas kļūdas & \\
 \midrule
-Mērķis: & Parsēšanas kļūdas gadījumā nodot parsētājam informāciju, no kuras leksēmas ir jēgpilni atsākt parsēšanu. Tas tiek darīts, lai lietotājs uzzinātu pēc iespējams vairāk kļūdu, ko ir veicis pirmkoda sintaksē, bet tajpat laikā nodrošināt, ka turpmākā parsēšana nerada viltotus AST vai neloģiskas kļūdas. & \\
+Mērķis: & Parsēšanas kļūdas gadījumā nodot parsētājam informāciju, no kuras leksēmas ir jēgpilni atsākt parsēšanu. Tas tiek darīts, lai lietotājs uzzinātu pēc iespējams vairāk kļūdu, ko ir veicis pirmkoda sintaksē, bet taj pat laikā nodrošināt, ka turpmākā parsēšana nerada viltotus AST vai neloģiskas kļūdas. & \\
 \midrule
 Ievaddati: & Leksēmu masīvs un ziņa par pēdējo apstrādāto leksēmu & \\
 \midrule
@@ -1061,20 +1061,20 @@ Apstrāde: & Funkcija nosaka priekšraksta veidu un palaiž tam atbilstošu izv�
 \midrule
 Izvaddati: & Izpildīts priekšraksta efekts, pēdējā izvērtētā vērtība no priekšraksta saturošām izteiksmēm & \\
 \midrule
-Kļūdu paziņojumi: & Funkcijas daļa, kas dara unikālu darbu, neveido nevienas kļūdas, tomēr iekšēji tā arī izmanto izteiksmju izvērtēšanu, tāpēc ši funkcijas realitātē rada visus paziņojumus no funckijas EVAL-2 \\
+Kļūdu paziņojumi: & Funkcijas daļa, kas dara unikālu darbu, neveido nevienas kļūdas, tomēr iekšēji tā arī izmanto izteiksmju izvērtēšanu, tāpēc ši funkcijas realitātē rada visus paziņojumus no funkcijas EVAL-2 \\
 \caption{Funkcijas EVAL-3 apraksts}
 \end{longtable}
 
 
 
-\section{Interepretatora kodola modulis}
+\section{Interpretatora kodola modulis}
 
-Intepretatora kodols ir atbildīgs par interpretēšanas procesa kontroli un pārvaldību. Tas nodrošina, ka visi 3 interpretēšanas procesa moduļi (skenēšana, parsēšana un izvērtēšana) padot saražotos datus viens otram novērš šo citu moduļu darbību, ja citā interpretēšanas modulī ir notikusi kāda kļūda.
+Interpretatora kodols ir atbildīgs par interpretēšanas procesa kontroli un pārvaldību. Tas nodrošina, ka visi 3 interpretēšanas procesa moduļi (skenēšana, parsēšana un izvērtēšana) padot saražotos datus viens otram novērš šo citu moduļu darbību, ja citā interpretēšanas modulī ir notikusi kāda kļūda.
 
 
 \begin{center}
 \includegraphics[scale=0.7]{assets/dataflow/dfd_core.jpg}  
-\captionof{figure}{Intepretatora kodola moduļa 2.līmeņa DPD}
+\captionof{figure}{Interpretatora kodola moduļa 2.līmeņa DPD}
 \label{fig:dfd_core}
 \end{center}
 \vspace{0.5cm}
@@ -1096,7 +1096,7 @@ Mērķis: & Neļaut sekojošiem interpretēšanas procesa soļiem turpināties, 
 \midrule
 Ievaddati: & Kļūdas no skenēšanas, parsēšanas vai izvērtēšanas moduļa & \\
 \midrule
-Apstrāde: & Funkcija izseko kļūdas katrā no moduļiem un novērš turpmāko soļu izpldi, ja tādas radušās. & \\
+Apstrāde: & Funkcija izseko kļūdas katrā no moduļiem un novērš turpmāko soļu izpildi, ja tādas radušās. & \\
 \midrule
 Izvaddati: & Paziņojums par kļūdu un uz kuras rindiņas tā ir notikusi & \\
 \midrule
@@ -1161,7 +1161,7 @@ Mērķis: & Nodrošināt interaktīvu pirmkoda interpretēšanas vidi & \\
 \midrule
 Ievaddati: & Viens vai vairāki (vienā blokā) pirmkoda priekšraksti & \\
 \midrule
-Apstrāde: & Ja ievadītā pirmkoda rindiņa ir izvērtējama viena pati, tad uzreiz nodod kontroli kodolam, kas veic skenēšanu, parsēšanu un izvērtēšanu tūlītēji. Tomēr, ja ievadītā rindiņa atver priekšrakstu bloku, funkcija uzkrāj pirmkodu buferī līdz lietotājs neaizver bloku. Gadījumā ar \texttt{if} priekšrakstu, funkcija pieprasa lietotājam turpināt ievadīt vēl pimrkodu un sagaida \texttt{else} bloku pirms sākas interpretēšana, jo \texttt{if} un \texttt{else} kalpo kā viens loģisks bloks. Ja priekšraksts \texttt{if} tiek aizvērts un seko tukša rindiņa, funkcija to uztver kā \texttt{if} priekšrakstu bez noklusējuma izpildes, tāpēc beidz pieprasīt ievaddatus un izvērtē priekšrakstu, ja vien tas neatrodas citā blokā, kura aizvēršana arī ir jāsagaida.  & \\
+Apstrāde: & Ja ievadītā pirmkoda rindiņa ir izvērtējama viena pati, tad uzreiz nodod kontroli kodolam, kas veic skenēšanu, parsēšanu un izvērtēšanu tūlītēji. Tomēr, ja ievadītā rindiņa atver priekšrakstu bloku, funkcija uzkrāj pirmkodu buferī līdz lietotājs neaizver bloku. Gadījumā ar \texttt{if} priekšrakstu, funkcija pieprasa lietotājam turpināt ievadīt vēl pirmkodu un sagaida \texttt{else} bloku pirms sākas interpretēšana, jo \texttt{if} un \texttt{else} kalpo kā viens loģisks bloks. Ja priekšraksts \texttt{if} tiek aizvērts un seko tukša rindiņa, funkcija to uztver kā \texttt{if} priekšrakstu bez noklusējuma izpildes, tāpēc beidz pieprasīt ievaddatus un izvērtē priekšrakstu, ja vien tas neatrodas citā blokā, kura aizvēršana arī ir jāsagaida.  & \\
 \midrule
 Izvaddati: & Interpretēšanas rezultāts, kļūdas, ja tādas radījušās & \\
 \midrule
@@ -1189,7 +1189,7 @@ Sistēmas kodam jābūt labi dokumentētam un strukturētam loģiskos moduļos, 
 
 \subsection{CLI-1 funkcijas projektējums: Pirmkoda interpretēšana no datnes}
 
-Primkoda datnes ir primārais veids, kā viegli izplatīt lietojumprogrammas. Tas ļauj lietotājiem saglabāt un koplietot savu kodu, kā arī palaist to dažādās vidēs. Šī funkcija nodrošina interpretēšanas palaišanu tieši no primkoda datnes.
+Pirmkoda datnes ir primārais veids, kā viegli izplatīt lietojumprogrammas. Tas ļauj lietotājiem saglabāt un koplietot savu kodu, kā arī palaist to dažādās vidēs. Šī funkcija nodrošina interpretēšanas palaišanu tieši no pirmkoda datnes.
 
 \begin{figure}[h]   
     \centering
@@ -1212,7 +1212,7 @@ Dažkārt ir noderīgi ātri pārbaudīt nelielu koda fragmentu un eksperimentē
 
 \subsection{LEX-1 funkcijas projektējums: Rakstzīmju pārveidošana uz leksēmu zīmogiem}
 
-LEX-1 funkcija ir atbildīga par pirmkoda pārvēršanu leksēmās, kas ir interpretēšanas pamatvienības. Tā izskrien cauri katram simbolam pirmkodā un tās sasaita kopā ar meta informāciju - leksēmas tipu, vērtību un atrašanās vietu pirmkodā.
+LEX-1 funkcija ir atbildīga par pirmkoda pārvēršanu leksēmās, kas ir interpretēšanas pamatvienības. Tā izskrien cauri katram simbolam pirmkodā un tās sasaista kopā ar meta informāciju - leksēmas tipu, vērtību un atrašanās vietu pirmkodā.
 
 \begin{center}
   \includegraphics[scale=0.5]{assets/functions/lex-1-fun.jpg}
@@ -1223,7 +1223,7 @@ LEX-1 funkcija ir atbildīga par pirmkoda pārvēršanu leksēmās, kas ir inter
 
 \subsection{PARSE-1 funkcijas projektējums: Leksēmu parsēšana uz AST kokiem}
 
-PARSE-1 funkcija ir atbildīga par leksēmu pārvēršanu abstraktos sintakses kokos. Tā reksursīvi nolaižas cauri gramatikas produkcijām, ievērtojot viennozīmību, un veidojot koku struktūru, kas atspoguļo pirmkoda loģiku un hierarhiju.
+PARSE-1 funkcija ir atbildīga par leksēmu pārvēršanu abstraktos sintakses kokos. Tā rekursīvi nolaižas cauri gramatikas produkcijām, ievērojot viennozīmību, un veidojot koku struktūru, kas atspoguļo pirmkoda loģiku un hierarhiju.
 
 \begin{center}
   \includegraphics[scale=0.7]{assets/functions/fun_parse-1.jpg}
