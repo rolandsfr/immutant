@@ -361,7 +361,7 @@ doMagic();
 
 Kā var redzēt, localVar eksistē visā \texttt{doMagic} funkcijas redzeslokā, tai skaitā arī nosacījuma \texttt{if} ķermenī. Šajā konkrētajā gadījumā \texttt{anotherLocalVar} ir pieejams tikai \texttt{if} ķermenī.
 
-Mainīgie, kurus mēģina izmantot ārpus to deklarācijas redzesloka, izraisa izņēmumu \texttt{UndeclaredVariableException}. Pēc savas būtības tā ir nedeklarēto mainīgo izmantošana. Skatīt piemēru zemāk.
+Mainīgie, kurus mēģina izmantot ārpus to deklarācijas redzesloka, izmet kļūdu \texttt{RUNTIME\_ERR-2}. Pēc savas būtības tā ir nedeklarēto mainīgo izmantošana. Skatīt piemēru zemāk.
 
 \begin{verbatim}
 fn setLocalVar() {
