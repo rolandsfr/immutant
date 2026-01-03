@@ -10,6 +10,7 @@
 \usepackage{placeins}
 \usepackage{longtable}
 \usepackage{caption}
+\usepackage{forest}
 
 \hfuzz=100pt  % ignores overfull hboxes less than 100pt
 \vfuzz=100pt  % ignores overfull vboxes less than 100pt
@@ -748,9 +749,9 @@ RUNTIME\_ERR-6 & Ja funkcijas izsaukuma saucējs nav derīga funkcija, tad parā
 \midrule
 RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklarēts, parāda paziņojumu: ``Variable already defined: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizstāts ar attiecīgu mainīgā nosaukumu.                      \\
 \midrule
-RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atškirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
+RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
 \midrule
-RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to impure function``.                                                                                  \\
+RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot OK mutable argument to impure function``.                                                                                  \\
 \midrule
 RUNTIME\_ERR-10 & Ja nemutablam mainīgam pēc inicializācijas vēlreiz piešķir kādu vērtību, parāda paziņojumu ``Cannot assign to constant variable: <t>``. <t> tiek aizstāts ar attiecīgu mainīgā nosaukumu.                                                                                  \\
 \midrule
@@ -1251,6 +1252,138 @@ EVAL-1 funkcija ir atbildīga par AST koka izvērtēšanu un, visbeidzot, progra
   \captionof{figure}{Funkcijas EVAL-1 projektējums}
   \label{fig:fun_eval_1}
 \end{center}
+
+\chapter{Testēšana}
+\section{Testēšanas dokumentācija}
+
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+
+\begin{longtable}{|
+>{\raggedright\arraybackslash}p{1.7cm}|
+>{\raggedright\arraybackslash}p{1.5cm}|
+>{\raggedright\arraybackslash}p{6.0cm}|
+>{\raggedright\arraybackslash}p{3.8cm}|
+>{\centering\arraybackslash}p{1.9cm}|}
+\hline
+
+\hline
+\rowcolor{gray!40}
+\textbf{Funkcijas identifikators} &
+\textbf{Testēšanas datums} &
+\textbf{Soļi} &
+\textbf{Sagaidāmais rezultāts} &
+\textbf{Testa rezultāts} \\
+\hline
+\endhead
+
+LEX-1 & 19.12 &
+1.~ Izveido pirmkoda virkni "3 + @ - \$()" \newline
+2.~Skenē doto pirmkoda virni\newline
+& leksēmas NUMBER(3), PLUS, MINUS, LEFT\_PAREN, RIGHT\_PAREN \newline 2 kļūdainas leksēmas & OK \\ \hline
+
+LEX-1 & 19.12 &
+1.~ Izveido pirmkoda virkni "\&\&" \newline
+2.~Skenē doto pirmkoda virni\newline
+& Loģiskā tipa leksēma "\&\&" \newline 2 kļūdainas leksēmas & OK \\ \hline
+
+LEX-2 & 15.12 &
+1.~Izveido virkni ``else`` \newline
+2.~Skenē izveidoto virkni \newline
+& Atslēgvārda tipa leksēma ar vērtību ``else`` & OK \\ \hline
+
+LEX-2 & 15.12 &
+1.~Izveido virkni "39.456723asd=as" \newline
+2.~Skenē izveidoto virkni \newline
+& Skaitļiskā tipa leksēma ar vērtību "39.456723" & OK \\ \hline
+
+LEX-3 & 15.12 &
+1.~Izveido virkni "\_immutant" \newline
+2.~Skenē izveidoto virkni \newline
+& Identifikatora tipa leksēma ar vērtību "\_immutant" & OK \\ \hline
+
+
+PARSE-1 & 18.12 &
+1. Izveido aritmētisku izteiksmi ar leksēmām: 2, +, 4, /, 5\newline
+2.~Izsauc parsētāju ar dotām leksēmām\newline
+3.~Pārbauda AST koka formu
+& BinaryExpr(+) [NUMBER(2), BinaryExpr(/) [NUMBER(4), NUMBER(5)]]
+& OK \\ \hline
+
+PARSE-1 & 27.12 &
+1.~Parsē binārās izteiksmes ar dažādiem operatoriem\newline
+2.~Pārbauda, ka operāciju kārtība tiek ievērota\newline
+3.~Pārbauda AST struktūru
+& 
+BinaryExpr(-) [BinaryExpr(+) [NUMBER(1), BinaryExpr(*) [NUMBER(2), NUMBER(3)]], NUMBER(4)]
+& OK \\ \hline
+
+PARSE-1 & 27.12 &
+1.~Parsē priekšraksta bloku no leksēmām: \{, \}\newline
+& Izvedots pirmkoda bloka AST mezgls ar 0 priekšrakstiem & OK  \\ \hline
+
+EVAL-2 & 18.12 &
+1.~Saskaita virknes: ``from the '' + ``outside world''   \newline
+2.~Izvērtē izteiksmes vērtību\newline
+& virkne ``from the outside world'' & OK \\ \hline
+
+EVAL-2 & 22.12 &
+1.~Izvērtē aritmētiskās operācijas: 10 + 32.5\newline
+2.~Pārbauda rezultāta vērtību un tipu\newline
+& Skaitliskā vērtība 42.5 & OK \\ \hline
+
+EVAL-2 & 28.12 &
+1.~Izvērtē atņemšanas operāciju: -100 - 58.5\newline
+2.~Pārbauda rezultāta vērtību\newline
+& Skaitliskā vērtība -158.5 & OK \\ \hline
+
+EVAL-2 & 30.12 &
+1.~Izvērtē reizināšanas operāciju: 6 * 7\newline
+2.~Pārbauda rezultāta vērtību\newline
+& Skaitliskā vērtība 42 & OK \\ \hline
+
+EVAL-2 & 02.01 &
+1.~Izvērtē dalīšanas operāciju: 84 / 2\newline
+2.~Pārbauda rezultāta vērtību\newline
+& Skaitliskā vērtība 42 & OK \\ \hline
+
+EVAL-2 & 03.01 &
+1.~Mēģina dalīt ar nulli: 42 / 0\newline
+2.~Pārbauda kļūdas stāvokli\newline
+& Kļūda RUNTIME\_ERR-1 & OK \\ \hline
+
+EVAL-2 & 05.01 &
+1.~Piešķir mainīgajam x vērtību 42\newline
+2.~Pārbauda, ka vērtība tiek saglabāta vidē\newline
+& Mainīgā x vērtība ir 42 & OK \\ \hline
+
+EVAL-2 & 06.01 &
+1.~Mēģina piešķirt vērtību nedefinētam mainīgajam y\newline
+2.~Pārbauda kļūdas stāvokli\newline
+& Kļūda RUNTIME\_ERR-2 & OK \\ \hline
+
+EVAL-3 & 20.12 &
+1.~Izvērtē IF/ELSE izteiksmi ar patieso nosacījumu\newline
+2.~Pārbauda, ka izpildās THEN bloks\newline
+3.~Pārbauda, ka ELSE bloks netiek izpildīts
+& IF bloks izpildīts, ELSE netiek & OK \\ \hline
+
+EVAL-3 & 28.12 &
+1.~Izvērtē WHILE ciklu ar nosacījumu, kurš kļūst aplams pēc 3 iterācijām\newline
+2.~Pārbauda, ka bloks izpildās 3 reizes\newline
+3.~Apstiprina pareizu cikla apstāšanos
+& Cikls izpildās 3 reizes, pēc tam apstājas & OK \\ \hline
+
+EVAL-3 & 04.01 &
+1.~Izvērtē funkciju izsaukumu ar nepareizu argumentu skaitu\newline
+2.~Funkcija sagaida 2 argumentus, bet tiek padots 1\newline
+3.~Pārbauda kļūdas kodu
+& Kļūda RUNTIME\_ERR-8 & OK \\ \hline
+
+
+\end{longtable}
+
+\renewcommand{\arraystretch}{1.0}
 
 
 \nocite{crafting-interpreters}
