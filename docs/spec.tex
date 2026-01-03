@@ -284,26 +284,11 @@ Jebkuram mainīgajam, kas deklarēts ar \texttt{mut}, var tikt piešķirta jauna
 
 Nemutabls, atvasināts no angļu valodas vārda \texttt{immutable}, ir tāds mainīgais, kura vērtību nav iespējams mainīt pēc tā inicializācijas. Tādus mainīgos deklarē ar atslēgvārdu \texttt{imut}. Atslēgvārds \texttt{imut} ir saīsinājums no \texttt{immutable}, kas apzīmē mainīgo, kas nav maināms. Tas atbilst nemutabilitātes semantikai, kas izmantota funkcionālajā programmēšanā.
 
-Nemutablus mainīgos nedrīkst re-inicializēt, tas nozīmē, ka sekojoša programma izmetīs kļūdu \texttt{RUNTIME\_ERR-10}
+Nemutablus mainīgos nedrīkst re-inicializēt. Tas nozīmē, ka sekojoša programma izmetīs kļūdu \texttt{RUNTIME\_ERR-11}
 \begin{verbatim}
 imut x = 10;
 x = 20; // kļūda
 \end{verbatim}
-
-Nemutabli mainīgie nedrīkst arī tik padoti kā argumenti netīrām funkcijām (skat. sadaļu ~\ref{section:functions}), jo tas pārkāpj datu nemainības principu. Pretējā gadījumā netīras funkcijas varētu mainīt nemutabla mainīgā vērtību, kas noved pie neparedzamas programmas uzvedības. Šo uzvedību demonstrē šāds piemērs:
-
-% TODO: to be checked later when the functions section is done
-\begin{verbatim}
-imut num = 5;
-
-impure fn modify(value) {
-    value += 10; // Mēģinājums mainīt nemutabla mainīgā vērtību
-}
-
-modify(num); // Izmests izņēmums: ImmutableVariableModificationException
-\end{verbatim}
-
-Turpretim, tīras funkcijas (skat. nodaļu ~\ref{section:functions}) var pieņemt gan mutablus, gan nemutablus mainīgos kā argumentus, jo tīras funkcijas pēc definīcijas neietekmē ārējo stāvokli un nemaina dotās vērtības (nenotiek blakus efekti).
 
 Tā kā valodā Immutant netiek definēti sarežģītāki datu tipi, piemēram, masīvi vai objekti, tad nav nepieciešams apskatīt mutabilitātes īpašības attiecībā uz šādiem datu tipiem. 
 
@@ -312,7 +297,7 @@ Tā kā valodā Immutant netiek definēti sarežģītāki datu tipi, piemēram, 
 
 Pastāv gadījumi, kad parādās nepieciešamība konvertēt viena datu tipa vērtību uz cita datu tipa vērtību. Piemēram, ja kādu aritmētisku operatoru, piemēram, saskaitīšanu, pielieto virknei un skaitlim. Tad ir nepieciešams konvertēt vienu no operandiem uz otra datu tipu, lai veiktu šo operāciju, šajā gadījumā virkne jāpārveido uz skaitli vai skaitlis par virkni. 
 
-Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā sabiedrībā rada jokus, par to kā Javascript "5" + 3 ir "53", nevis 8.
+Daudzās valodās eksistē netiešā datu tipu konversija jeb tā, ko interpretators pats veic pēc vajadzības. Piemēram, valodā Javascript izteiksme \texttt{"5" + 3} rezultātā atgriež virkni \texttt{"53"}, jo interpretators veic netiešo tipu konversiju, pārvēršot skaitli \texttt{3} par virkni \texttt{"3"} un pēc tam veicot virkņu konkatenāciju \cite{ecma-262}. Šī ir gan priekšrocība, jo operators tiek netieši pārslogots uz darbību ar virknēm, nevis skaitļiem, tomēr tas var novest pie neparedzamas uzvedības, kas zināmā veidā liek smieties, par to, kā Javascript valodā izteiksmes  "5" + 3 rezultāts ir "53", nevis 8, tomēr tam arī atrodams loģisks skaidrojums.
 
 Tā kā programmēšanas valodas Immutant galvenais mērķis ir palīdzēt programmētājiem rakstīt paredzamāku kodu, datu tipu konversija tiek atbalstīta tikai tiešā veidā. Tas nozīmē, ka saskaitot virkni un skaitli, nav jāpiedomā vai rezultātā radīsies virkne vai skaitlis, jo zināms, ka neviennozīmīgu operāciju izpilde izmetīs izpildlaika kļūdu.
 
@@ -321,14 +306,12 @@ No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu 
 \begin{itemize}
   \item \texttt{toString(value)} - Atgriež `value` vērtību pārvēstu virknes datu tipā.
   Pārvēršanas loģika - doto vērtību pārvērš par virkni, izmantojot tās bāzes reprezentāciju. Piemēram, skaitlis \texttt{42} tiek pārvērsts par virkni \texttt{"42"}, bet patiesuma vērtība tiek pārvērsta par virkni \texttt{"true"} vai \texttt{"false"} attiecīgi. 
-  \item \texttt{toNumber(value)} - Atgriež vērtības skaitlisko reprezentāciju. Ja virkne satur derīgu skaitlisko vērtību, tad tā tiek pārvērsta par atbilstošu skaitli. Piemēram, virkne \texttt{"123.45"} tiek pārvērsta par skaitli \texttt{123.45}. Ja virkne nesatur derīgu skaitlisko vērtību, tiek izmests izņēmums \texttt{InvalidTypeConversionException}. Patiesa vērtība \texttt{true} tiek pārvērsta par skaitli \texttt{1}, bet \texttt{false} par skaitli \texttt{0}. 
+  \item \texttt{toNumber(value)} - Atgriež vērtības skaitlisko reprezentāciju. Ja virkne satur derīgu skaitlisko vērtību, tad tā tiek pārvērsta par atbilstošu skaitli. Piemēram, virkne \texttt{"123.45"} tiek pārvērsta par skaitli \texttt{123.45}. Ja virkne nesatur derīgu skaitlisko vērtību, tiek izmests izņēmums \texttt{RUNTIME\_ERR-12}. Patiesa vērtība \texttt{true} tiek pārvērsta par skaitli \texttt{1}, bet \texttt{false} par skaitli \texttt{0}. 
   
   Virkne ir uzskatāma par derīgu skaitlisko vērtību, ja tā satur tikai skaitli vai decimālskaitli. Ja skaitlim apkārt ir tukšuma simboli, tie tiek ignorēti. Piemēram, virknes \texttt{"  42  "} un \texttt{"-3.14"} ir derīgas skaitliskās vērtības, bet virknes \texttt{"123abc"} un \texttt{"hello"} nav derīgas.
   \item \texttt{toBoolean(value)} - Pārveido dotā operanda vērtību par patiesuma vērtību. Vērtības \texttt{0}, \texttt{"0"}, \texttt{\char`"\char`"} (tukša virkne) un \texttt{false} tiek pārvērstas par aplamu vērtību, bet viss pārējais par patiesu.
-  \item \texttt{typeOf(value)} - Atgriež dotā operanda datu tipu kā virkni. Pieņem jebkura datu tipa vērtību kā argumentu, un atgriež vienu no šādām virkņu vērtībām: \texttt{\char`"number"}, \texttt{\char`"string"}, \texttt{"boolean"}.
+  \item \texttt{typeOf(value)} - Atgriež dotā operanda datu tipu kā virkni. Pieņem jebkura datu tipa vērtību kā argumentu, un atgriež vienu no šādām virkņu vērtībām: \texttt{\char`"number"}, \texttt{\char`"string"}, \texttt{"boolean"}, \texttt{"function"}.
 \end{itemize}
-
-Pie tam, datu tipu konversijas funkcijas neietekmē dotā operanda sākotnējo vērtību un datu tipu, bet gan atgriež jaunu vērtību ar konvertēto tipu. Ja datu tipa konversija nav iespējama, tiek izmests izņēmums \texttt{InvalidTypeConversionException}.
 
 \subsection{Mainīgo redzamība}
 Mainīgo redzamība nosaka kurās programmas daļas ir pieejams konkrētais mainīgais. Valodā Immutant mainīgo redzamība tiek noteikta pēc to deklarācijas vietas. Mainīgā redzesloks ir tā programmas daļa, kurā ir pieejams attiecīgais mainīgais.
@@ -501,8 +484,10 @@ Funkcijas definē sekojošā formā:
 }
 \end{verbatim}
 
-<purity> apzīmē funkcijas īpašību mainīt datus ārpus tās lokālā konteksta. Datorzinātnēs \char"22
-impure" jeb tiešā tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funkciju izmantošana pirmkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funkcijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaina ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās ķermenī nav atļauts izsaukt netīras funkcijas vai veikt citas darbības, kas maina ārējo stāvokli. No otras puses, šī atslēgvārda lietošana nav obligāta, jo valodā Immutant pēc noklusējuma visas funkcijas tiek uzskatītas par tīrām.
+<purity> apzīmē funkcijas īpašību mainīt datus ārpus tās konteksta. Datorzinātnēs \char"22
+impure" jeb tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funkciju izmantošana pirmkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funkcijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaina ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās argumentu sarakstā nav atļauts norādīt mutablus mainīgos un tās ķermenī izsaukt netīras funkcijas. Savukārt netīra funkcija nepieņem nemutablus mainīgos un funkcijas ķermenī atļauj izsaukt gan tīras, gan netīras funkcijas. Atslēgvārda \texttt{pure} lietošana nav obligāta, jo valodā Immutant pēc noklusējuma lietotāja definētās funkcijas tiek uzskatītas par tīrām. 
+
+
 
 \begin{verbatim}
 fn <identifier>(<parameters>) {
@@ -539,13 +524,22 @@ addGlobal(5);
 imut sum = add(3, 7);
 \end{verbatim}
 
+Pie nekorektas rīcības ar funkcijām parādās kāda no sekojošām izpildlaika kļūdām:
+\begin{itemize}
+  \item \texttt{RUNTIME\_ERR-8} 
+  \item \texttt{RUNTIME\_ERR-9}
+  \item \texttt{RUNTIME\_ERR-10}
+  \item \texttt{RUNTIME\_ERR-13}
+\end{itemize}
+
 \subsection{Iebūvētas funkcijas}
 
 Valodā Immutant ir definētas sekojošas iebūvētas funkcijas:
 \begin{itemize}
-  \item \texttt{print(value)} - Izvada dotā operanda vērtību uz konsoli. Pieņem jebkura datu tipa vērtību kā argumentu, un izvada tās reprezentāciju kā virkni uz konsoli.
-  \item \texttt{input(prompt)} - Parāda dotā virknes tipa argumenta vērtību kā uzvedni lietotājam, un gaida lietotāja ievadi. Atgriež lietotāja ievadīto vērtību kā virknes datu tipu.
-  \item \texttt{toString(value), toNumber(value), toBoolean(value), typeOf(value)} - Datu tipu konversijas funkcijas, kas aprakstītas sadaļā ~\ref{section:datatype-conversion}
+  \item \texttt{print(value)} - tīra funkcija - izvada dotā operanda vērtību uz konsoli. pieņem jebkura datu tipa vērtību kā argumentu, un izvada tās reprezentāciju kā virkni uz konsoli.
+  \item \texttt{time()} - tīra funkcija - izvada pašreizējo laiku milisekundēs kopš 1970. gada 1. janvāra 00:00:00 UTC.
+  \item \texttt{toString(value), toNumber(value), toBoolean(value), typeOf(value)} - tīras datu tipu konversijas funkcijas, kas aprakstītas sadaļā ~\ref{section:datatype-conversion}
+
 \end{itemize}
 
 \section{Kontroles plūsma}
@@ -564,12 +558,14 @@ if (<condition>) {
 
 <condition> ir loģiska izteiksme, kas rezultātā atgriež patiesuma vērtību. Ja izteiksmes vērtība ir patiesa, tad tiek izpildīti apgalvojumi <statements> iekš pirmās figūriekavas. Ja izteiksmes vērtība ir aplama, tad tiek izpildīti apgalvojumi <statements> iekš otrās figūriekavas pēc atslēgvārda \texttt{else}.
 
-Ja ir nepieciešams izpildīt vairākus nosacījumus, tad var izmantot vairākas \texttt{else if} zarošanās. Sintakse ir sekojoša:
+Ja ir nepieciešams izpildīt vairākus nosacījumus, tad var izmantot vairākas \texttt{else/if} zarošanās. Sintakse ir sekojoša:
 \begin{verbatim}
 if (<condition1>) {
     <statements1>
-} else if (<condition2>) {
-    <statements2>
+} else {
+    if (<condition2>) {
+        <statements2>
+    }
 } else {
     <statements3>
 }
@@ -747,13 +743,18 @@ RUNTIME\_ERR-5 & Ja abi dalīšanas operācijas operandi nav skaitļi, izmet paz
 \midrule
 RUNTIME\_ERR-6 & Ja funkcijas izsaukuma saucējs nav derīga funkcija, tad parāda paziņojumu: ``Callee is not a function``.                                                                                                                                \\
 \midrule
-RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklarēts, parāda paziņojumu: ``Variable already defined: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizstāts ar attiecīgu mainīgā nosaukumu.                      \\
+RUNTIME\_ERR-7 & Ja mainīgais ar tādu pašu nosaukumu ir jau iepriekš deklarēts, parāda paziņojumu: ``Variable already defined: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizstāts ar attiecīgu mainīgā nosaukumu.                      \\
 \midrule
-RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments OKed to function``.                                                          \\
+RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
 \midrule
-RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot OK mutable argument to impure function``.                                                                                  \\
+RUNTIME\_ERR-9 & Ja netīras funkcijas izsaukumā tiek padots arguments, kas ir nemutabls mainīgais, parāda paziņojumu: ``Cannot pass immutable argument to impure function``.                                                                                  \\
 \midrule
-RUNTIME\_ERR-10 & Ja nemutablam mainīgam pēc inicializācijas vēlreiz piešķir kādu vērtību, parāda paziņojumu ``Cannot assign to constant variable: <t>``. <t> tiek aizstāts ar attiecīgu mainīgā nosaukumu.                                                                                  \\
+RUNTIME\_ERR-10 & Ja tīras funkcijas izsaukumā tiek padots arguments, kas ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to pure function``.  \\
+\midrule
+RUNTIME\_ERR-11 & Ja nemutablam mainīgam pēc inicializācijas vēlreiz piešķir kādu vērtību, parāda paziņojumu ``Cannot assign to constant variable: <t>``. <t> tiek aizstāts ar attiecīgu mainīgā nosaukumu.                                                                                  \\
+\midrule
+RUNTIME\_ERR-12 & Ja datus nav iespējam pārvērst uz citu datu tipu, parāda paziņojumu: ``Invalid type conversion``.                                                                                  \\\midrule
+RUNTIME\_ERR-13 & Ja tīra funkcija izsauc netīru funkciju, parāda paziņojumu: ``Pure function cannot call impure function``.                                                                                  \\
 \midrule
 MISC\_ERR-1 & Ja doto failu neizdodas nolasīt, parāda paziņojumu: ``Error: Could not open file``.                                                                                              \\
 \bottomrule
@@ -1035,6 +1036,12 @@ Izvaddati: & Izteiksmes vērtība, izpildīts efekts, ja tāds ir, piemēram, v�
 & RUNTIME\_ERR-8 \\
 \cmidrule(lr){2-3}
 & RUNTIME\_ERR-9 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-10 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-11 \\
+\cmidrule(lr){2-3}
+& RUNTIME\_ERR-12 \\
 
 \bottomrule
 \caption{Funkcijas EVAL-2 apraksts}
