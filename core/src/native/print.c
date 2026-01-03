@@ -5,7 +5,7 @@
 #include "str_val.h"
 #include "value_t.h"
 
-Value native_print(ValueBuffer* arguments)
+Value native_print(ValueBuffer* arguments, Context* context)
 {
 	Value arg = arguments->data[0];
 	printf("%s\n", str_val(arg));

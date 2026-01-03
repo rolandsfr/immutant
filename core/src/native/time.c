@@ -14,7 +14,7 @@ double time_in_ms()
 	return (double)tv.tv_sec * 1000.0 + (double)tv.tv_usec / 1000.0;
 }
 
-Value native_time(ValueBuffer* arguments)
+Value native_time(ValueBuffer* arguments, Context* context)
 {
 	double current_time = time_in_ms();
 	return make_number(current_time);

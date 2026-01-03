@@ -73,7 +73,15 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 		return make_null();
 	}
 
-	Value result = callable_val->call(&args_buffer);
+	Value result =
+		callable_val->call(&args_buffer, &(Context){.line = expr->base.line,
+													.error_out_tunnel = err});
+
+	if (err && err->type != ERROR_NONE) {
+		ValueBuffer_free(&args_buffer);
+		return make_null();
+	}
+
 	ValueBuffer_free(&args_buffer);
 	return result;
 }

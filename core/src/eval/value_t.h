@@ -7,6 +7,7 @@
 
 typedef enum PurityType PurityType;
 typedef struct ValueBuffer ValueBuffer;
+typedef struct Error Error;
 
 typedef enum ValueType {
 	VAL_NUMBER,
@@ -30,8 +31,13 @@ typedef struct Value {
 	enum PurityType purity;
 } Value;
 
+typedef struct Context {
+	int line;
+	Error* error_out_tunnel;
+} Context;
+
 typedef struct Callable {
-	Value (*call)(ValueBuffer* arguments);
+	Value (*call)(ValueBuffer* arguments, Context* context);
 	size_t arity;
 } Callable;
 
