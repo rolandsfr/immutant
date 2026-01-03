@@ -749,7 +749,7 @@ RUNTIME\_ERR-6 & Ja funkcijas izsaukuma saucējs nav derīga funkcija, tad parā
 \midrule
 RUNTIME\_ERR-7 & Ja mainīgais ar tādau pašu nosaukumu ir jau iepriekš deklarēts, parāda paziņojumu: ``Variable already defined: \textless{}t\textgreater{}``. \textless{}t\textgreater tiek aizstāts ar attiecīgu mainīgā nosaukumu.                      \\
 \midrule
-RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
+RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments OKed to function``.                                                          \\
 \midrule
 RUNTIME\_ERR-9 & Ja tīras funkcijas izsaukumā tiek padots arguments ka ir mutabls mainīgais, parāda paziņojumu: ``Cannot OK mutable argument to impure function``.                                                                                  \\
 \midrule
@@ -1290,7 +1290,8 @@ LEX-1 & 19.12 &
 LEX-2 & 15.12 &
 1.~Izveido virkni ``else`` \newline
 2.~Skenē izveidoto virkni \newline
-& Atslēgvārda tipa leksēma ar vērtību ``else`` & OK \\ \hline
+& Atslēgvārda tipa leksēma ar vērtību ``else`` & FAIL \\ \cline{2-2} \cline{5-5}
+& 17.12 & & & OK \\ \hline
 
 LEX-2 & 15.12 &
 1.~Izveido virkni "39.456723asd=as" \newline
@@ -1314,11 +1315,12 @@ PARSE-1 & 27.12 &
 1.~Parsē binārās izteiksmes ar dažādiem operatoriem\newline
 2.~Pārbauda, ka operāciju kārtība tiek ievērota\newline
 3.~Pārbauda AST struktūru
-& 
-BinaryExpr(-) [BinaryExpr(+) [NUMBER(1), BinaryExpr(*) [NUMBER(2), NUMBER(3)]], NUMBER(4)]
-& OK \\ \hline
+& BinaryExpr(-) [BinaryExpr(+) [NUMBER(1), BinaryExpr(*) [NUMBER(2), NUMBER(3)]], NUMBER(4)]
+& FAIL \\ \cline{2-2} \cline{5-5}
+& 28.12 & & & FAIL \\ \cline{2-2} \cline{5-5}
+& 30.12 & & & OK \\ \hline
 
-PARSE-1 & 27.12 &
+PARSE-1 & 02.01 &
 1.~Parsē priekšraksta bloku no leksēmām: \{, \}\newline
 & Izvedots pirmkoda bloka AST mezgls ar 0 priekšrakstiem & OK  \\ \hline
 
@@ -1342,39 +1344,43 @@ EVAL-2 & 30.12 &
 2.~Pārbauda rezultāta vērtību\newline
 & Skaitliskā vērtība 42 & OK \\ \hline
 
-EVAL-2 & 02.01 &
+EVAL-2 & 29.12 &
 1.~Izvērtē dalīšanas operāciju: 84 / 2\newline
 2.~Pārbauda rezultāta vērtību\newline
-& Skaitliskā vērtība 42 & OK \\ \hline
+& Skaitliskā vērtība 42 & OK \\ \cline{2-2} \cline{5-5}
+& 01.01 & & & FAIL \\ \cline{2-2} \cline{5-5}
+& 02.01 & & & OK \\ \hline
 
 EVAL-2 & 03.01 &
 1.~Mēģina dalīt ar nulli: 42 / 0\newline
 2.~Pārbauda kļūdas stāvokli\newline
 & Kļūda RUNTIME\_ERR-1 & OK \\ \hline
 
-EVAL-2 & 05.01 &
+EVAL-2 & 02.01 &
 1.~Piešķir mainīgajam x vērtību 42\newline
 2.~Pārbauda, ka vērtība tiek saglabāta vidē\newline
 & Mainīgā x vērtība ir 42 & OK \\ \hline
 
-EVAL-2 & 06.01 &
+EVAL-2 & 03.01 &
 1.~Mēģina piešķirt vērtību nedefinētam mainīgajam y\newline
 2.~Pārbauda kļūdas stāvokli\newline
 & Kļūda RUNTIME\_ERR-2 & OK \\ \hline
 
-EVAL-3 & 20.12 &
+EVAL-3 & 18.12 &
 1.~Izvērtē IF/ELSE izteiksmi ar patieso nosacījumu\newline
 2.~Pārbauda, ka izpildās THEN bloks\newline
 3.~Pārbauda, ka ELSE bloks netiek izpildīts
-& IF bloks izpildīts, ELSE netiek & OK \\ \hline
+& IF bloks izpildīts, ELSE netiek & OK \\ \cline{2-2} \cline{5-5}
+& 20.12 & & & OK \\ \hline
 
-EVAL-3 & 28.12 &
+EVAL-3 & 26.12 &
 1.~Izvērtē WHILE ciklu ar nosacījumu, kurš kļūst aplams pēc 3 iterācijām\newline
 2.~Pārbauda, ka bloks izpildās 3 reizes\newline
 3.~Apstiprina pareizu cikla apstāšanos
-& Cikls izpildās 3 reizes, pēc tam apstājas & OK \\ \hline
+& Cikls izpildās 3 reizes, pēc tam apstājas & FAIL \\ \cline{2-2} \cline{5-5}
+& 28.12 & & & OK \\ \hline
 
-EVAL-3 & 04.01 &
+EVAL-3 & 03.01 &
 1.~Izvērtē funkciju izsaukumu ar nepareizu argumentu skaitu\newline
 2.~Funkcija sagaida 2 argumentus, bet tiek padots 1\newline
 3.~Pārbauda kļūdas kodu
