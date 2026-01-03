@@ -65,6 +65,16 @@ Value* env_get(Env* env, const char* name)
 	return NULL; // not found
 }
 
+EnvEntry* env_get_direct_entry(Env* env, const char* name)
+{
+	for (EnvEntry* entry = env->entries; entry != NULL; entry = entry->next) {
+		if (strcmp(entry->name, name) == 0) {
+			return entry;
+		}
+	}
+	return NULL; // not found
+}
+
 EnvEntry env_get_entry(Env* env, const char* name)
 {
 	for (Env* e = env; e != NULL; e = e->parent) {
