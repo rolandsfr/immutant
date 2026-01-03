@@ -16,6 +16,10 @@ void eval_var_dclr(Env* env, VarDeclStmt* var_stmt, Error* error)
 		value = eval_expr(var_stmt->initializer, error, env);
 	}
 
+	if (error && error->type != ERROR_NONE) {
+		return;
+	}
+
 	if (env_get_direct_entry(env, var_stmt->name) != NULL) {
 		if (error) {
 			*error = (Error){.type = RUNTIME_VARIABLE_REDEFINITION,
