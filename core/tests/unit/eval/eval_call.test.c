@@ -16,7 +16,7 @@
 #include "Mockresolve.h"
 
 void define_mock_function_in_env(Env* env, const char* name, size_t arity,
-								 Value (*mock_function)(ValueBuffer*),
+								 Value (*mock_function)(ValueBuffer*, Context*),
 								 PurityType purity)
 {
 	Callable* callable = malloc(sizeof(Callable));
@@ -30,7 +30,7 @@ void define_mock_function_in_env(Env* env, const char* name, size_t arity,
 	env_define_fn(env, name, func_value, purity);
 }
 
-Value mock_function(ValueBuffer* arguments)
+Value mock_function(ValueBuffer* arguments, Context* context)
 {
 	if (arguments->len != 1 || arguments->data[0].type != VAL_NUMBER) {
 		return make_number(-1);
