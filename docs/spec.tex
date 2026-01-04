@@ -643,6 +643,99 @@ Valodā Immutant ir definēti sekojoši atslēgas vārdi, kas ir rezervēti valo
   \item \texttt{false} - aplamas vērtība
 \end{itemize}
 
+\section{Formālā gramatika}
+\label{section:grammar}
+
+Valodas Immutant formālā, kas aprakstīta BNF formā, definē valodas specifikāciju - kas var izvērsties par kaut ko citu un uz ko tieši. Termināļi ir apzīmēti ar lielajiem burtiem, bet netermināļi ar mazajiem burtiem.
+
+\begin{verbatim}
+PROGRAMMA:
+  program             -> statement* EOF
+
+PRIEKŠRAKSTI:
+  statement           -> var_declaration
+                      | function_declaration
+                      | if_statement
+                      | while_statement
+                      | return_statement
+                      | block_statement
+                      | expression_statement
+
+  var_declaration     -> mutability IDENTIFIER 
+                         ( "=" expression )? ";"
+  
+  mutability          -> "mut" | "imut"
+
+  function_declaration -> purity? "fn" IDENTIFIER "(" 
+                          parameters? ")" block_statement
+  
+  purity              -> "pure" | "impure"
+
+  parameters          -> IDENTIFIER ( "," IDENTIFIER )*
+
+  if_statement        -> "if" "(" expression ")" 
+                         block_statement
+                         ( "else" block_statement )?
+
+  while_statement     -> "while" "(" expression ")" 
+                         block_statement
+
+  return_statement    -> "return" expression? ";"
+
+  block_statement     -> "{" statement* "}"
+
+  expression_statement -> expression ";"
+
+IZTEIKSMES:
+  expression          -> assignment
+
+  assignment          -> logical_or 
+                         ( "=" logical_or )?
+
+  logical_or          -> logical_and 
+                         ( "||" logical_and )*
+
+  logical_and         -> equality 
+                         ( "&&" equality )*
+
+  equality            -> comparison 
+                         ( ( "!=" | "==" ) comparison )*
+
+  comparison          -> additive 
+                         ( ( ">" | ">=" | "<" | "<=" ) 
+                           additive )*
+
+  additive            -> multiplicative 
+                         ( ( "-" | "+" ) multiplicative )*
+
+  multiplicative      -> unary 
+                         ( ( "/" | "*" | "%" ) unary )*
+
+  unary               -> ( "!" ) unary
+                      | call
+
+  call                -> primary ( "(" arguments? ")" )*
+
+  arguments           -> expression ( "," expression )*
+
+  primary             -> NUMBER
+                      | STRING
+                      | "true"
+                      | "false"
+                      | IDENTIFIER
+                      | "(" expression ")"
+
+
+\end{verbatim}
+
+\noindent Apzīmējumu saraksts no formālās gramatikas:
+\begin{itemize}
+  \item \texttt{|} apzīmē alternatīvu (vai)
+  \item \texttt{*} apzīmē nulli vai vairākas reizes (\textit{Kleene star})
+  \item \texttt{?} apzīmē nulli vai vienreiz (opcionalitāte)
+  \item \texttt{( )} apzīmē grupu
+\end{itemize}
+
 \chapter{Programmatūras Prasību specifikācija}
 \label{chap:PPS}
 
@@ -1264,6 +1357,311 @@ EVAL-1 funkcija ir atbildīga par AST koka izvērtēšanu un, visbeidzot, progra
   \label{fig:fun_eval_1}
 \end{center}
 
+\chapter{Datu struktūras un algoritmi}
+
+Šajā nodaļā tiek aprakstītas galvenās datu struktūras un algoritmi, kas izmantoti interpretatora implementācijā. Detalizēta izpratne par šīm struktūrām un algoritmiem ir būtiska sistēmas iekšējās darbības izpratnei.
+
+\section{Datu struktūras}
+
+\subsection{Vides struktūra (Environment)}
+
+
+
+
+Vides datu struktūra tiek izmantota, lai glabātu mainīgo un funkciju vērtības izpildes laikā. Struktūra ir realizēta kā saistīts saraksts ar norādi uz vecāka vidi, lai atbalstītu leksisko tvērumu. Šeit vide un apkārtne tiek lietoti kā sinonīmi.
+
+Leksiskais tvērums nozīmē, ka funkcijas var piekļūt mainīgajiem no tās vides, kurā tās tika definētas, nevis no vides, kurā tās tiek izsauktas. Tas ir būtiski funkciju darbībai un mainīgo redzamībai.
+
+\begin{center}
+  \includegraphics[scale=0.6]{assets/arch/env_structure.jpg}
+  \captionof{figure}{Vides struktūra}
+  \label{fig:env_structure}
+\end{center}
+
+\vspace{0.5cm}
+
+
+Katrs apkārtnes mezgls satur norādi uz vecāka vidi (\texttt{parent}) un uz saistīto sarakstu ar mainīgajiem (\texttt{entries}). Kad tiek meklēts mainīgais, sistēma vispirms pārbauda pašreizējo vidi, un, ja mainīgais nav atrasts, meklē vecāka vidē rekursīvi līdz pat globālajai videi. Šī pieeja nodrošina leksisko tvērumu un ļauj iekšējām funkcijām piekļūt ārējo tvērumu mainīgajiem.
+
+Visefektīvākais veids kā glabāt mainīgo vērtības ir izmantojot jaucējtabulu, kas nodrošina ātru piekļuvi pēc atslēgas (mainīgā nosaukuma). Neskatoties uz to, šajā interpretatorā ir izvēlēta saistīta saraksta pieeja, lai saglabātu vienkāršību un vieglāku implementāciju. To, protams, būtu ieteicams mainīt nākotnē.
+
+\subsection{Abstraktā sintakses koka struktūras}
+
+Abstraktais sintakses koks (AST) reprezentē programmas struktūru pēc parsēšanas. AST sastāv no divām galvenajām hierarhijām: izteiksmēm (Expr) un priekšrakstiem (Stmt).
+
+\begin{verbatim}
+Expr (pamata tips)
+|-- LiteralExpr
+|   |-- NumberExpr (double value)
+|   |-- StringExpr (char* value)
+|   +-- BoolExpr (int value)
+|-- VariableExpr (char* name)
+|-- AssignExpr (char* name, Expr* value)
+|-- UnaryExpr (TokenType operator, Expr* operand)
+|-- BinaryExpr (Expr* left, TokenType operator, Expr* right)
+|-- LogicalExpr (Expr* left, TokenType operator, Expr* right)
++-- CallExpr (Expr* callee, Expr** arguments, size_t arg_count)
+
+Stmt (pamata tips)
+|-- ExprStmt (Expr* expression)
+|-- VarDeclStmt (char* name, Expr* initializer, MutabilityType)
+|-- FunDeclStmt (char* name, char** params, Stmt* body)
+|-- ReturnStmt (Expr* value)
+|-- IfStmt (Expr* condition, Stmt* then_branch, Stmt* else_branch)
+|-- WhileStmt (Expr* condition, Stmt* body)
++-- BlockStmt (Stmt** statements, size_t count)
+\end{verbatim}
+
+Katrs mezgls satur \texttt{type} lauku, kas norāda mezgla tipu, un \texttt{line} lauku kļūdu ziņojumiem. Izteiksmju mezgli atgriež vērtības, bet priekšrakstu mezgli izpilda darbības un maina stāvokli. Šī struktūra ļauj rekursīvi apstrādāt programmas kodu, sākot no saknes mezgla un ejot dziļumā pa katru apakškoku.
+
+\subsection{Vērtību reprezentācija}
+
+Vērtības tiek reprezentētas ar \texttt{Value} struktūru, kas izmanto \texttt{union} efektīvai atmiņas izmantošanai. Katra vērtība satur tipu un atbilstošo datu lauku.
+
+\begin{verbatim}
+Value struktūra (32 baiti):
++-------------------------+
+| ValueType type          | (4 baiti)
++-------------------------+
+| union {                 | (16 baiti)
+|   long double number;   |
+|   int boolean;          |
+|   char* string;         |
+|   Callable* callable;   |
+| }                       |
++-------------------------+
+| MutabilityType mut      | (4 baiti)
+| PurityType purity       | (4 baiti)
++-------------------------+
+
+ValueType enum:
+  VAL_NUMBER   - skaitliska vērtība (long double)
+  VAL_BOOL     - būla vērtība (int)
+  VAL_STRING   - vikrnes vērtība (char*)
+  VAL_FN       - lietotāja definētā funkcija (Callable*)
+  VAL_NATIVE   - iebūvēta funkcija (Callable*)
+\end{verbatim}
+
+Union konstrukcija ļauj vienā atmiņas vietā glabāt dažādus datu tipus, izmantojot tikai tik daudz atmiņas, cik nepieciešams lielākajam tipam. 
+
+\section{Algoritmi}
+
+\subsection{Leksiskā analīze}
+
+Leksiskā analīze pārveido pirmkodu uz leksēmām, apstrādājot katru rakstzīmi un atpazīstot atslēgvārdus, identifikatorus, literāļus un operatorus.
+
+\begin{verbatim}
+Algoritms: scan_tokens(source_code)
+  1. Inicializē token_buffer
+  2. Kamēr nav sasniegts koda beigas:
+     a. Izlaiž tukšumus un komentārus
+     b. Nosaka nākamās leksēmas tipu:
+        - Ja cipars -> skenē NUMBER
+        - Ja burts -> skenē IDENTIFIER vai KEYWORD
+        - Ja pēdiņa -> skenē STRING
+        - Ja operators -> atpazīst (+ - * / = == != < > <= >=)
+        - Ja pieturzīme -> atpazīst (; , ( ) { })
+     c. Izveido Token{type, lexeme, line}
+     d. Pievieno token_buffer
+  3. Pievieno EOF leksēmu
+  4. Atgriež token_buffer
+
+Atslēgvārdu atpazīšana:
+  - Pēc identifikatora nolasīšanas pārbauda, vai tas ir 
+    atslēgvārds (imut, mut, fn, if, else, while, return)
+  - Ja atbilst -> TOKEN_KEYWORD
+  - Citādi -> TOKEN_IDENTIFIER
+\end{verbatim}
+
+\subsection{Parsēšana}
+Parsēšana pārveido leksēmas uz AST kokiem, izmantojot rekursīvo nolaišanās metodi, ievērojot gramatikas noteikumus un operatoru prioritātes.
+
+\begin{verbatim}
+Algoritms: parse(tokens)
+  1. Inicializē token_index = 0
+  2. Izveido program_statements = []
+  3. Kamēr nav sasniegtas programmas beigas:
+     a. Parsē priekšrakstu un pievieno program_statements masīvam
+  4. Atgriež BlockStmt{program_statements}
+
+Algoritms: parse_statement()
+  1. Nosaka nākamās leksēmas tipu:
+     - Ja "imut" vai "mut" -> parse_var_declaration()
+     - Ja "fn", "pure" vai "impure" -> parse_function_declaration()
+     - Ja "if" -> parse_if_statement()
+     - Ja "while" -> parse_while_statement()
+     - Ja "{" -> parse_block_statement()
+     - Ja "return" -> parse_return_statement()
+     - Citādi -> parse_expression_statement()
+
+Algoritms: parse_expression()
+  Izmanto operatoru prioritātes (no zemākās uz augstāko):
+  - parse_or_expression()
+    +- parse_and_expression()
+       +- parse_equality_expression()
+          +- parse_comparison_expression()
+             +- parse_additive_expression()
+                +- parse_multiplicative_expression()
+                   +- parse_unary_expression()
+                      +- parse_call_expression()
+                         +- parse_primary_expression()
+
+Algoritms: parse_or_expression()
+  1. Parsē left = parse_and_expression()
+  2. Kamēr nākamā leksēma ir "||":
+     a. patērē "||"
+     b. Parsē right = parse_and_expression()
+     c. left = LogicalExpr{left, OR, right}
+  3. Atgriež left
+
+Algoritms: parse_and_expression()
+  Identisks parse_or_expression(), bet ar "&&" operatoru
+
+Algoritms: parse_equality_expression()
+  1. Parsē left = parse_comparison_expression()
+  2. Kamēr nākamā leksēma ir "==" vai "!=":
+     a. Operators = nākamā leksēma
+     b. patērē operatoru
+     c. Parsē right = parse_comparison_expression()
+     d. left = BinaryExpr{left, operators, right}
+  3. Atgriež left
+
+Algoritms: parse_comparison_expression()
+  1. Parsē left = parse_additive_expression()
+  2. Kamēr nākamā leksēma ir "<", ">", "<=", ">=":
+     a. Operators = nākamā leksēma
+     b. patērē operatoru
+     c. Parsē right = parse_additive_expression()
+     d. left = BinaryExpr{left, operators, right}
+  3. Atgriež left
+
+Algoritms: parse_additive_expression()
+  1. Parsē left = parse_multiplicative_expression()
+  2. Kamēr nākamā leksēma ir "+" vai "-":
+     a. Operators = nākamā leksēma
+     b. patērē operatoru
+     c. Parsē right = parse_multiplicative_expression()
+     d. left = BinaryExpr{left, operators, right}
+  3. Atgriež left
+
+Algoritms: parse_multiplicative_expression()
+  1. Parsē left = parse_unary_expression()
+  2. Kamēr nākamā leksēma ir "*", "/" vai "%":
+     a. Operators = nākamā leksēma
+     b. patērē operatoru
+     c. Parsē right = parse_unary_expression()
+     d. left = BinaryExpr{left, operators, right}
+  3. Atgriež left
+
+Algoritms: parse_unary_expression()
+  1. Ja nākamā leksēma ir "!":
+     a. patērē "!"
+     b. Parsē operand = parse_unary_expression()
+     c. Atgriež UnaryExpr{NOT, operand}
+  2. Citādi parsē call_expression()
+
+Algoritms: parse_call_expression()
+  1. Parsē expr = parse_primary_expression()
+  2. Kamēr nākamā leksēma ir "(":
+     a. patērē "("
+     b. Parsē argumentu sarakstu un tos pievieno arguments masīvam:
+        - arguments = []
+     c. Ja nākamā leksēma nav ")":
+        - arguments += parse_expression()
+        - Kamēr nākamā leksēma ir ",":
+          * patērē ","
+          * arguments += parse_expression()
+     d. patērē ")"
+     e. expr = CallExpr{expr, arguments}
+  3. Atgriež expr
+
+Algoritms: parse_primary_expression()
+  1. Nosaka nākamās leksēmas tipu:
+     - Ja NUMBER -> Atgriež NumberExpr{value}
+     - Ja STRING -> Atgriež StringExpr{value}
+     - Ja "true" -> Atgriež BoolExpr{true}
+     - Ja "false" -> Atgriež BoolExpr{false}
+     - Ja IDENTIFIER -> Parsē variable_or_assignment()
+     - Ja "(" -> parse_grouped_expression()
+\end{verbatim}
+
+Parsēšana rekursīvi nolaižas cauri izteiksmju hierarhijai, ievērojot operatoru prioritātes. Katra funkcija atbild par vienu prioritātes līmeni, sākot no zemākās (loģiskie operatori) līdz augstākajai (primāras izteiksmes). Rekursīvā nolaišanās nodrošina pareizu asociativitāti. Ja parsēšana neizdodas, tiek izvirzīta sistēmas kļūda ar norādi uz leksēmas pozīciju pirmkodā.
+
+\subsection{Izvērtēšana}
+
+Izvērtēšana pārveido AST kokus par izpildlaika darbībām, izmantojot koka apstaigāšanas interpretācijas metodi. Katra AST mezgla veids tiek apstrādāts atbilstošā veidā, un mainīgo vērtības tiek uzglabātas vidē.
+
+\begin{verbatim}
+Algoritms: evaluate(ast, environment)
+  1. Inicializē context{environment, error_flag}
+  2. Izvērtē ast root mezglu
+  3. Ja kļūda flags ir uzstādīta, atgriež null
+  4. Citādi atgriež pēdējo izvērtēto vērtību
+
+Algoritms: eval_statement(stmt, context)
+  1. Nosaka priekšraksta tipu:
+     - Ja ExprStmt -> Izvērtē izteiksmi
+     - Ja VarDeclStmt -> Deklarē mainīgo vidē
+     - Ja FunDeclStmt -> Reģistrē funkciju vidē
+     - Ja BlockStmt -> Izveido jaunu vidi un izvērtē bloku
+     - Ja IfStmt -> Novērtē nosacījumu, izpilda attiecīgo zaru
+     - Ja WhileStmt -> Atkārtoti izpilda, kamēr nosacījums ir patiess
+     - Ja ReturnStmt -> Nostāda return_value un iziet
+
+Algoritms: eval_expression(expr, context)
+  1. Nosaka izteiksmes tipu:
+     - Ja Literal -> Atgriež vērtību
+     - Ja Variable -> Meklē mainīgo vidē, atgriež vērtību
+     - Ja Assign -> Izvērtē izteiksmi, atjaunina mainīgā vērtību vidē
+     - Ja Binary -> Izvērtē abus operandus, pielieto operatoru
+     - Ja Logical -> Izvērtē loģisko izteiksmi, ņemot vērā loģisko saīsināšanu
+     - Ja Unary -> Izvērtē operandu, pielieto operatoru
+     - Ja Call -> Izvērtē saucēju un argumentus, izsauc funkciju
+
+Algoritms: eval_block(statements, context)
+  1. Izveido jaunu apkārtni new_env{parent: context.env}
+  2. Priekš katra priekšraksta s in statements:
+     a. eval_statement(s, new_context)
+     b. Ja return_value ir uzstādīts, iziet
+     c. Ja kļūdas karogs ir uzstādīts, iziet
+
+Algoritms: eval_call_expr(callee_expr, arguments, context)
+  1. Izvērtē funkciju function = eval_expression(callee_expr, context)
+  2. Pārbauda, vai function ir callable tipa
+  3. Pārbauda argumentu skaitu
+  4. Priekš noteikta callable tipa:
+     a. Ja VAL_FN:
+        - Izveido call_env{parent: function.closure_env}
+        - Izveido parametru mainīgos ar argumentu vērtībām iekš call_env apkārtnes
+        - Izpilda funkcijas ķermeni ar iekš call_env apkārtnes
+        - Atgriež return_value
+     b. Ja VAL_NATIVE:
+        - Izsauc C funkciju ar arguments
+        - Atgriež rezultātu
+
+Algoritms: lookup_variable(name, env)
+  1. current_env = env
+  2. Kamēr current_env != null:
+     a. Meklē mainīgā nosaukumu name current_env.entries sarakstā
+     b. Ja atrasts, atgriež entry.value
+     c. current_env = current_env.parent
+  3. Ja nav atrasts, atgriež kļūdu RUNTIME_ERR-2
+
+Algoritms: apply_binary_operator(left, op, right)
+  1. Pēc operatora tipa pārbauda operandu tipus
+  2. Ja aritmētiskais operators:
+     - Abiem operandiem jābūt NUMBER
+     - Atgriež skaitlisku rezultātu
+  3. Ja salīdzinājuma operators:
+     - Abiem operandiem jābūt NUMBER
+     - Atgriež BOOL rezultātu
+  4. Ja vienādības operators:
+     - Abiem operandu tipiem ir jāsakrīt
+     - Atgriež BOOL rezultātu
+\end{verbatim}
+
+Mainīgo un funkciju vērtības tiek uzglabātas vidē, kas tiek dinamiski izveidota pie katra funkcijas izsaukuma. Videi ir norāde uz vecāka apkārtni, kas ļauj iedarbināt leksisko tvērumu, kur iekšējās vides var piekļūt ārējo apkārtņu mainīgajiem. Kļūdas tiek pamanītas katrā posmā, un ja kļūda ir konstatēta, interpretācija apstājas.
+
 \chapter{Testēšana}
 \section{Testēšanas dokumentācija}
 
@@ -1401,6 +1799,8 @@ EVAL-3 & 03.01 &
 \end{longtable}
 
 \renewcommand{\arraystretch}{1.0}
+
+
 
 \chapter{Projekta Organizācija}
 Vispirms tika izstrādāta pilna valodas specifikācija un tad sākta programmatūras izstrāde, kas tika veikta individuāli. Kvalifikācijas darba tēmas izvēlē bija tīri no personīgās iniciatīvas. Programmatūras pirmkods ir rakstīts valodā C pēc C11 standarta, izmantojot GNU Compiler Collection (GCC) kompilatoru. 
