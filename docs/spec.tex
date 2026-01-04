@@ -80,8 +80,11 @@ EKSAKTO ZINĀTŅU UN TEHNOLOĢIJU FAKULTĀTE}
   \item \textbf{nemutabls} - mutabilitātes īpašība, kas neļauj mainīt datu vērtību pēc sākotnējās inicializācijas.
 \item \textbf{Immutant} - Jauna pašizveidota interpretējama programmēšanas valoda ar datu nemainības semantiku, kas apskatīta šajā darbā.
 
-  \item \textbf{lvalue} - Angļu valodā "left value" jeb saīsināti lvalue - izteiksme, kas apzīmē atmiņas vietu, kurā var glabāt vērtību.
-  \item \textbf{REPL} - Angļu valodā "Read-Eval-Print Loop" - interaktīva vide, kas ļauj lietotājam ievadīt kodu, to izpildīt un redzēt rezultātu tūlītēji.
+  \item \textbf{lvalue} - Angļu valodā ``left value`` jeb saīsināti lvalue - izteiksme, kas apzīmē atmiņas vietu, kurā var glabāt vērtību.
+  \item \textbf{REPL} - Angļu valodā ``Read-Eval-Print Loop`` - interaktīva vide, kas ļauj lietotājam ievadīt kodu, to izpildīt un redzēt rezultātu tūlītēji.
+  % UAT, LSP
+  \item \textbf{UAT} - Angļu valodā ``User Acceptance Testing`` - lietotāja akceptēšanas testēšana - programmatūras testēšanas veids, kurā galalietotāji pārbauda sistēmu, lai pārliecinātos, ka tā atbilst viņu prasībām un ir gatava lietošanai.
+  \item \textbf{LSP} - Angļu valodā ``Language Server Protocol`` - valodas servera protokols - standarts, kas ļauj izstrādes rīkiem un redaktoriem sazināties ar programmēšanas valodu serveriem, lai nodrošinātu funkciju automātisko pabeigšanu, sintakses izcelšanu un kļūdu pārbaudi.
 \end{itemize}
 
 \newpage
@@ -1397,6 +1400,64 @@ EVAL-3 & 03.01 &
 \end{longtable}
 
 \renewcommand{\arraystretch}{1.0}
+
+\chapter{Projekta Organizācija}
+Vispirms tika izstrādāta pilna valodas specifikācija un tad sākta programmatūras izstrāde, kas tika veikta individuāli. Kvalifikācijas darba tēmas izvēlē bija tīri no personīgās iniciatīvas. Programmatūras pirmkods ir rakstīts valodā C pēc C11 standarta, izmantojot GNU Compiler Collection (GCC) kompilatoru. 
+
+Koda testēšana notika vienlaicīgi ar galvenās programmatūras izstrādi, nodrošinot modulāru arhitektūru un plašu testu klāstu. 
+Pilns kvalifikācijas darba dokuments ir sagatavots pēc programmatūras izstrādes un testēšanas pabeigšanas.
+
+\chapter {Kvalitātes nodrošināšana}
+Programmatūras kvalitātes nodrošināšanai lielāko uzsvaru tika likts uz vienībtestēšanu un integrācijas testēšanu. Katrs izstrādātais modulis tika pārbaudīts, lai nodrošinātu tā atbilstību specifikācijai un pareizu darbību dažādos scenārijos. Testēšanas rezultāti tika dokumentēti, un visi atklātie defekti tika novērsti pirms galīgās programmatūras versijas izveides.
+
+Lai programmpirmkods pats par sevi būtu kvalitatīvs, tika ievērotas labās programmšanas prakses, piemēram, koda lasāmības uzturēšana, komentāru rakstīšana un modulāru funkciju izstrāde. Izmantotā valoda C ir stingri tipizēta, kas palīdz novērst daudzas potenciālās kļūdas jau kompilācijas laikā. Lai paātrinātu izstrādes procesu, tika izmantota LSP (Language Server Protocol) integrācija iekš koda redaktora, kas nodrošināja automātisku koda formatēšanu un sintakses pārbaudi vēl pirms kompilatora palaišanas.
+
+Programmatūras dokumentācija tika izstrādāta, balstoties uz LVS 72:1996 un LVS 68:1996 vadlīnijām. Lai nodrošinātu lietotājam noderīgu programmatūru, interpretatora izstrādes laikā tika veikta UAT testēšana, pārbaudot izstrādāto moduļu lietderību reālos scenārijos, kas veicināja prasību pielāgošanu lietotāja vajadzībām. Akcepttestēšanas grupa sastāv tikai no paša autora un darba vadītāja.
+
+Papildus manuālai vienībtestu un integrācijas testu palaišanai, tika izveidota automatizēta testēšanas sistēma, izmantojot GitHub Actions, kas mākonī palaida visu testu izpildi, katru reizi, kad tiešsaistes repozitorijs tika atjaunināts. Tas nodrošināja, ka jaunie labojumi vai jaunizveidotās funkcijas neietekmē jau esošo funkcionalitāti neparedzamā veidā.
+
+\chapter{Konfigurācijas pārvaldība}
+
+Porgrammatūras un tās dokumentācijas pirmkods ir versionēti, izmantojot Git versiju kontroles sistēmu. Versiju kontrolei ir piesaistīts tiešsaistes repozitorijs GitHub platformā, kur drošā veidā tiek glabātas visas izmaiņas un versijas. Katrs izstrādes posms ir dokumentēts ar atbilstošiem komentāriem un izmaiņu aprakstiem, kas ļauj viegli izsekot izmaiņām un atgriezties pie iepriekšējām versijām, ja nepieciešams.
+
+Porgrammas kompilācijas un testēšanas rīka konfigurācijas ir definētas katra savā failā (Makefile un project.yml attiecīgi), kas arī ir glabāti versiju kontroles sistēmā. 
+
+\chapter{Darbietilpības novērtējums}
+
+% create me a table hat spans full opage widht and has 5 columns, also header and footer rows need to be gray and bold
+
+\label{tab:work-estimation}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.25\textwidth}|>{\centering\arraybackslash}p{0.17\textwidth}|>{\centering\arraybackslash}p{0.17\textwidth}|>{\centering\arraybackslash}p{0.17\textwidth}|>{\centering\arraybackslash}p{0.16\textwidth}|}
+\hline
+\rowcolor{gray!40}
+\textbf{Darba uzdevums} & \textbf{Optimistiskais laiks (dienas)} & \textbf{Reālistiskais laiks (dienas)} & \textbf{Pesimistiskais laiks (dienas)} & \textbf{Faktiskais laiks (dienas)} \\
+\hline
+Prasību ievākšana un valodas specifikācijas sastādīšana & 7 & 14 & 18 & 15 \\
+\hline
+Kompilatoru teorijas un testēšanas rīka izmantošanas apgūšana & 10 & 13 & 20 & 13 \\
+\hline
+Interpretatora kodola izstrāde & 20 & 25 & 35 & 20 \\
+\hline
+Lietotāja saskarnes izstrāde un kodola integrācija & 4 & 6 & 8 & 4 \\
+\hline
+Testēšana un kļūdu novēršana & 8 & 12 & 15 & 12 \\
+\hline
+Kopā & 49 & 70 & 96 & 64 \\
+\hline
+\caption{Darbietilpības novērtējums}
+\end{longtable}
+
+Vadoties pēc \ref{tab:work-estimation} tabulas, var secināt, ka kopējais faktiskais darba laiks bija 64 dienas, kas ir pārspēj pat reālistisko laika novērtējumu 70 dienas. Tas liecina par efektīvu laika plānošanu un izpildi projekta gaitā.
+
+Tā kā viena mēneša ietvaros ir aptuveni 21 darba diena, tad kopējais projekta izstrādes laiks ir aptuveni 3 mēneši.
+
+Lielāko daļu laika aizņēma prasību ievākšana un valodas specifikācijas sastādīšana, kā arī interpretatora kodola izstrāde. Šie posmi bija kritiski projekta veiksmīgai īstenošanai, un tiem tika pievērsta īpaša uzmanība, lai nodrošinātu augstu kvalitāti un atbilstību lietotāja vajadzībām. Proti, kompilatoru teorijas un testēšanas rīka izmantošanas apgūšana aizkavēja projekta izstrādi, taču bez šīm zināšanām nebūtu iespējams izstrādāt interpretatoru prātīgā laikā, tāpēc šis projekta posms nav mazāk svarīgs par pārējiem.
+
+\chapter{Secinājumi}
+
+Šajā kvalifikācijas darbā tika izstrādāts vienkāršs interpretators imperatīvai programmēšanas valodai, kas atbalsta pamata datu tipus, mainīgos, izteiksmes, priekšrakstus un funkcijas. Interpretators tika izstrādāts, izmantojot modulāru pieeju, sadalot to skenēšanas, parsēšanas un izvērtēšanas moduļos, kas ļauj viegli uzturēt un paplašināt programmatūru nākotnē.
+
+Jaunizveidotā valoda ir radīta ar mērķi popularizēt konstantu datu plūsmu caur programmatūru, kas tiek panākts ar tīru funkciju un nemutablo mainīgo izmantošanu. Akcepttēstēšana parādīja, ka arī bez mutablu mainīgo un netīru funkciju izmantošanas ir ļoti sarežģīti vai par dažreizi neiespējami izveidot noteiktus algoritmus, piemēram, Fibonacci skaitļu virknes ģenērēšanu. Tas pierāda, ka valodas specifikācija arī ir veiksmīgi sasniegusi savu mērķi, jo lietotājam ir dotas visas galvenās programmēšanas konstrukcijas, lai varētu izveidot funkcionālu programmu, vienlaicīgi liekot lietotājam domāt par to, kā viņa kods varētu tikt uzlabots, lai tas būtu uzturamāks un efektīvāks.
 
 
 \nocite{crafting-interpreters}
