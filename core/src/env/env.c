@@ -49,6 +49,7 @@ void env_define_fn(Env* env, const char* name, Value value,
 	entry->name = strdup(name);
 	entry->value = value;
 	entry->value.purity = purity;
+	entry->value.mutability = IMMUTABLE; // functions are immutable
 	entry->next = env->entries;
 	env->entries = entry;
 }
