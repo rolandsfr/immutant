@@ -113,31 +113,3 @@ void test_eval_call_should_return_error_on_incorrect_argument_count(void)
 
 	ArgumentsArray_free(&args);
 }
-
-void test_eval_call_should_return_error_on_impure_argument_mutability(void)
-{
-	Env* env = env_new(NULL);
-	define_mock_function_in_env(env, "impureFunc", 1, mock_function, PURE);
-
-	ArgumentsArray args;
-	ArgumentsArray_init(&args);
-	ArgumentsArray_push(&args, NULL);
-
-	VariableExpr* callee_expr = make_variable_expr("impureFunc", 1);
-	CallExpr* call_expr = make_call_expr((Expr*)callee_expr, args.data, 1, 1);
-	Error error = {-1};
-
-	// mock identifier evaluation
-	Value* callee = env_get(env, "impureFunc");
-	eval_expr_ExpectAndReturn((Expr*)callee_expr, &error, env, *callee);
-
-	// mock argument evaluation to return a mutable value
-	Value mutable_arg = make_number(10);
-	mutable_arg.mutability = MUTABLE;
-	eval_expr_ExpectAndReturn(call_expr->args[0], &error, env, mutable_arg);
-
-	Value result = eval_call(call_expr, &error, env);
-	TEST_ASSERT_EQUAL_INT(RUNTIME_IMPURE_ARG_MUTABILITY, error.type);
-
-	ArgumentsArray_free(&args);
-}

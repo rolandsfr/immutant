@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "ast_expr.h"
+#include "env.h"
 #include "error.h"
 #include "eval_expr.h"
 #include "eval_singature.h"
@@ -15,6 +16,10 @@
 
 DEF_EVAL_EXPR(eval_call, CallExpr)
 {
+	// TODO: if this call is within another fn call which isnt impure, and this
+	// is pure, immediately error
+	// "Pure function cannot call impure function“
+
 	Value callee = eval_expr((Expr*)expr->callee, err, env);
 
 	if (err && err->type != ERROR_NONE) {
@@ -36,27 +41,11 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 
 	Callable* callable_val = callee.callable;
 
-	// print purity of fnction being called
-
 	for (size_t i = 0; i < expr->arg_count; i++) {
 		Value arg_value = eval_expr(expr->args[i], err, env);
 		if (err && err->type != ERROR_NONE) {
 			ValueBuffer_free(&args_buffer);
 			return make_null();
-		}
-
-		if (callee.purity == PURE) {
-			if (arg_value.mutability == MUTABLE) {
-				if (err) {
-					*err = (Error){
-						.type = RUNTIME_IMPURE_ARG_MUTABILITY,
-						.line = expr->base.line,
-						.message =
-							"Cannot pass mutable argument to impure function"};
-				}
-				ValueBuffer_free(&args_buffer);
-				return make_null();
-			}
 		}
 
 		ValueBuffer_push(&args_buffer, arg_value);
@@ -73,9 +62,11 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 		return make_null();
 	}
 
-	Value result =
-		callable_val->call(&args_buffer, &(Context){.line = expr->base.line,
-													.error_out_tunnel = err});
+	Value result = callable_val->call(
+		&args_buffer, &(Context){.line = expr->base.line,
+								 .error_out_tunnel = err,
+								 .declaration = callable_val->declaration,
+								 .env = env});
 
 	if (err && err->type != ERROR_NONE) {
 		ValueBuffer_free(&args_buffer);

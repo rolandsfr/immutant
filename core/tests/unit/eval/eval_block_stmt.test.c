@@ -12,16 +12,14 @@
 #include "make_values.h"
 #include "parse_block_stmt.h"
 
-#include "Mockeval_expr.h"
-#include "Mockeval_if_stmt.h"
-#include "Mockeval_var.h"
-#include "Mockeval_while_stmt.h"
+#include "Mockeval.h"
 #include "Mockparse_dclr.h"
 #include "Mockparser_helpers.h"
 #include "Mockresolve.h"
 
 Env* global_env;
-void mock_eval_var_dclr(Env* env, VarDeclStmt* stmt, Error* err, int num_calls)
+void mock_eval(Stmt* stmt, Error* err, Value* out_value, Env* env,
+			   int num_calls)
 {
 	TEST_ASSERT_EQUAL_PTR(global_env, env->parent);
 }
@@ -39,7 +37,7 @@ void test_eval_block_stmt_creates_new_scope(void)
 	Error err = {0};
 	Value out;
 
-	eval_var_dclr_StubWithCallback(mock_eval_var_dclr);
+	eval_StubWithCallback(mock_eval);
 
 	eval_block_stmt(block, &err, global_env, &out);
 

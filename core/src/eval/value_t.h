@@ -8,6 +8,7 @@
 typedef enum PurityType PurityType;
 typedef struct ValueBuffer ValueBuffer;
 typedef struct Error Error;
+typedef struct Env Env;
 
 typedef enum ValueType {
 	VAL_NUMBER,
@@ -34,11 +35,14 @@ typedef struct Value {
 typedef struct Context {
 	int line;
 	Error* error_out_tunnel;
+	FunDeclStmt* declaration;
+	Env* env;
 } Context;
 
 typedef struct Callable {
 	Value (*call)(ValueBuffer* arguments, Context* context);
 	size_t arity;
+	FunDeclStmt* declaration;
 } Callable;
 
 ARR_DEFINE(Value, ValueBuffer)

@@ -1,0 +1,11 @@
+fn pure mul(a) {
+    a = do(a);
+    print(a);
+}
+
+fn pure do(k) {
+    k*2;
+}
+
+
+mul(4);

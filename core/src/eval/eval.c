@@ -16,6 +16,7 @@
 #include "value_t.h"
 
 #include "eval_vars/eval_var.h"
+#include "user_fn/def_user_fn.h"
 
 void eval(Stmt* stmt, Error* err, Value* out_value, Env* env)
 {
@@ -27,6 +28,10 @@ void eval(Stmt* stmt, Error* err, Value* out_value, Env* env)
 		}
 		case STMT_VAR_DECL: {
 			eval_var_dclr(env, (VarDeclStmt*)stmt, err);
+			return;
+		}
+		case STMT_FUN_DECL: {
+			def_user_fn((FunDeclStmt*)stmt, env, err);
 			return;
 		}
 		case STMT_BLOCK: {

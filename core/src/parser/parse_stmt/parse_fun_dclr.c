@@ -54,8 +54,8 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return NULL;
 	}
 
-	ParamArray params;
-	ParamArray_init(&params);
+	ParamArray* params = malloc(sizeof(ParamArray));
+	ParamArray_init(params);
 
 	if (!check_token(tokens, *pos, TOKEN_RIGHT_PAREN)) {
 		do {
@@ -67,10 +67,10 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 										 .message = "Expected parameter name"};
 				}
 
-				ParamArray_free(&params);
+				ParamArray_free(params);
 				return NULL;
 			}
-			ParamArray_push(&params, strdup(param_name.lexeme));
+			ParamArray_push(params, strdup(param_name.lexeme));
 		} while (match_token(tokens, pos, 1, TOKEN_COMMA) &&
 				 !is_at_end(tokens, *pos));
 	}
@@ -83,7 +83,7 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 						.message = "Expected ')' after function parameters"};
 		}
 
-		ParamArray_free(&params);
+		ParamArray_free(params);
 		return NULL;
 	}
 
@@ -98,18 +98,18 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 						.message = "Expected '{' after function signature."};
 		}
 
-		ParamArray_free(&params);
+		ParamArray_free(params);
 		return NULL;
 	}
 
 	BlockStmt* body = parse_block_stmt(tokens, pos, out_error);
 
 	if (out_error && out_error->type != ERROR_NONE) {
-		ParamArray_free(&params);
+		ParamArray_free(params);
 		return NULL;
 	}
 
-	return make_fun_decl_stmt(name.lexeme, &params, params.len, body,
+	return make_fun_decl_stmt(name.lexeme, params, params->len, body,
 							  purity_token_or_name.type == TOKEN_IMPURE ? IMPURE
 																		: PURE);
 }
