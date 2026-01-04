@@ -488,9 +488,18 @@ Funkcijas definē sekojošā formā:
 \end{verbatim}
 
 <purity> apzīmē funkcijas īpašību mainīt datus ārpus tās konteksta. Datorzinātnēs \char"22
-impure" jeb tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funkciju izmantošana pirmkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funkcijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaina ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru. Ja funkcija ir definēta kā tīra, tad tās argumentu sarakstā nav atļauts norādīt mutablus mainīgos un tās ķermenī izsaukt netīras funkcijas. Savukārt netīra funkcija nepieņem nemutablus mainīgos un funkcijas ķermenī atļauj izsaukt gan tīras, gan netīras funkcijas. Atslēgvārda \texttt{pure} lietošana nav obligāta, jo valodā Immutant pēc noklusējuma lietotāja definētās funkcijas tiek uzskatītas par tīrām. 
+impure" jeb tulkojumā no angļu valodas "netīrs" apzīmē funkcijas, kas maina ārējos stāvokļus vai ir atkarīgas no tiem. Savukārt "pure" jeb "tīras" funkcijas ir tādas, kas neietekmē ārējos stāvokļus un ir atkarīgas tikai no to parametriem. Tīru funkciju izmantošana pirmkodā ir ieteicama, jo tā padara programmu prognozējamāku un vieglāk saprotamu, jo zināms ka tīras funkcijas var izsaukt tikai citas tīras funkcijas vai izteiksmes, kas nozīmē, ka tās nevienā brīdī neizmaina ārējo stāvokli. Tātad, \texttt{pure} atslēgvārds tiek lietots, lai definētu tīru funkciju, bet \texttt{impure} - netīru.
 
+\subsection{Tīras un netīras funkcijas}
 
+Ja funkcija ir definēta kā tīra, tad tās argumentu vērtības tiek padotas pēc to vērtībām. Tas nozīmē, ka, ja kāds arguments ir mainīgais, funckijā mainot tā vērtību, mainīgā vērtība mainīsies tikai funckijas ietvaros, bet ne citā apkārtnē. Citiem vārdiem, jebkurš mainīgais, kas padots kā arguments tīrai funkcija tiek pa jaunam deklarēts un inicializēts funkcijas iekšējā kontekstā.
+Pie tam, tīras funkcijas ķermenī ir aizliegts izsaukt netīras funkcijas.
+
+Savukārt netīras funkcijas argumenti tiek padoti kā atsauces uz to oriģinālajām vērtībām. Tas nozīmē, ka, ja kāds arguments ir mainīgais, funckijā mainot tā vērtību, mainīgā vērtība mainīsies arī ārējā kontekstā. Netīras funkcijas ķermenī ir atļauts izsaukt gan tīras, gan netīras funkcijas.
+
+Atslēgvārda \texttt{pure} lietošana nav obligāta, jo valodā Immutant pēc noklusējuma lietotāja definētās funkcijas tiek uzskatītas par tīrām. 
+
+\subsection{Funkcijas definīcija un izsaukums}
 
 \begin{verbatim}
 fn <identifier>(<parameters>) {
@@ -498,7 +507,7 @@ fn <identifier>(<parameters>) {
 }
 \end{verbatim}
 
-Augstāk redzamajā piemērā funkcija tiek definēta kā tīra, jo nav lietots neviens no tīrības īpašības atslēgvārdiem. Atslēgvārds \texttt{fn} apzīmē, ka pēc tā seko funkcijas definicija. <identifier> satur funkcijas nosaukumu, kas ir unikāls identifikators atmiņā. Uz funkcijas nosaukumu attiecas tie paši noteikumi, kas minēti sadaļā ~\ref{section:vars} par mainīgo identifikatoriem.
+Augstāk redzamajā piemērā funkcija tiek definēta kā tīra, jo nav lietots neviens no tīrības īpašības atslēgvārdiem. Atslēgvārds \texttt{fn} apzīmē, ka pēc tā seko funkcijas definīcija. <identifier> satur funkcijas nosaukumu, kas ir unikāls identifikators atmiņā. Uz funkcijas nosaukumu attiecas tie paši noteikumi, kas minēti sadaļā ~\ref{section:vars} par mainīgo identifikatoriem.
 
 Pēc funkcijas nosaukuma seko apaļās iekavas, kas satur parametru sarakstu <parameters>. Parametri ir iekšējā funkcijas konteksta mainīgie, kas tiek nodoti funkcijai tās izsaukšanas brīdī, un kuru vērtības funkcija izmanto savā darbībā. Parametru saraksts ir komatu atdalītu parametru virkne. Ja funkcijai nav parametru, tad iekavas ir tukšas.
 
@@ -530,9 +539,7 @@ imut sum = add(3, 7);
 Pie nekorektas rīcības ar funkcijām parādās kāda no sekojošām izpildlaika kļūdām:
 \begin{itemize}
   \item \texttt{RUNTIME\_ERR-8} 
-  \item \texttt{RUNTIME\_ERR-9}
-  \item \texttt{RUNTIME\_ERR-10}
-  \item \texttt{RUNTIME\_ERR-13}
+  \item \texttt{RUNTIME\_ERxR-13}
 \end{itemize}
 
 \subsection{Iebūvētas funkcijas}
@@ -750,10 +757,7 @@ RUNTIME\_ERR-7 & Ja mainīgais ar tādu pašu nosaukumu ir jau iepriekš deklar�
 \midrule
 RUNTIME\_ERR-8 & Ja funkcija tiek izsaukta ar argumentu skaitu, kas atšķirās no parametru skaita funkcijas definīcijā, parāda paziņojumu: ``Incorrect number of arguments passed to function``.                                                          \\
 \midrule
-RUNTIME\_ERR-9 & Ja netīras funkcijas izsaukumā tiek padots arguments, kas ir nemutabls mainīgais, parāda paziņojumu: ``Cannot pass immutable argument to impure function``.                                                                                  \\
-\midrule
-RUNTIME\_ERR-10 & Ja tīras funkcijas izsaukumā tiek padots arguments, kas ir mutabls mainīgais, parāda paziņojumu: ``Cannot pass mutable argument to pure function``.  \\
-\midrule
+
 RUNTIME\_ERR-11 & Ja nemutablam mainīgam pēc inicializācijas vēlreiz piešķir kādu vērtību, parāda paziņojumu ``Cannot assign to constant variable: <t>``. <t> tiek aizstāts ar attiecīgu mainīgā nosaukumu.                                                                                  \\
 \midrule
 RUNTIME\_ERR-12 & Ja datus nav iespējam pārvērst uz citu datu tipu, parāda paziņojumu: ``Invalid type conversion``.                                                                                  \\\midrule
@@ -1037,10 +1041,6 @@ Izvaddati: & Izteiksmes vērtība, izpildīts efekts, ja tāds ir, piemēram, v�
 & RUNTIME\_ERR-7 \\
 \cmidrule(lr){2-3}
 & RUNTIME\_ERR-8 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-9 \\
-\cmidrule(lr){2-3}
-& RUNTIME\_ERR-10 \\
 \cmidrule(lr){2-3}
 & RUNTIME\_ERR-11 \\
 \cmidrule(lr){2-3}
