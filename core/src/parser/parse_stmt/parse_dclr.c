@@ -33,7 +33,7 @@ Stmt* parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return (Stmt*)parse_while_stmt(tokens, pos, out_error);
 	}
 
-	if (match_token(tokens, pos, TOKEN_FN)) {
+	if (match_token(tokens, pos, 1, TOKEN_FN)) {
 		return (Stmt*)parse_fun_decl(tokens, pos, out_error);
 	}
 
