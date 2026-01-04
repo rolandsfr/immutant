@@ -63,6 +63,29 @@ static Value native_toNumber(ValueBuffer* arguments, Context* context)
 	}
 }
 
+static Value native_toBoolean(ValueBuffer* arguments, Context* context)
+{
+	Value arg = arguments->data[0];
+	switch (arg.type) {
+		case VAL_BOOL:
+			return arg;
+		case VAL_NUMBER:
+			return make_bool(arg.number != 0.0);
+		case VAL_STRING: {
+			char* str = (char*)str_val(arg);
+			if (str == NULL || str[0] == '\0') {
+				return make_bool(0);
+			} else {
+				return make_bool(1);
+			}
+		}
+		default:
+			set_runtime_error(context, RUNTIME_INVALID_TYPE_CONVERSION,
+							  "Invalid type conversion.");
+			return make_null();
+	}
+}
+
 static Value native_typeOf(ValueBuffer* arguments, Context* context)
 {
 	Value arg = arguments->data[0];
@@ -135,9 +158,24 @@ void define_native_toNumber(Env* env)
 	env_define_fn(env, "toNumber", to_number_value, PURE);
 }
 
+void define_native_toBoolean(Env* env)
+{
+	Callable* to_boolean_callable = malloc(sizeof(Callable));
+	to_boolean_callable->arity = 1;
+	to_boolean_callable->call = native_toBoolean;
+
+	Value to_boolean_value = (Value){
+		.type = VAL_NATIVE,
+		.callable = to_boolean_callable,
+	};
+
+	env_define_fn(env, "toBoolean", to_boolean_value, PURE);
+}
+
 void define_native_converters(Env* env)
 {
 	define_native_toString(env);
 	define_native_typeOf(env);
 	define_native_toNumber(env);
+	define_native_toBoolean(env);
 }

@@ -309,7 +309,7 @@ No otras puses, ja programmas autors tiešām vēlas pārveidot vienu datu tipu 
   \item \texttt{toNumber(value)} - Atgriež vērtības skaitlisko reprezentāciju. Ja virkne satur derīgu skaitlisko vērtību, tad tā tiek pārvērsta par atbilstošu skaitli. Piemēram, virkne \texttt{"123.45"} tiek pārvērsta par skaitli \texttt{123.45}. Ja virkne nesatur derīgu skaitlisko vērtību, tiek izmests izņēmums \texttt{RUNTIME\_ERR-12}. Patiesa vērtība \texttt{true} tiek pārvērsta par skaitli \texttt{1}, bet \texttt{false} par skaitli \texttt{0}. 
   
   Virkne ir uzskatāma par derīgu skaitlisko vērtību, ja tā satur tikai skaitli vai decimālskaitli. Ja skaitlim apkārt ir tukšuma simboli, tie tiek ignorēti. Piemēram, virknes \texttt{"  42  "} un \texttt{"-3.14"} ir derīgas skaitliskās vērtības, bet virknes \texttt{"123abc"} un \texttt{"hello"} nav derīgas.
-  \item \texttt{toBoolean(value)} - Pārveido dotā operanda vērtību par patiesuma vērtību. Vērtības \texttt{0}, \texttt{"0"}, \texttt{\char`"\char`"} (tukša virkne) un \texttt{false} tiek pārvērstas par aplamu vērtību, bet viss pārējais par patiesu.
+  \item \texttt{toBoolean(value)} - Pārveido dotā operanda vērtību par patiesuma vērtību. Vērtības \texttt{0}, \texttt{\char`"\char`"} (tukša virkne) un \texttt{false} tiek pārvērstas par aplamu vērtību, bet viss pārējais par patiesu.
   \item \texttt{typeOf(value)} - Atgriež dotā operanda datu tipu kā virkni. Pieņem jebkura datu tipa vērtību kā argumentu, un atgriež vienu no šādām virkņu vērtībām: \texttt{\char`"number"}, \texttt{\char`"string"}, \texttt{"boolean"}, \texttt{"function"}.
 \end{itemize}
 
