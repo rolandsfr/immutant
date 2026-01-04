@@ -1,3 +1,4 @@
+#include "input.h"
 #include "print.h"
 #include "time.h"
 
@@ -10,4 +11,5 @@ void define_natives(Env* env)
 	define_native_time(env);
 	define_native_print(env);
 	define_native_converters(env);
+	define_native_input(env);
 }
