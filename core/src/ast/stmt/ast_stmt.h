@@ -2,11 +2,16 @@
 
 #include <stddef.h>
 
+#include "array.h"
+#include "stdio.h"
+
 #include "../ast_cnstrct.h"
 
 enum MutabilityType { MUTABILITY_UNSET = -1, MUTABLE, IMMUTABLE };
 
 enum PurityType { PURITY_UNSET = -1, PURE, IMPURE };
+
+ARR_DEFINE(char*, ParamArray);
 
 typedef struct VarDeclStmt {
 	Stmt base;
@@ -18,9 +23,9 @@ typedef struct VarDeclStmt {
 typedef struct FunDeclStmt {
 	Stmt base;
 	char* name;
-	char** param_names;
-	size_t param_count;
-	Stmt* body; // block statement
+	ParamArray* params;
+	struct BlockStmt* body;
+	enum PurityType purity;
 } FunDeclStmt;
 
 typedef struct ReturnStmt {

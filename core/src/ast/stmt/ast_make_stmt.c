@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "ast_stmt.h"
+#include "value_t.h"
 
 #include "../ast_cnstrct.h"
 
@@ -22,14 +23,16 @@ VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer,
 	return v;
 }
 
-FunDeclStmt* make_fun_decl_stmt(const char* name, char** param_names,
-								size_t param_count, Stmt* body)
+FunDeclStmt* make_fun_decl_stmt(const char* name, ParamArray* params,
+
+								size_t param_count, BlockStmt* body,
+								PurityType purity)
 {
 	FunDeclStmt* f = malloc(sizeof(FunDeclStmt));
 	f->base.type = STMT_FUN_DECL;
+	f->params = params;
+	f->purity = purity;
 	f->name = strdup(name);
-	f->param_names = param_names;
-	f->param_count = param_count;
 	f->body = body;
 	return f;
 }

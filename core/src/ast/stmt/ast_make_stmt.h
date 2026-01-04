@@ -8,8 +8,10 @@
 VarDeclStmt* make_var_decl_stmt(const char* name, Expr* initializer,
 								enum MutabilityType mutability);
 
-FunDeclStmt* make_fun_decl_stmt(const char* name, char** param_names,
-								size_t param_count, Stmt* body);
+FunDeclStmt* make_fun_decl_stmt(const char* name, ParamArray* params,
+
+								size_t param_count, BlockStmt* body,
+								enum PurityType purity);
 
 ReturnStmt* make_return_stmt(Expr* value);
 

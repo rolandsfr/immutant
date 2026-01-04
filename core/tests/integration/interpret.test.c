@@ -37,6 +37,7 @@
 #include "parse_expr.h"
 #include "parse_expr_stmt.h"
 #include "parse_factor.h"
+#include "parse_fun_dclr.h"
 #include "parse_if_stmt.h"
 #include "parse_lassoc.h"
 #include "parse_or.h"
