@@ -26,7 +26,7 @@ void mock_eval(Stmt* stmt, Error* err, Value* out_value, Env* env,
 
 void test_eval_block_stmt_creates_new_scope(void)
 {
-	global_env = env_new(NULL);
+	global_env = env_new(NULL, ENV_PURITY_UNSET);
 
 	Stmt* stmts[1];
 	stmts[0] = (Stmt*)make_var_decl_stmt("x", (Expr*)make_number_expr("1", 1),

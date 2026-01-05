@@ -50,7 +50,7 @@ void tearDown(void) { /* nothing to tear down */ }
 
 void test_env_define_and_get(void)
 {
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 	env_define(env, "a", v1, MUTABLE); // pass by value
 
 	Value* result = env_get(env, "a");
@@ -62,7 +62,7 @@ void test_env_define_and_get(void)
 
 void test_env_get_undefined_returns_null(void)
 {
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 
 	Value* result = env_get(env, "missing");
 	TEST_ASSERT_NULL(result);
@@ -72,7 +72,7 @@ void test_env_get_undefined_returns_null(void)
 
 void test_env_set_updates_existing_variable(void)
 {
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 
 	env_define(env, "x", v1, MUTABLE);
 	int ok = env_set(env, "x", v2); // pass by value
@@ -87,7 +87,7 @@ void test_env_set_updates_existing_variable(void)
 
 void test_env_set_undefined_variable_fails(void)
 {
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 
 	int ok = env_set(env, "x", v1); // pass by value
 	TEST_ASSERT_FALSE(ok);
@@ -97,8 +97,8 @@ void test_env_set_undefined_variable_fails(void)
 
 void test_env_lookup_parent_scope(void)
 {
-	Env* global = env_new(NULL);
-	Env* local = env_new(global);
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* local = env_new(global, ENV_IMPURE);
 
 	env_define(global, "g", v1, MUTABLE); // pass by value
 
@@ -112,8 +112,8 @@ void test_env_lookup_parent_scope(void)
 
 void test_env_shadowing(void)
 {
-	Env* global = env_new(NULL);
-	Env* local = env_new(global);
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* local = env_new(global, ENV_IMPURE);
 
 	env_define(global, "x", v1, MUTABLE);
 	env_define(local, "x", v2, MUTABLE);
@@ -133,8 +133,8 @@ void test_env_shadowing(void)
 
 void test_env_set_updates_nearest_scope(void)
 {
-	Env* global = env_new(NULL);
-	Env* local = env_new(global);
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* local = env_new(global, ENV_IMPURE);
 
 	env_define(global, "x", v1, MUTABLE);
 	env_define(local, "y", v2, MUTABLE);
@@ -145,6 +145,64 @@ void test_env_set_updates_nearest_scope(void)
 	Value* result_global = env_get(global, "x");
 	TEST_ASSERT_NOT_NULL(result_global);
 	assert_value_equal(result_global, &v3);
+
+	env_free(local);
+	env_free(global);
+}
+
+void test_env_set_does_not_create_new_variable(void)
+{
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* local = env_new(global, ENV_IMPURE);
+
+	env_define(local, "y", v2, MUTABLE);
+
+	int var_is_set = env_set(local, "x", v1);
+	TEST_ASSERT_FALSE(var_is_set);
+
+	Value* result_global = env_get(global, "x");
+	Value* result_local = env_get(local, "x");
+
+	TEST_ASSERT_NULL(result_global);
+	TEST_ASSERT_NULL(result_local);
+
+	env_free(local);
+	env_free(global);
+}
+
+void test_env_get_entry_does_not_resolve_mutable_in_pure_env(void)
+{
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* pure_env = env_new(global, ENV_PURE);
+
+	env_define(global, "a", v1, MUTABLE);
+	env_define(global, "b", v2, IMMUTABLE);
+
+	EnvEntry entry_a = env_get_entry(pure_env, "a");
+	EnvEntry entry_b = env_get_entry(pure_env, "b");
+
+	TEST_ASSERT_NULL(
+		entry_a.name); // should not resolve mutable in pure env_new
+	TEST_ASSERT_NOT_NULL(
+		entry_b.name); // should resolve immutable in pure env_new
+
+	env_free(pure_env);
+	env_free(global);
+}
+
+void test_get_direct_entry_returns_only_current_scope(void)
+{
+	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* local = env_new(global, ENV_IMPURE);
+
+	env_define(global, "x", v1, MUTABLE);
+	env_define(local, "y", v2, MUTABLE);
+
+	EnvEntry* entry_x = env_get_direct_entry(local, "x");
+	EnvEntry* entry_y = env_get_direct_entry(local, "y");
+
+	TEST_ASSERT_NULL(entry_x);
+	TEST_ASSERT_NOT_NULL(entry_y);
 
 	env_free(local);
 	env_free(global);

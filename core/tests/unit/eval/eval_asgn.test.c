@@ -15,7 +15,7 @@
 void test_eval_asgn_should_assign_variable_value(void)
 {
 	// Setup environment and define variable
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 	Value initial_value = {0};
 
 	env_define(env, "x", initial_value, MUTABLE);
@@ -35,7 +35,7 @@ void test_eval_asgn_should_assign_variable_value(void)
 void test_eval_asgn_should_return_error_for_undefined_variable(void)
 {
 	// Setup environment without defining variable
-	Env* env = env_new(NULL);
+	Env* env = env_new(NULL, ENV_IMPURE);
 
 	// Create AssignExpr for 'y = 100'
 	Expr* value_expr = (Expr*)make_number_expr("100", 1);
