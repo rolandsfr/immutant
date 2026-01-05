@@ -16,10 +16,11 @@
 #include "env.h"
 #include "value_t.h"
 
-Env* env_new(Env* parent)
+Env* env_new(Env* parent, EnvPurity purity)
 {
 	Env* env = malloc(sizeof(Env));
 	env->parent = parent;
+	env->purity = purity;
 	env->entries = NULL;
 	return env;
 }
@@ -56,14 +57,31 @@ void env_define_fn(Env* env, const char* name, Value value,
 
 Value* env_get(Env* env, const char* name)
 {
+
+	int crossed_function_boundary = 0;
+
 	for (Env* e = env; e != NULL; e = e->parent) {
+
+		if (e != env) {
+			crossed_function_boundary++;
+		}
+
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
 			if (strcmp(entry->name, name) == 0) {
+				// print for variable purity textually
+
+				if (env->purity == ENV_PURE &&
+					entry->value.mutability == MUTABLE &&
+					crossed_function_boundary > 1) {
+					return NULL;
+				}
+
 				return &entry->value;
 			}
 		}
 	}
-	return NULL; // not found
+
+	return NULL;
 }
 
 EnvEntry* env_get_direct_entry(Env* env, const char* name)
@@ -78,9 +96,17 @@ EnvEntry* env_get_direct_entry(Env* env, const char* name)
 
 EnvEntry env_get_entry(Env* env, const char* name)
 {
+	int is_pure_env = (env->purity == ENV_PURE);
 	for (Env* e = env; e != NULL; e = e->parent) {
+
+		is_pure_env = (env->purity == ENV_PURE);
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
 			if (strcmp(entry->name, name) == 0) {
+
+				if (entry->value.mutability == MUTABLE && is_pure_env) {
+					return (EnvEntry){NULL};
+				}
+
 				return *entry;
 			}
 		}

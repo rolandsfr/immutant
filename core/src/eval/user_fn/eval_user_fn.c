@@ -11,19 +11,15 @@ Value call_user_fn(ValueBuffer* arguments, Context* context)
 {
 	FunDeclStmt* declaration = context->declaration;
 
-	Env* fn_env = env_new(context->env);
-
+	Env* fn_env =
+		env_new(context->env,
+				context->declaration->purity == PURE ? ENV_PURE : ENV_IMPURE);
 	// pure function re-defines all the variables inside of it, because it's
 	// prohibited to change any external state. additionally it knows nothing
 	// about external state, so that it cannot change it (so no global
 	// variables)
 
 	for (size_t i = 0; i < declaration->params->len; i++) {
-		// TODO: to env add purity restriction field and in call() and var
-		// resolution make sure that pure functions cannot access impure
-		// variables
-		// and it should be in semantic analysis phase before runtime
-
 		const char* param_name = declaration->params->data[i];
 		Value arg_value = arguments->data[i];
 
@@ -41,7 +37,9 @@ Value call_user_fn(ValueBuffer* arguments, Context* context)
 		 *   to be able to reach out to the external state.
 		 *
 		 * */
-		if (context->declaration->purity == PURE) {
+		EnvEntry existing_entry = env_get_entry(fn_env, param_name);
+
+		if (context->declaration->purity == PURE || !existing_entry.name) {
 			env_define(fn_env, param_name, arg_value, MUTABLE);
 		}
 	}

@@ -14,12 +14,15 @@ typedef struct EnvEntry {
 						   // enum PurityType purity;
 } EnvEntry;
 
+typedef enum EnvPurity { ENV_PURE, ENV_IMPURE, ENV_PURITY_UNSET } EnvPurity;
+
 typedef struct Env {
+	EnvPurity purity;
 	struct Env* parent;
 	EnvEntry* entries; // linked list or hash table
 } Env;
 
-Env* env_new(Env* parent);
+Env* env_new(Env* parent, EnvPurity purity);
 
 void env_define(Env* env, const char* name, Value value,
 				enum MutabilityType mutability);

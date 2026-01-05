@@ -66,7 +66,7 @@ Values interpret_source(char* source, size_t length, size_t* line_nr)
 	}
 
 	if (!global_env) {
-		global_env = env_new(NULL);
+		global_env = env_new(NULL, ENV_PURITY_UNSET);
 	}
 
 	for (size_t i = 0; i < stmts.len; i++) {

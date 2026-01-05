@@ -61,7 +61,7 @@ void run_file(const char* script_name)
 		return;
 	}
 
-	Env* global_env = env_new(NULL);
+	Env* global_env = env_new(NULL, ENV_PURITY_UNSET);
 	define_natives(global_env);
 
 	for (size_t i = 0; i < stmts.len; i++) {

@@ -62,6 +62,17 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 		return make_null();
 	}
 
+	if (callee.purity == IMPURE && env->purity == ENV_PURE) {
+		if (err) {
+			*err =
+				(Error){.type = RUNTIME_PURITY_VIOLATION,
+						.line = expr->base.line,
+						.message = "Pure function cannot call impure function"};
+		}
+		ValueBuffer_free(&args_buffer);
+		return make_null();
+	}
+
 	Value result = callable_val->call(
 		&args_buffer, &(Context){.line = expr->base.line,
 								 .error_out_tunnel = err,
