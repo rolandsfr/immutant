@@ -22,6 +22,7 @@
 #include "eval_expr.h"
 #include "eval_if_stmt.h"
 #include "eval_logic.h"
+#include "eval_return_stmt.h"
 #include "eval_unary.h"
 #include "eval_user_fn.h"
 #include "eval_var.h"

@@ -8,7 +8,6 @@
 #include "eval.h"
 #include "eval_expr.h"
 #include "require_t.h"
-#include "str_val.h"
 #include "value_t.h"
 
 void eval_return_stmt(ReturnStmt* stmt, Error* err, Env* env)
@@ -16,7 +15,6 @@ void eval_return_stmt(ReturnStmt* stmt, Error* err, Env* env)
 
 	if (stmt->value) {
 		Value return_value = eval_expr(stmt->value, err, env);
-		printf("Evaluated return value type: %d\n", return_value.type);
 
 		if (err->type != ERROR_NONE) {
 
@@ -26,8 +24,6 @@ void eval_return_stmt(ReturnStmt* stmt, Error* err, Env* env)
 		}
 
 		err->return_value = return_value;
-		printf("Return value inside eval_return_stmt: type %d, value: %s\n",
-			   err->return_value.type, str_val(err->return_value));
 	}
 
 	err->type = RUNTIME_RETURN_ERROR;
