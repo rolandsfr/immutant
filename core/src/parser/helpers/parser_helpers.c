@@ -31,7 +31,8 @@ enum TokenType peek_token(TokenBuffer* tokens, size_t pos)
 Token peek_token_full(TokenBuffer* tokens, size_t pos)
 {
 	if (is_at_end(tokens, pos)) {
-		return create_token(TOKEN_EOF, "", 0, 1);
+		return create_token(TOKEN_EOF, "", 0,
+							tokens->tokens[tokens->count - 1].line);
 	}
 	return tokens->tokens[pos];
 }
