@@ -16,26 +16,43 @@
 
 FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 {
-	// consume function singnature
+	PurityType purity = PURE; // default purity for fn without modifier
+	Token first_token = consume_token(tokens, pos);
 
-	Token purity_token_or_name = consume_token(tokens, pos);
-	Token name = purity_token_or_name;
-
-	// check for optional pure or impure token
-	if (purity_token_or_name.type == TOKEN_PURE ||
-		purity_token_or_name.type == TOKEN_IMPURE) {
-		name = consume_token(tokens, pos); // consume to get the name token
-	} else if (purity_token_or_name.type != TOKEN_IDENTIFIER) {
-		if (out_error) {
-			*out_error = (Error){
-				.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
-				.line = purity_token_or_name.line,
-				.message = "Expected function name or purity specifier"};
+	if (first_token.type == TOKEN_PURE) {
+		purity = PURE;
+		// Next must be TOKEN_FN
+		if (!match_token(tokens, pos, 1, TOKEN_FN)) {
+			if (out_error) {
+				*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+									 .line = peek_token_full(tokens, *pos).line,
+									 .message = "Expected 'fn' after 'pure'"};
+			}
+			return NULL;
 		}
-
+	} else if (first_token.type == TOKEN_IMPURE) {
+		purity = IMPURE;
+		// Next must be TOKEN_FN
+		if (!match_token(tokens, pos, 1, TOKEN_FN)) {
+			if (out_error) {
+				*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+									 .line = peek_token_full(tokens, *pos).line,
+									 .message = "Expected 'fn' after 'impure'"};
+			}
+			return NULL;
+		}
+	} else if (first_token.type != TOKEN_FN) {
+		if (out_error) {
+			*out_error =
+				(Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
+						.line = first_token.line,
+						.message = "Expected 'fn', 'pure fn', or 'impure fn'"};
+		}
 		return NULL;
 	}
 
+	// Now parse the function name
+	Token name = consume_token(tokens, pos);
 	if (name.type != TOKEN_IDENTIFIER) {
 		if (out_error) {
 			*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
@@ -109,7 +126,6 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return NULL;
 	}
 
-	return make_fun_decl_stmt(
-		name.lexeme, params, params->len, body,
-		purity_token_or_name.type == TOKEN_IMPURE ? IMPURE : PURE, name.line);
+	return make_fun_decl_stmt(name.lexeme, params, params->len, body, purity,
+							  name.line);
 }

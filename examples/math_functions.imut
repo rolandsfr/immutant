@@ -1,14 +1,14 @@
 // Factorial and combinatorics calculator
 // Demonstrates: recursion, pure functions, mathematical operations
 
-fn pure factorial(n) {
+fn factorial(n) {
     if (n <= 1) {
         return 1;
     }
     return n * factorial(n - 1);
 }
 
-fn pure power(base, exponent) {
+fn power(base, exponent) {
     if (exponent == 0) {
         return 1;
     }
@@ -18,7 +18,7 @@ fn pure power(base, exponent) {
     return base * power(base, exponent - 1);
 }
 
-fn pure combination(n, k) {
+fn combination(n, k) {
     imut numerator = factorial(n);
     imut denominator = factorial(k) * factorial(n - k);
     return numerator / denominator;

@@ -38,7 +38,9 @@ Stmt* parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return (Stmt*)parse_while_stmt(tokens, pos, out_error);
 	}
 
-	if (match_token(tokens, pos, 1, TOKEN_FN)) {
+	if (match_token(tokens, pos, 3, TOKEN_FN, TOKEN_PURE, TOKEN_IMPURE)) {
+		// Backtrack to let parse_fun_decl handle the full signature
+		*pos = *pos - 1;
 		return (Stmt*)parse_fun_decl(tokens, pos, out_error);
 	}
 

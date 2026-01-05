@@ -23,6 +23,7 @@ void test_parse_var_decl()
 	size_t pos = 0;
 	Error error = {-1};
 
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "fnName", 6, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "param1", 6, 4));
@@ -49,6 +50,7 @@ void test_parse_fun_decl_should_error_if_no_name()
 	size_t pos = 0;
 	Error error = {-1};
 
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "param1", 6, 4));
 	add_token(&tokens, create_token(TOKEN_COMMA, ",", 1, 4));
@@ -61,8 +63,7 @@ void test_parse_fun_decl_should_error_if_no_name()
 
 	TEST_ASSERT_NULL(stmt);
 	TEST_ASSERT_EQUAL_INT(SYNTAX_ERROR_UNEXPECTED_TOKEN, error.type);
-	TEST_ASSERT_EQUAL_STRING("Expected function name or purity specifier",
-							 error.message);
+	TEST_ASSERT_EQUAL_STRING("Expected function name", error.message);
 }
 
 void test_parse_fun_decl_should_error_if_no_params_closing_paren()
@@ -72,6 +73,7 @@ void test_parse_fun_decl_should_error_if_no_params_closing_paren()
 	size_t pos = 0;
 	Error error = {-1};
 
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "fnName", 6, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "param1", 6, 4));
@@ -96,6 +98,7 @@ void test_parse_fun_decl_should_error_if_no_body_closing_brace()
 	size_t pos = 0;
 	Error error = {-1};
 
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "fnName", 6, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "param1", 6, 4));
@@ -120,6 +123,7 @@ void test_parse_fun_decl_with_no_params()
 	size_t pos = 0;
 	Error error = {-1};
 
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "fnName", 6, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	// No parameters
@@ -165,6 +169,7 @@ void test_parse_fun_decl_with_body_statements()
 	parse_dclr_StubWithCallback(mock_parse_dclr);
 
 	add_token(&tokens, create_token(TOKEN_IMPURE, "impure", 6, 4));
+	add_token(&tokens, create_token(TOKEN_FN, "fn", 2, 4));
 	add_token(&tokens, create_token(TOKEN_IDENTIFIER, "fnName", 6, 4));
 	add_token(&tokens, create_token(TOKEN_LEFT_PAREN, "(", 1, 4));
 	add_token(&tokens, create_token(TOKEN_RIGHT_PAREN, ")", 1, 4));

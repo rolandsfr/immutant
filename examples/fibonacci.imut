@@ -1,7 +1,7 @@
 // Fibonacci sequence generator
 // Demonstrates: variables, functions, loops, control flow
 
-fn pure fibonacci(n) {
+fn fibonacci(n) {
     if (n <= 1) {
         return n;
     }
