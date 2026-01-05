@@ -1,5 +1,4 @@
-// Fibonacci sequence generator
-// Demonstrates: variables, functions, loops, control flow
+// Fibonacci sequence
 
 fn fibonacci(n) {
     if (n <= 1) {

@@ -12,6 +12,7 @@ fn fahrenheit_to_celsius(fahrenheit) {
 print("Temperature Converter");
 print("====================");
 print("Enter temperature value:");
+
 imut temp_str = input();
 imut temperature = toNumber(temp_str);
 
@@ -19,6 +20,7 @@ print("Choose conversion:");
 print("1. Celsius to Fahrenheit");
 print("2. Fahrenheit to Celsius");
 print("Enter choice (1 or 2):");
+
 imut choice_str = input();
 imut choice = toNumber(choice_str);
 

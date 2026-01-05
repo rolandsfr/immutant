@@ -1,0 +1,10 @@
+mut a = 5;
+
+pure fn mod() {
+    return a;
+}
+
+print(mod());
+
+
+

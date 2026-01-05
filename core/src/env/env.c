@@ -58,21 +58,26 @@ void env_define_fn(Env* env, const char* name, Value value,
 Value* env_get(Env* env, const char* name)
 {
 
-	int crossed_function_boundary = 0;
+	int is_pure_context = 0;
+	Env* current_function_env = NULL;
+
+	for (Env* e = env; e != NULL; e = e->parent) {
+		if (e->purity == ENV_PURE || e->purity == ENV_IMPURE) {
+			is_pure_context = (e->purity == ENV_PURE);
+			current_function_env = e;
+			break;
+		}
+	}
 
 	for (Env* e = env; e != NULL; e = e->parent) {
 
-		if (e != env) {
-			crossed_function_boundary++;
-		}
-
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
 			if (strcmp(entry->name, name) == 0) {
-				// print for variable purity textually
-
-				if (env->purity == ENV_PURE &&
-					entry->value.mutability == MUTABLE &&
-					crossed_function_boundary > 1) {
+				// if is in a pure context, mutable variables from outer scope
+				// and env is not the current function env, given var should not
+				// be accessible
+				if (is_pure_context && entry->value.mutability == MUTABLE &&
+					e != current_function_env) {
 					return NULL;
 				}
 

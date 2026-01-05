@@ -52,6 +52,10 @@ size_t buffer_block(char* first_line, char* out_buffer, size_t buffer_size)
 		awaiting_else = 1;
 	}
 
+	// Handle while blocks (no else needed)
+	int is_while_block =
+		line_starts_with(first_line, "while") && brace_count > 0;
+
 	if (brace_count == 0) {
 		return len;
 	}
