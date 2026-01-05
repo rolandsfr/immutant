@@ -261,7 +261,7 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 		case '/': {
 			// strip out comments
 			if (match_next(line, current_pos, "/")) {
-				advance_until(line, current_pos, "\n\0", 0);
+				advance_until(line, current_pos, "\n", 0);
 				return 0;
 			} else {
 				*token = create_token(TOKEN_SLASH, current_char, 1, *line_nr);

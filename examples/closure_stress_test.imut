@@ -1,5 +1,0 @@
-fn pure make_adder(x) {
-    return x;
-}
-
-asd
