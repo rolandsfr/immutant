@@ -52,7 +52,7 @@ void test_parse_block_stmt_calls_parse_dclr_correct_number_of_times(void)
 	TokenBuffer tokens;
 	init_token_buffer(&tokens);
 	size_t pos = 0;
-	Error out_error;
+	Error out_error = {-1};
 
 	add_token(&tokens, create_token(TOKEN_LEFT_BRACE, "{", 1, 1));
 	add_stmts(&tokens);
@@ -75,7 +75,7 @@ void test_parse_block_stmt_throws_on_missing_enclosing_right_brace(void)
 	TokenBuffer tokens;
 	init_token_buffer(&tokens);
 	size_t pos = 0;
-	Error out_error;
+	Error out_error = {-1};
 
 	add_token(&tokens, create_token(TOKEN_LEFT_BRACE, "{", 1, 1));
 	add_stmts(&tokens);

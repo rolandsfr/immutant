@@ -18,7 +18,7 @@ BlockStmt* parse_block_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 		Stmt* stmt = parse_dclr(tokens, pos, out_error);
 
-		if (stmt == NULL || (out_error && out_error->type != ERROR_NONE)) {
+		if ((out_error && out_error->type != ERROR_NONE)) {
 			StmtBuffer_free(&stmt_buffer);
 			return NULL;
 		}
