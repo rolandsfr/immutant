@@ -44,6 +44,7 @@
 #include "parse_lassoc.h"
 #include "parse_or.h"
 #include "parse_primary.h"
+#include "parse_return_stmt.h"
 #include "parse_term.h"
 #include "parse_unary.h"
 #include "parse_var_dclr.h"
