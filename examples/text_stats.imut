@@ -1,0 +1,24 @@
+fn pure is_palindrome(text) {
+    mut i = 0;
+    mut j = text - 1;
+    
+    while (i < j) {
+        imut left_char = text;
+        imut right_char = text;
+        
+        if (left_char != right_char) {
+            return false;
+        }
+        
+        i = i + 1;
+        j = j - 1;
+    }
+    
+    return true;
+}
+
+imut message = "racecar";
+imut is_palindrome_result = is_palindrome(message);
+
+print(is_palindrome_result);
+

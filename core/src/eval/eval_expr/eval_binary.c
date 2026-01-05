@@ -31,11 +31,11 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 	switch (expr->operator) {
 		case TOKEN_PLUS: {
 
-			if (check_numbers(left_value, right_value, err)) {
+			if (check_numbers(left_value, right_value, err, expr->base.line)) {
 				return make_number(left_value.number + right_value.number);
 			}
 
-			if (check_strings(left_value, right_value, err)) {
+			if (check_strings(left_value, right_value, err, expr->base.line)) {
 				size_t new_len =
 					strlen(left_value.string) + strlen(right_value.string) + 1;
 				char* concatenated = malloc(new_len);
@@ -56,30 +56,35 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 
 			*err = (Error){
 				.type = RUNTIME_UNEXPECTED_TYPE,
+				.line = expr->base.line,
 				.message =
 					"Operands to '+' must be both numbers or both strings"};
 
 			return make_null();
 		}
 		case TOKEN_MINUS: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_number(left_value.number - right_value.number);
 			}
 
 			return make_null();
 		}
 		case TOKEN_STAR: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_number(left_value.number * right_value.number);
 			}
 			return make_null();
 		}
 		case TOKEN_SLASH: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				if (right_value.number == 0) {
 					if (err) {
 						*err =
 							(Error){.type = RUNTIME_DIVIDE_BY_ZERO,
+									.line = expr->base.line,
 									.message = "Division by zero is illegal"};
 					}
 					return make_null();
@@ -89,30 +94,35 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 
 			if (err) {
 				*err = (Error){.type = RUNTIME_UNEXPECTED_TYPE,
+							   .line = expr->base.line,
 							   .message = "Operands to '/' must be numbers"};
 			}
 			return make_null();
 		}
 		case TOKEN_GREATER: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_bool(left_value.number > right_value.number);
 			}
 			return make_null();
 		}
 		case TOKEN_GREATER_EQUAL: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_bool(left_value.number >= right_value.number);
 			}
 			return make_null();
 		}
 		case TOKEN_LESS: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_bool(left_value.number < right_value.number);
 			}
 			return make_null();
 		}
 		case TOKEN_LESS_EQUAL: {
-			if (require_numbers(left_value, right_value, err)) {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
 				return make_bool(left_value.number <= right_value.number);
 			}
 			return make_null();

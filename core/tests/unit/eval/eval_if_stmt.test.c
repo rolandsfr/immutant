@@ -14,7 +14,7 @@ void test_eval_if_stmt_executes_then_branch_when_condition_is_true()
 	// Arrange
 	IfStmt stmt;
 	Value condition = {.type = VAL_BOOL, .boolean = 1};
-	stmt.condition = NULL; // Not used in this test
+	stmt.condition = &(Expr){.line = 1}; // Not used in this test
 
 	Stmt then_branch;
 	Stmt else_branch;
@@ -38,7 +38,7 @@ void test_eval_if_stmt_executes_else_branch_when_condition_is_not_true()
 	// Arrange
 	IfStmt stmt;
 	Value condition = {.type = VAL_BOOL, .boolean = 0};
-	stmt.condition = NULL; // Not used in this test
+	stmt.condition = &(Expr){.line = 1}; // Not used in this test
 
 	Stmt then_branch;
 	Stmt else_branch;

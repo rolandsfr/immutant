@@ -13,7 +13,7 @@ void eval_if_stmt(IfStmt* stmt, Error* err, Env* env, Value* out_value)
 {
 	Value condition = eval_expr(stmt->condition, err, env);
 
-	if (!require_bool(condition, err))
+	if (!require_bool(condition, err, stmt->condition->line))
 		return;
 
 	if (condition.boolean) {

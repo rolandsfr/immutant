@@ -22,7 +22,7 @@ DEF_EVAL_EXPR(eval_unary, UnaryExpr)
 		case TOKEN_MINUS: {
 			double num = 0.0;
 
-			if (!require_number(operand_value, err)) {
+			if (!require_number(operand_value, err, expr->base.line)) {
 				return make_null();
 			}
 
@@ -33,7 +33,7 @@ DEF_EVAL_EXPR(eval_unary, UnaryExpr)
 		case TOKEN_BANG: {
 			int bool_val = 0;
 
-			if (!require_bool(operand_value, err)) {
+			if (!require_bool(operand_value, err, expr->base.line)) {
 				return make_null();
 			}
 

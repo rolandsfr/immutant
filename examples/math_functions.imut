@@ -1,0 +1,50 @@
+// Factorial and combinatorics calculator
+// Demonstrates: recursion, pure functions, mathematical operations
+
+fn pure factorial(n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+fn pure power(base, exponent) {
+    if (exponent == 0) {
+        return 1;
+    }
+    if (exponent == 1) {
+        return base;
+    }
+    return base * power(base, exponent - 1);
+}
+
+fn pure combination(n, k) {
+    imut numerator = factorial(n);
+    imut denominator = factorial(k) * factorial(n - k);
+    return numerator / denominator;
+}
+
+print("Factorial and Combinatorics");
+print("============================");
+
+imut fact_5 = factorial(5);
+print("5! = ");
+print(fact_5);
+
+imut power_result = power(2, 10);
+print("2^10 = ");
+print(power_result);
+
+imut comb = combination(10, 3);
+print("C(10,3) = ");
+print(comb);
+
+mut sum = 0;
+mut i = 0;
+while (i <= 5) {
+    imut term = factorial(i);
+    sum = sum + term;
+    i = i + 1;
+}
+print("Sum of 0! + 1! + 2! + 3! + 4! + 5! = ");
+print(sum);

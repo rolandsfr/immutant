@@ -1,10 +1,15 @@
+#pragma once
+
+#include <stddef.h>
+
 typedef struct Value Value;
 typedef struct Error Error;
 
-#define DEF_REQUIRE_T_FN(fn_name) int fn_name(Value value, Error* err)
+#define DEF_REQUIRE_T_FN(fn_name)                                              \
+	int fn_name(Value value, Error* err, size_t line)
 
 #define DEF_REQUIRE_T_SEVERAL_FN(fn_name)                                      \
-	int fn_name(Value value1, Value value2, Error* err)
+	int fn_name(Value value1, Value value2, Error* err, size_t line)
 
 DEF_REQUIRE_T_FN(require_number);
 DEF_REQUIRE_T_FN(require_string);

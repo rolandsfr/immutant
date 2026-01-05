@@ -14,7 +14,12 @@ typedef struct EnvEntry {
 						   // enum PurityType purity;
 } EnvEntry;
 
-typedef enum EnvPurity { ENV_PURE, ENV_IMPURE, ENV_PURITY_UNSET } EnvPurity;
+typedef enum EnvPurity {
+	ENV_PURE,
+	ENV_IMPURE,
+	ENV_PURITY_UNSET,
+	ENV_INHERIT
+} EnvPurity;
 
 typedef struct Env {
 	EnvPurity purity;

@@ -96,14 +96,19 @@ EnvEntry* env_get_direct_entry(Env* env, const char* name)
 
 EnvEntry env_get_entry(Env* env, const char* name)
 {
-	int is_pure_env = (env->purity == ENV_PURE);
+	int is_pure = (env->purity == ENV_PURE);
+
 	for (Env* e = env; e != NULL; e = e->parent) {
 
-		is_pure_env = (env->purity == ENV_PURE);
+		/* Only update purity when crossing a function env */
+		if (e != env && e->purity != ENV_INHERIT &&
+			e->purity != ENV_PURITY_UNSET) {
+			is_pure = (e->purity == ENV_PURE);
+		}
+
 		for (EnvEntry* entry = e->entries; entry != NULL; entry = entry->next) {
 			if (strcmp(entry->name, name) == 0) {
-
-				if (entry->value.mutability == MUTABLE && is_pure_env) {
+				if (is_pure && entry->value.mutability == MUTABLE && e != env) {
 					return (EnvEntry){NULL};
 				}
 

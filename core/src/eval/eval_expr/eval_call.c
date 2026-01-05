@@ -73,17 +73,22 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 		return make_null();
 	}
 
+	Error saved_error = *err;
+
 	Value result = callable_val->call(
 		&args_buffer, &(Context){.line = expr->base.line,
 								 .error_out_tunnel = err,
 								 .declaration = callable_val->declaration,
 								 .env = env});
 
-	if (err && err->type == RUNTIME_RETURN_ERROR) {
-		// unwrap return value
+	if (err->type == RUNTIME_RETURN_ERROR) {
 		result = err->return_value;
-		// clear the error
-		err->type = ERROR_NONE;
+		*err = saved_error; // restore outer error state
+	}
+
+	if (err->type != ERROR_NONE) {
+		ValueBuffer_free(&args_buffer);
+		return make_null();
 	}
 
 	if (err && err->type != ERROR_NONE) {

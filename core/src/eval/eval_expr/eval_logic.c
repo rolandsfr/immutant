@@ -24,7 +24,7 @@ DEF_EVAL_EXPR(eval_logic, LogicalExpr)
 		return make_null();
 	}
 
-	if (!require_bool(left, err)) {
+	if (!require_bool(left, err, expr->base.line)) {
 		return make_null();
 	}
 	if (expr->operator == TOKEN_OR) {
@@ -45,7 +45,7 @@ DEF_EVAL_EXPR(eval_logic, LogicalExpr)
 
 	Value right = eval_expr(expr->right, err, env);
 
-	if (!require_bool(right, err)) {
+	if (!require_bool(right, err, expr->base.line)) {
 		return make_null();
 	}
 

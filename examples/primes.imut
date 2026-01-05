@@ -1,0 +1,51 @@
+// Prime number checker with immutable data semantics
+// Demonstrates: pure functions, immutable data, mathematical logic
+
+fn pure is_prime(num) {
+    if (num <= 1) {
+        return false;
+    }
+    if (num == 2) {
+        return true;
+    }
+    if (num % 2 == 0) {
+        return false;
+    }
+    
+    imut limit = toNumber(num) / 2;
+    mut divisor = 3;
+    
+    while (divisor <= limit) {
+        if (num % divisor == 0) {
+            return false;
+        }
+        divisor = divisor + 2;
+    }
+    
+    return true;
+}
+
+fn pure count_primes(start, end) {
+    mut count = 0;
+    mut current = start;
+    
+    while (current <= end) {
+        if (is_prime(current)) {
+            count = count + 1;
+        }
+        current = current + 1;
+    }
+    
+    return count;
+}
+
+imut primes_10_to_100 = count_primes(10, 100);
+print("Primes from 10 to 100: ");
+print(primes_10_to_100);
+
+imut result = is_prime(97);
+if (result) {
+    print("97 is prime");
+} else {
+    print("97 is not prime");
+}

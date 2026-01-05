@@ -9,7 +9,7 @@
 
 void eval_block_stmt(BlockStmt* stmt, Error* err, Env* env, Value* out_value)
 {
-	Env* block_env = env_new(env, env->purity);
+	Env* block_env = env_new(env, ENV_INHERIT);
 
 	for (size_t i = 0; i < stmt->count; i++) {
 		Stmt* current_stmt = stmt->statements[i];

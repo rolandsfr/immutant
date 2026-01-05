@@ -172,7 +172,7 @@ void test_env_set_does_not_create_new_variable(void)
 
 void test_env_get_entry_does_not_resolve_mutable_in_pure_env(void)
 {
-	Env* global = env_new(NULL, ENV_IMPURE);
+	Env* global = env_new(NULL, ENV_PURITY_UNSET);
 	Env* pure_env = env_new(global, ENV_PURE);
 
 	env_define(global, "a", v1, MUTABLE);
@@ -181,10 +181,8 @@ void test_env_get_entry_does_not_resolve_mutable_in_pure_env(void)
 	EnvEntry entry_a = env_get_entry(pure_env, "a");
 	EnvEntry entry_b = env_get_entry(pure_env, "b");
 
-	TEST_ASSERT_NULL(
-		entry_a.name); // should not resolve mutable in pure env_new
-	TEST_ASSERT_NOT_NULL(
-		entry_b.name); // should resolve immutable in pure env_new
+	TEST_ASSERT_NULL(entry_a.name);
+	TEST_ASSERT_NOT_NULL(entry_b.name);
 
 	env_free(pure_env);
 	env_free(global);

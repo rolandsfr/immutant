@@ -17,7 +17,7 @@ void eval_while_stmt(WhileStmt* stmt, Error* err, Env* env, Value* out_value)
 		return;
 	}
 
-	if (!require_bool(condition, err)) {
+	if (!require_bool(condition, err, stmt->condition->line)) {
 		return;
 	}
 
@@ -29,7 +29,8 @@ void eval_while_stmt(WhileStmt* stmt, Error* err, Env* env, Value* out_value)
 			return;
 		}
 
-		if (!require_bool(condition, err))
+		if (!require_bool(condition, err, stmt->condition->line)) {
 			return;
+		}
 	}
 }

@@ -12,21 +12,16 @@
 
 void eval_return_stmt(ReturnStmt* stmt, Error* err, Env* env)
 {
-
 	if (stmt->value) {
 		Value return_value = eval_expr(stmt->value, err, env);
-
 		if (err->type != ERROR_NONE) {
-
-			printf("Error occurred during return value evaluation: %s\n",
-				   err->message);
 			return;
 		}
-
 		err->return_value = return_value;
 	}
 
+	// Signal return (control flow), NOT a runtime error
 	err->type = RUNTIME_RETURN_ERROR;
 	err->line = stmt->base.line;
-	strcpy(err->message, "Unexpected return statement");
+	err->message[0] = '\0'; // IMPORTANT: no error message for valid return
 }

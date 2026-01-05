@@ -13,7 +13,7 @@ void test_eval_while_stmt_executes_then_branch_when_condition_is_true()
 {
 	WhileStmt stmt;
 	Stmt body;
-	stmt.condition = NULL;
+	stmt.condition = &(Expr){.line = 1};
 	stmt.body = &body;
 
 	Env env;
