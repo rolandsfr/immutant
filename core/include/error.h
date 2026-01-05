@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "array.h"
+#include "value_t.h"
 
 void error(int line, char* message);
 void report_error(size_t line, const char* message, int* hadError);
@@ -29,6 +30,7 @@ typedef enum ErrorType {
 	RUNTIME_IMPURE_ARG_MUTABILITY,
 	RUNTIME_INVALID_TYPE_CONVERSION,
 	RUNTIME_PURITY_VIOLATION,
+	RUNTIME_RETURN_ERROR,
 
 	// General errors
 	ERROR_OUT_OF_MEMORY,
@@ -38,6 +40,9 @@ typedef struct Error {
 	ErrorType type;
 	size_t line;
 	char message[128];
+	union {
+		Value return_value; // used by return stmts
+	};
 } Error;
 
 ARR_DEFINE(Error, ErrorBuffer);

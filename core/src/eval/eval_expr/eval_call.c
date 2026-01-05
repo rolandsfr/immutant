@@ -12,6 +12,7 @@
 #include "make_values.h"
 #include "parser_singnature.h"
 #include "require_t.h"
+#include "str_val.h"
 #include "value_t.h"
 
 DEF_EVAL_EXPR(eval_call, CallExpr)
@@ -78,6 +79,14 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 								 .error_out_tunnel = err,
 								 .declaration = callable_val->declaration,
 								 .env = env});
+
+	if (err && err->type == RUNTIME_RETURN_ERROR) {
+		// unwrap return value
+		result = err->return_value;
+		const char* v = str_val(result);
+		// clear the error
+		err->type = ERROR_NONE;
+	}
 
 	if (err && err->type != ERROR_NONE) {
 		ValueBuffer_free(&args_buffer);

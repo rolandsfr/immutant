@@ -1,9 +1,7 @@
 mut factor = 3;
 
 fn impure mul(a) {
-    print(a*factor);
+    return a * factor;
 }
 
-
-mul(5);
-
+print(mul(5));
