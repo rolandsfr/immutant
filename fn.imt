@@ -6,3 +6,4 @@ fn impure mul(a) {
 
 
 mul(5);
+
