@@ -15,7 +15,14 @@ BlockStmt* parse_block_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 	while (!check_token(tokens, *pos, TOKEN_RIGHT_BRACE) &&
 		   !is_at_end(tokens, *pos)) {
+
 		Stmt* stmt = parse_dclr(tokens, pos, out_error);
+
+		if (stmt == NULL || (out_error && out_error->type != ERROR_NONE)) {
+			StmtBuffer_free(&stmt_buffer);
+			return NULL;
+		}
+
 		StmtBuffer_push(&stmt_buffer, stmt);
 	}
 
@@ -27,6 +34,7 @@ BlockStmt* parse_block_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 			snprintf(out_error->message, sizeof(out_error->message),
 					 "Expected '}' after block statement");
 		}
+
 		StmtBuffer_free(&stmt_buffer);
 		return NULL;
 	}
