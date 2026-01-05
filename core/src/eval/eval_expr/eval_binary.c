@@ -99,6 +99,29 @@ DEF_EVAL_EXPR(eval_binary, BinaryExpr)
 			}
 			return make_null();
 		}
+		case TOKEN_MODULO: {
+			if (require_numbers(left_value, right_value, err,
+								expr->base.line)) {
+				if (right_value.number == 0) {
+					if (err) {
+						*err =
+							(Error){.type = RUNTIME_DIVIDE_BY_ZERO,
+									.line = expr->base.line,
+									.message = "Division by zero is illegal"};
+					}
+					return make_null();
+				}
+				return make_number((int)left_value.number %
+								   (int)right_value.number);
+			}
+
+			if (err) {
+				*err = (Error){.type = RUNTIME_UNEXPECTED_TYPE,
+							   .line = expr->base.line,
+							   .message = "Operands to '%' must be numbers"};
+			}
+			return make_null();
+		}
 		case TOKEN_GREATER: {
 			if (require_numbers(left_value, right_value, err,
 								expr->base.line)) {

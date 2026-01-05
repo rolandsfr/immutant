@@ -13,7 +13,7 @@
 
 DEF_PARSE_FN(parse_factor)
 {
-	const TokenType operators[] = {TOKEN_SLASH, TOKEN_STAR};
+	const TokenType operators[] = {TOKEN_SLASH, TOKEN_STAR, TOKEN_MODULO};
 	const size_t operators_count = sizeof(operators) / sizeof(operators[0]);
 
 	return parse_lassoc(tokens, pos, parse_unary, operators, operators_count,

@@ -220,6 +220,9 @@ int scan_next_token(char* line, size_t* current_pos, size_t* line_nr,
 		case '+':
 			*token = create_token(TOKEN_PLUS, current_char, 1, *line_nr);
 			break;
+		case '%':
+			*token = create_token(TOKEN_MODULO, current_char, 1, *line_nr);
+			break;
 		case ';':
 			*token = create_token(TOKEN_SEMICOLON, current_char, 1, *line_nr);
 			break;
