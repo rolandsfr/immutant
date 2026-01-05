@@ -18,7 +18,7 @@ extern Env* global_env;
 void repl()
 {
 	if (!global_env) {
-		global_env = env_new(NULL);
+		global_env = env_new(NULL, ENV_PURITY_UNSET);
 	}
 	define_natives(global_env);
 

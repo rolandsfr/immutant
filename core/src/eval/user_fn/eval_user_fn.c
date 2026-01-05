@@ -57,6 +57,7 @@ Value create_user_fn(Env* env, FunDeclStmt* declaration)
 	user_callable->arity = declaration->params->len;
 	user_callable->call = call_user_fn;
 	user_callable->declaration = declaration;
+	user_callable->closure_env = env;
 
 	Value user_callable_value;
 	user_callable_value.type = VAL_FN;

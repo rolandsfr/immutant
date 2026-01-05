@@ -109,7 +109,7 @@ FunDeclStmt* parse_fun_decl(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return NULL;
 	}
 
-	return make_fun_decl_stmt(name.lexeme, params, params->len, body,
-							  purity_token_or_name.type == TOKEN_IMPURE ? IMPURE
-																		: PURE);
+	return make_fun_decl_stmt(
+		name.lexeme, params, params->len, body,
+		purity_token_or_name.type == TOKEN_IMPURE ? IMPURE : PURE, name.line);
 }

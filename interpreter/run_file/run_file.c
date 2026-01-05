@@ -63,15 +63,17 @@ void run_file(const char* script_name)
 
 	Env* global_env = env_new(NULL, ENV_PURITY_UNSET);
 	define_natives(global_env);
+	Error runtime_error = {.type = ERROR_NONE, .line = 0};
 
 	for (size_t i = 0; i < stmts.len; i++) {
-		Error runtime_error = {.type = ERROR_NONE, .line = 0};
 		Stmt* stmt = stmts.data[i];
 		Value value;
 
 		eval(stmt, &runtime_error, &value, global_env);
 
 		if (runtime_error.type != ERROR_NONE) {
+			printf("Runtime error at line %zu: %s\n", runtime_error.line,
+				   runtime_error.message);
 			free_token_buffer(&token_buffer);
 			int hadError = 1;
 			report_error(runtime_error.line, runtime_error.message, &hadError);

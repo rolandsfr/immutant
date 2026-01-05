@@ -14,6 +14,10 @@ void eval_block_stmt(BlockStmt* stmt, Error* err, Env* env, Value* out_value)
 	for (size_t i = 0; i < stmt->count; i++) {
 		Stmt* current_stmt = stmt->statements[i];
 		eval(current_stmt, err, out_value, block_env);
+
+		if (err && err->type != ERROR_NONE) {
+			break;
+		}
 	}
 
 	env_free(block_env);

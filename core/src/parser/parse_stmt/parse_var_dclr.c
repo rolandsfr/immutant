@@ -48,5 +48,5 @@ VarDeclStmt* parse_var_decl(TokenBuffer* tokens, size_t* pos,
 		return NULL;
 	}
 
-	return make_var_decl_stmt(name.lexeme, initializer, mutability);
+	return make_var_decl_stmt(name.lexeme, initializer, mutability, name.line);
 }

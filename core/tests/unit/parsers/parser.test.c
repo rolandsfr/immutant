@@ -30,7 +30,7 @@ Stmt* mock_dclr_and_throw(TokenBuffer* tokens, size_t* pos, Error* out_error,
 
 	Expr* expr = (Expr*)make_number_expr("42", 1);
 	*pos += 1;
-	return (Stmt*)make_expr_stmt(expr);
+	return (Stmt*)make_expr_stmt(expr, 1);
 }
 
 void test_parse_var_decl_should_error_if_no_semicolon_after_initializer()

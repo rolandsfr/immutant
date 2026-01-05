@@ -79,7 +79,7 @@ DEF_EVAL_EXPR(eval_call, CallExpr)
 		&args_buffer, &(Context){.line = expr->base.line,
 								 .error_out_tunnel = err,
 								 .declaration = callable_val->declaration,
-								 .env = env});
+								 .env = callable_val->closure_env});
 
 	if (err->type == RUNTIME_RETURN_ERROR) {
 		result = err->return_value;

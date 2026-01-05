@@ -25,11 +25,13 @@ Stmt* parse_declr_mock(TokenBuffer* tokens, size_t* pos, Error* out_error,
 
 	if (num_calls == 0) {
 		return (Stmt*)make_var_decl_stmt("x", (Expr*)make_number_expr("10", 1),
-										 MUTABLE);
+										 MUTABLE, 1);
 	} else {
-		return (Stmt*)make_expr_stmt((Expr*)make_binary_expr(
-			(Expr*)make_number_expr("10", 1), TOKEN_PLUS,
-			(Expr*)make_number_expr("21", 1), 1));
+		return (Stmt*)make_expr_stmt(
+			(Expr*)make_binary_expr((Expr*)make_number_expr("10", 1),
+									TOKEN_PLUS,
+									(Expr*)make_number_expr("21", 1), 1),
+			1);
 	}
 }
 

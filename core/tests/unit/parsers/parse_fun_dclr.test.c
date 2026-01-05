@@ -146,7 +146,7 @@ Stmt* mock_parse_dclr(TokenBuffer* tokens, size_t* pos, Error* out_error,
 			(*pos)++;
 		}
 
-		Stmt* stmt = (Stmt*)make_expr_stmt((Expr*)make_number_expr("42", 2));
+		Stmt* stmt = (Stmt*)make_expr_stmt((Expr*)make_number_expr("42", 2), 2);
 		return stmt;
 	} else {
 		return NULL;
@@ -160,7 +160,7 @@ void test_parse_fun_decl_with_body_statements()
 	size_t pos = 0;
 	Error error = {-1};
 
-	Stmt* stmt = (Stmt*)make_expr_stmt((Expr*)make_number_expr("42", 2));
+	Stmt* stmt = (Stmt*)make_expr_stmt((Expr*)make_number_expr("42", 2), 2);
 
 	parse_dclr_StubWithCallback(mock_parse_dclr);
 

@@ -43,6 +43,7 @@ typedef struct Callable {
 	Value (*call)(ValueBuffer* arguments, Context* context);
 	size_t arity;
 	FunDeclStmt* declaration;
+	Env* closure_env;
 } Callable;
 
 ARR_DEFINE(Value, ValueBuffer)

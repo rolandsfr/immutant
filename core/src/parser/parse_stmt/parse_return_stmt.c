@@ -37,5 +37,6 @@ ReturnStmt* parse_return_stmt(TokenBuffer* tokens, size_t* pos,
 		return NULL;
 	}
 
-	return make_return_stmt(value);
+	Token return_token = peek_token_full(tokens, *pos - 1);
+	return make_return_stmt(value, return_token.line);
 }

@@ -26,6 +26,7 @@ BlockStmt* parse_block_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		StmtBuffer_push(&stmt_buffer, stmt);
 	}
 
+	Token block_token = peek_token_full(tokens, *pos - 1);
 	if (!match_token(tokens, pos, 1, TOKEN_RIGHT_BRACE)) {
 		if (out_error) {
 			*out_error = (Error){.type = SYNTAX_ERROR_UNEXPECTED_TOKEN,
@@ -39,5 +40,5 @@ BlockStmt* parse_block_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return NULL;
 	}
 
-	return make_block_stmt(stmt_buffer.data, stmt_buffer.len);
+	return make_block_stmt(stmt_buffer.data, stmt_buffer.len, block_token.line);
 }

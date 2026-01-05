@@ -28,5 +28,5 @@ ExprStmt* parse_expr_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		return NULL;
 	}
 
-	return make_expr_stmt(expr);
+	return make_expr_stmt(expr, expr->line);
 }

@@ -43,5 +43,5 @@ WhileStmt* parse_while_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 
 	Stmt* body_stmt = parse_dclr(tokens, pos, out_error);
 
-	return make_while_stmt(condition, body_stmt);
+	return make_while_stmt(condition, body_stmt, condition->line);
 }

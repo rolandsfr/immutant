@@ -30,9 +30,9 @@ void test_eval_block_stmt_creates_new_scope(void)
 
 	Stmt* stmts[1];
 	stmts[0] = (Stmt*)make_var_decl_stmt("x", (Expr*)make_number_expr("1", 1),
-										 MUTABLE);
+										 MUTABLE, 1);
 
-	BlockStmt* block = make_block_stmt(stmts, 1);
+	BlockStmt* block = make_block_stmt(stmts, 1, 1);
 
 	Error err = {0};
 	Value out;

@@ -49,5 +49,5 @@ IfStmt* parse_if_stmt(TokenBuffer* tokens, size_t* pos, Error* out_error)
 		else_branch = parse_dclr(tokens, pos, out_error);
 	}
 
-	return make_if_stmt(condition, then_branch, else_branch);
+	return make_if_stmt(condition, then_branch, else_branch, condition->line);
 }
