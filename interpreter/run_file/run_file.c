@@ -65,7 +65,7 @@ void run_file(const char* script_name)
 	define_natives(global_env);
 
 	for (size_t i = 0; i < stmts.len; i++) {
-		Error runtime_error = {-1};
+		Error runtime_error = {.type = ERROR_NONE, .line = 0};
 		Stmt* stmt = stmts.data[i];
 		Value value;
 
@@ -75,7 +75,7 @@ void run_file(const char* script_name)
 			free_token_buffer(&token_buffer);
 			int hadError = 1;
 			report_error(runtime_error.line, runtime_error.message, &hadError);
-			continue;
+			break;
 		}
 	}
 
