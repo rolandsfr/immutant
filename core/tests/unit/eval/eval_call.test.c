@@ -2,6 +2,7 @@
 
 #include "unity.h"
 
+#include "array.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
 #include "env.h"
@@ -12,8 +13,9 @@
 #include "value_t.h"
 
 #include "Mockeval_expr.h"
-#include "Mockparse_call.h"
 #include "Mockresolve.h"
+
+ARR_DEFINE(Expr*, ArgumentsArray);
 
 void define_mock_function_in_env(Env* env, const char* name, size_t arity,
 								 Value (*mock_function)(ValueBuffer*, Context*),

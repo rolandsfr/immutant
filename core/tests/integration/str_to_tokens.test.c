@@ -3,25 +3,15 @@
 #include "assert_error.h"
 #include "ast_expr.h"
 #include "ast_make_expr.h"
+#include "ast_make_stmt.h"
 #include "error.h"
 #include "error_codes.h"
 #include "error_report.h"
 #include "lexer.h" // TODO: remove after decoupled
-#include "parse_and.h"
-#include "parse_asgn.h"
-#include "parse_call.h"
-#include "parse_comparison.h"
-#include "parse_eq.h"
 #include "parse_expr.h"
-#include "parse_factor.h"
-#include "parse_lassoc.h"
-#include "parse_or.h"
-#include "parse_primary.h"
-#include "parse_term.h"
-#include "parse_unary.h"
-#include "parser_helpers.h"
-#include "parser_singnature.h"
-#include "resolve.h" // TODO: remove after decoupled
+#include "parse_stmt.h"
+#include "parser.h"
+#include "resolve.h"
 #include "test_expr.h"
 
 void test_should_convert_string_to_tokens()
@@ -53,7 +43,7 @@ void test_should_convert_string_to_tokens()
 	pos = 0;
 
 	Error error = {-1};
-	Expr* ast = parse_equality(&tokens, &pos, &error);
+	Expr* ast = parse_expr(&tokens, &pos, &error);
 
 	TEST_ASSERT_BINARY_EXPR((BinaryExpr*)ast, TOKEN_PLUS);
 	TEST_ASSERT_LITERAL_NUMBER_EXPR(((BinaryExpr*)ast)->left, "1");

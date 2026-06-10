@@ -10,12 +10,8 @@
 #include "eval.h"
 #include "lexer.h"
 #include "make_values.h"
-#include "parse_block_stmt.h"
-
+#include "resolve.h"
 #include "Mockeval.h"
-#include "Mockparse_dclr.h"
-#include "Mockparser_helpers.h"
-#include "Mockresolve.h"
 
 Env* global_env;
 void mock_eval(Stmt* stmt, Error* err, Value* out_value, Env* env,

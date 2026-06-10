@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #include "ast_cnstrct.h"
+#include "ast_stmt.h"
 #include "error.h"
 #include "lexer.h"
 
