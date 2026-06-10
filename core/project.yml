@@ -18,11 +18,19 @@
     - include/**
     - src/**
   :test:
-    - tests/** 
+    - tests/**
+
+:files:
+  :test:
+    - -:tests/support/**
 
 :flags:
   :preprocess:
     :compile: []
+  :test:
+    :link:
+      :parsers/:
+        - tests_build/lib/libparser.a
 
 :project:
   # how to use ceedling. If you're not sure, leave this as `gem` and `?`

@@ -26,6 +26,17 @@ Running tests requires having ceedling being installed via ruby `gem`.
 
 To run all tests use `ceedling test` within the core/ lib or otherwise `make test` in the root.
 
+## Static libs
+
+The parser is compiled once into a static library and linked into the three parser test executables:
+
+```
+make parser-lib   # → core/tests_build/lib/libparser.a
+make test         # builds the library, then runs Ceedling
+```
+
+Parser integration tests include `src/test_support/parser_api.h` only (not individual `parse_*.h` headers) so Ceedling does not recompile the recursive-descent sources. Linking is configured per-test in `core/project.yml` (`:flags: :test: :link: :parsers/`). See `core/parser_lib.mk` for the archived source list.
+
 ## LSP Context
 
 This project uses ceedling plugin `compile_commands_json_db` that generates `compile_commands.json` file for better LSP support (including ceedling vendor files too). It will be generated automatically when running tests in `core/tests_build/artifacts/compile_commands.json`. For some Unix based systems you may need symlink it to the root of the project for LSP to pick it up:

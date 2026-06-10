@@ -11,8 +11,6 @@
 #include "eval.h"
 #include "lexer.h"
 #include "make_values.h"
-#include "parse_eq.h"
-#include "parse_expr_stmt.h"
 #include "parser.h"
 #include "value_t.h"
 

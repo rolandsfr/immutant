@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "lexer.h"
+#include "token_types.h"
 
 #include "../ast_cnstrct.h"
 

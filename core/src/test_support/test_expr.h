@@ -2,12 +2,12 @@
 
 #include "ast_expr.h"
 #include "parser_singnature.h"
+#include "token_types.h"
 
 typedef struct Expr Expr;
+typedef struct Stmt Stmt;
 typedef struct BinaryExpr BinaryExpr;
 typedef struct VariableExpr VariableExpr;
-typedef enum TokenType TokenType;
-typedef struct TokenBuffer TokenBuffer;
 typedef struct ErrorReport ErrorReport;
 
 void TEST_ASSERT_UNARY_NUMBER_XPR(Expr* expr, enum TokenType expected_operator,
@@ -29,5 +29,4 @@ typedef struct SampleToken {
 	size_t length;
 } SampleToken;
 
-Expr* init_test_parse(TokenBuffer* tokens, int token_count,
-					  SampleToken sample_tokens[], Error* error, ParseFn parse);
+typedef Stmt* (*ParseStmtFn)(TokenBuffer* tokens, size_t* pos, Error* out_error);
