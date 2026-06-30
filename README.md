@@ -51,3 +51,7 @@ The official language specification is located in the `docs/` folder. `paper/` d
 On the other hand, [immutant-specification.md](docs/immutant-specification.md) contains language specification in english.
 
 Since the language is still quite immature, the specification is subject to change. Please refer to the informal doc [ideas.md](docs/ideas.md) for ideas and proposals for future language features.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
